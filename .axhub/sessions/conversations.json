@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "conversations": [
+    {
+      "threadId": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-24T07:54:51.793Z",
+      "updatedAt": "2026-06-24T07:57:20.931Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "codex",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "019ef8a0-2c2f-74a0-91fa-543cd9372a05",
+      "sourcePath": "C:\\Users\\guoxi\\.codex\\sessions\\2026\\06\\24\\rollout-2026-06-24T15-55-07-019ef8a0-2c2f-74a0-91fa-543cd9372a05.jsonl",
+      "sourceKind": "codex-jsonl",
+      "lastSeenMtime": 1782287840841.456,
+      "lastActiveAt": "2026-06-24T07:57:20.841Z",
+      "runtimeRunState": "completed",
+      "runtimeCheckedAt": "2026-06-24T07:57:20.918Z",
+      "runtimeClosedAt": "2026-06-24T07:57:20.918Z"
+    },
+    {
+      "threadId": "default",
+      "title": null,
+      "createdAt": "2026-06-24T07:53:50.929Z",
+      "updatedAt": "2026-06-24T07:53:50.929Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "codex",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": null,
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": null,
+      "runtimeRunState": null,
+      "runtimeCheckedAt": null,
+      "runtimeClosedAt": null
+    },
+    {
+      "threadId": "codex-6bebe4d4-a52b-44ba-97ba-86d31f7b16d5",
+      "title": "请根据以下页面内容批注，在代码中实现对应改动。 任务上下文: - 页面地址: http://lo",
+      "createdAt": "2026-06-15T09:14:45.664Z",
+      "updatedAt": "2026-06-15T09:15:23.145Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "codex",
+      "model": null,
+      "modeId": "full-access",
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": {
+        "image-generation": {
+          "enabled": false,
+          "preservePrompt": true
+        },
+        "user-choice": {
+          "enabled": true,
+          "waitTimeoutMs": 120000,
+          "allowCustomInput": true,
+          "customInputLabel": "自定义"
+        }
+      },
+      "providerSessionId": null,
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": "2026-06-15T09:15:23.145Z",
+      "runtimeRunState": "error",
+      "runtimeCheckedAt": "2026-06-15T09:15:23.190Z",
+      "runtimeClosedAt": "2026-06-15T09:15:23.190Z"
+    },
+    {
+      "threadId": "direct-65b7c4e1-50ea-4728-b06b-af905d1f84aa",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-15T09:11:24.513Z",
+      "updatedAt": "2026-06-15T09:11:29.538Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "claude",
+      "model": null,
+      "modeId": "bypassPermissions",
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "599682fc-9dfb-4424-ac22-09a4edadcefc",
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": "2026-06-15T09:11:29.495Z",
+      "runtimeRunState": "error",
+      "runtimeCheckedAt": "2026-06-15T09:11:29.495Z",
+      "runtimeClosedAt": "2026-06-15T09:11:29.495Z"
+    },
+    {
+      "threadId": "direct-06cf110c-a0e1-479f-9024-b5e0d30f3000",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-15T09:10:37.613Z",
+      "updatedAt": "2026-06-15T09:11:02.630Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "claude",
+      "model": null,
+      "modeId": "bypassPermissions",
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "15450c24-4562-4873-8660-4977a4850537",
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": "2026-06-15T09:11:02.576Z",
+      "runtimeRunState": "error",
+      "runtimeCheckedAt": "2026-06-15T09:11:02.576Z",
+      "runtimeClosedAt": "2026-06-15T09:11:02.576Z"
+    }
+  ],
+  "sessions": [
+    {
+      "threadId": "direct-06cf110c-a0e1-479f-9024-b5e0d30f3000",
+      "acpSessionId": "15450c24-4562-4873-8660-4977a4850537",
+      "provider": "claude",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": "bypassPermissions",
+      "thoughtLevel": null,
+      "createdAt": "2026-06-15T09:11:02.016Z",
+      "lastActivityAt": "2026-06-15T09:11:02.576Z",
+      "closedAt": null
+    },
+    {
+      "threadId": "direct-65b7c4e1-50ea-4728-b06b-af905d1f84aa",
+      "acpSessionId": "599682fc-9dfb-4424-ac22-09a4edadcefc",
+      "provider": "claude",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": "bypassPermissions",
+      "thoughtLevel": null,
+      "createdAt": "2026-06-15T09:11:29.162Z",
+      "lastActivityAt": "2026-06-15T09:11:29.495Z",
+      "closedAt": null
+    },
+    {
+      "threadId": "codex-6bebe4d4-a52b-44ba-97ba-86d31f7b16d5",
+      "acpSessionId": null,
+      "provider": "codex",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": "full-access",
+      "thoughtLevel": null,
+      "createdAt": "2026-06-15T09:15:00.143Z",
+      "lastActivityAt": "2026-06-15T09:15:00.183Z",
+      "closedAt": "2026-06-15T09:15:00.183Z"
+    },
+    {
+      "threadId": "codex-6bebe4d4-a52b-44ba-97ba-86d31f7b16d5",
+      "acpSessionId": null,
+      "provider": "codex",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": "full-access",
+      "thoughtLevel": null,
+      "createdAt": "2026-06-15T09:15:23.145Z",
+      "lastActivityAt": "2026-06-15T09:15:23.166Z",
+      "closedAt": "2026-06-15T09:15:23.166Z"
+    },
+    {
+      "threadId": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe",
+      "acpSessionId": "019ef8a0-2c2f-74a0-91fa-543cd9372a05",
+      "provider": "codex",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "createdAt": "2026-06-24T07:55:08.642Z",
+      "lastActivityAt": "2026-06-24T07:57:20.918Z",
+      "closedAt": null
+    }
+  ],
+  "messages": {
+    "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe": {
+      "messages": [
+        {
+          "id": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe-user",
+          "parent_id": null,
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe-user",
+            "role": "user",
+            "parts": [
+              {
+                "type": "text",
+                "text": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。"
+              }
+            ],
+            "metadata": {
+              "custom": {
+                "acpRun": {
+                  "status": "running",
+                  "threadId": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe",
+                  "acpSessionId": null,
+                  "error": null,
+                  "updatedAt": 1782287691812
+                }
+              }
+            }
+          },
+          "createdAt": "2026-06-24T07:54:51.817Z",
+          "updatedAt": "2026-06-24T07:57:20.925Z"
+        },
+        {
+          "id": "assistant-mqrs31fj-lm1349nkgg",
+          "parent_id": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe-user",
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "assistant-mqrs31fj-lm1349nkgg",
+            "metadata": {
+              "custom": {
+                "acpAvailableCommands": {
+                  "byName": {
+                    "review": {
+                      "name": "review",
+                      "description": "Review my current changes and find issues",
+                      "input": {
+                        "hint": "optional custom review instructions"
+                      },
+                      "source": "acp"
+                    },
+                    "review-branch": {
+                      "name": "review-branch",
+                      "description": "Review the code changes against a specific branch",
+                      "input": {
+                        "hint": "branch name"
+                      },
+                      "source": "acp"
+                    },
+                    "review-commit": {
+                      "name": "review-commit",
+                      "description": "Review the code changes introduced by a commit",
+                      "input": {
+                        "hint": "commit sha"
+                      },
+                      "source": "acp"
+                    },
+                    "init": {
+                      "name": "init",
+                      "description": "create an AGENTS.md file with instructions for Codex",
+                      "source": "acp"
+                    },
+                    "compact": {
+                      "name": "compact",
+                      "description": "summarize conversation to prevent hitting the context limit",
+                      "source": "acp"
+                    },
+                    "logout": {
+                      "name": "logout",
+                      "description": "logout of Codex",
+                      "source": "acp"
+                    }
+                  },
+                  "updatedAt": 1782287708875
+                },
+                "acpRun": {
+                  "status": "completed",
+                  "threadId": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe",
+                  "acpSessionId": "019ef8a0-2c2f-74a0-91fa-543cd9372a05",
+                  "error": null,
+                  "updatedAt": 1782287840880
+                },
+                "acpSessionUpdate": {
+                  "usage_update": {
+                    "size": 258400,
+                    "used": 28070,
+                    "sessionUpdate": "usage_update"
+                  },
+                  "updatedAt": 1782287840843
+                }
+              }
+            },
+            "role": "assistant",
+            "parts": [
+              {
+                "type": "step-start"
+              },
+              {
+                "type": "text",
+                "text": "Falling back from WebSockets to HTTPS transport. request timed outAXHUB_AGENT_TEST_OK",
+                "state": "done"
+              }
+            ]
+          },
+          "createdAt": "2026-06-24T07:57:01.917Z",
+          "updatedAt": "2026-06-24T07:57:20.931Z"
+        }
+      ],
+      "headId": "assistant-mqrs31fj-lm1349nkgg"
+    }
+  }
+}
