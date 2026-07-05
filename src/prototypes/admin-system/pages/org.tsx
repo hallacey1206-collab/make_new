@@ -165,7 +165,7 @@ const orgTypeColors: Record<OrgType, string> = {
     return (
         <div>
             <div className="admin-split">
-                <div className="admin-split-left" style={{ width: 320 }}>
+                <div data-annotation-id="org-tree-panel" className="admin-split-left" style={{ width: 320 }}>
                     <div style={{ padding: 12 }}>
                         <Input.Search
                             placeholder="搜索组织节点..."
@@ -193,7 +193,7 @@ const orgTypeColors: Record<OrgType, string> = {
 
                 <div className="admin-split-right">
                     {selectedNode ? (
-                        <div className="admin-card">
+                        <div data-annotation-id="org-detail-card" className="admin-card">
                             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
                                 <div
                                     style={{

@@ -1,0 +1,32 @@
+- generic [ref=e3]:
+  - link "Skip to content" [ref=e4] [cursor=pointer]:
+    - /url: "#VPContent"
+  - banner:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - link "logo" [ref=e6] [cursor=pointer]:
+              - /url: /
+              - img "logo" [ref=e7]
+            - generic [ref=e8]:
+              - generic [ref=e9] [cursor=pointer]: IDE
+              - generic [ref=e10] [cursor=pointer]: CLI
+              - generic [ref=e11] [cursor=pointer]: WorkBuddy
+          - generic [ref=e12]:
+            - button "搜索文档" [ref=e15] [cursor=pointer]:
+              - generic [ref=e18]: 搜索
+              - generic [ref=e19]:
+                - generic [ref=e20]: Ctrl
+                - generic [ref=e21]: K
+            - button "🌐 中文 ▼" [ref=e23] [cursor=pointer]:
+              - generic [ref=e24]: 🌐
+              - generic [ref=e25]: 中文
+              - generic [ref=e26]: ▼
+  - generic [ref=e28]:
+    - paragraph [ref=e29]: "404"
+    - heading "PAGE NOT FOUND" [level=1] [ref=e30]
+    - blockquote [ref=e32]: But if you don't change your direction, and if you keep looking, you may end up where you are heading.
+    - link "go to home" [ref=e34] [cursor=pointer]:
+      - /url: /docs/zh/
+      - text: Take me home

@@ -12,6 +12,8 @@ import { writeDevServerInfoPlugin } from './vite-plugins/writeDevServerInfoPlugi
 import { axhubComponentEnforcer } from './vite-plugins/axhubComponentEnforcer';
 import { websocketPlugin } from './vite-plugins/websocketPlugin';
 import { canvasHotUpdateFilterPlugin } from './vite-plugins/canvasHotUpdateFilter';
+import { annotationRuntimeOptimizeDepsPlugin } from './vite-plugins/annotationRuntimeOptimizeDeps';
+import { createAnnotationSourceMarkdownPlugin } from './vite-plugins/annotationSourceMarkdown';
 import {
   MAKE_CONFIG_RELATIVE_PATH,
   MAKE_ENTRIES_RELATIVE_PATH,
@@ -74,11 +76,13 @@ export default defineConfig(({ command }) => {
     plugins: [
       tailwindcss(),
       isServe ? canvasHotUpdateFilterPlugin() : null,
+      isServe ? annotationRuntimeOptimizeDepsPlugin(projectRoot) : null,
       injectStablePageIds(),
       isServe ? writeDevServerInfoPlugin() : null,
       isServe ? autoStartMakeServerPlugin() : null,
       isServe ? websocketPlugin() : null,
       isServe ? clientPreviewPlugin() : null,
+      createAnnotationSourceMarkdownPlugin(projectRoot, { mode: isServe ? 'serve' : 'build' }),
       forceInlineDynamicImportsOff(isIifeBuild),
       isIifeBuild ? axhubComponentEnforcer(jsEntries[entryKey as string]) : null,
       react({
@@ -89,11 +93,15 @@ export default defineConfig(({ command }) => {
 
     root: 'src',
     publicDir: false,
+    appType: 'mpa',
 
     optimizeDeps: {
       include: [
-        'echarts',
         'lucide-react',
+        '@axhub/annotation',
+        'antd',
+        'dayjs',
+        'motion',
       ],
     },
 
@@ -119,8 +127,8 @@ export default defineConfig(({ command }) => {
 
     css: {
       preprocessorOptions: {
-        scss: { api: 'modern-compiler' },
-        sass: { api: 'modern-compiler' },
+        scss: { api: 'modern' },
+        sass: { api: 'modern' },
       },
     },
 

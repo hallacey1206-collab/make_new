@@ -1,0 +1,470 @@
+- generic [ref=e3]:
+  - link "Skip to content" [ref=e4] [cursor=pointer]:
+    - /url: "#VPContent"
+  - banner:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - link "logo" [ref=e6] [cursor=pointer]:
+              - /url: /
+              - img "logo" [ref=e7]
+            - generic [ref=e8]:
+              - generic [ref=e9] [cursor=pointer]: IDE
+              - generic [ref=e10] [cursor=pointer]: CLI
+              - generic [ref=e11] [cursor=pointer]: WorkBuddy
+          - generic [ref=e12]:
+            - button "搜索文档" [ref=e15] [cursor=pointer]:
+              - generic [ref=e18]: 搜索
+              - generic [ref=e19]:
+                - generic [ref=e20]: Ctrl
+                - generic [ref=e21]: K
+            - button "🌐 中文 ▼" [ref=e23] [cursor=pointer]:
+              - generic [ref=e24]: 🌐
+              - generic [ref=e25]: 中文
+              - generic [ref=e26]: ▼
+  - complementary [ref=e27]:
+    - navigation "Sidebar Navigation" [ref=e29]:
+      - generic [ref=e30]: Sidebar Navigation
+      - generic [ref=e32]:
+        - button "入门指南 toggle section" [ref=e33] [cursor=pointer]:
+          - heading "入门指南" [level=2] [ref=e35]
+          - button "toggle section" [ref=e36]
+        - generic [ref=e38]:
+          - link "简介" [ref=e42] [cursor=pointer]:
+            - /url: /docs/zh/ide/Introduction
+            - paragraph [ref=e43]: 简介
+          - link "安装" [ref=e47] [cursor=pointer]:
+            - /url: /docs/zh/ide/Getting-Started/Installation
+            - paragraph [ref=e48]: 安装
+          - link "快速开始" [ref=e52] [cursor=pointer]:
+            - /url: /docs/zh/ide/Getting-Started/Quickstart
+            - paragraph [ref=e53]: 快速开始
+      - generic [ref=e55]:
+        - button "使用指南 toggle section" [ref=e56] [cursor=pointer]:
+          - heading "使用指南" [level=2] [ref=e58]
+          - button "toggle section" [ref=e59]
+        - generic [ref=e61]:
+          - link "概览" [ref=e65] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Overview
+            - paragraph [ref=e66]: 概览
+          - generic [ref=e67]:
+            - button "智能体模式 toggle section" [ref=e68] [cursor=pointer]:
+              - heading "智能体模式" [level=3] [ref=e70]
+              - button "toggle section" [ref=e71]
+            - generic [ref=e73]:
+              - link "概览" [ref=e77] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Overview
+                - paragraph [ref=e78]: 概览
+              - link "快速开始" [ref=e82] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Quickstart
+                - paragraph [ref=e83]: 快速开始
+              - link "创建任务" [ref=e87] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Create-Task
+                - paragraph [ref=e88]: 创建任务
+              - link "任务管理" [ref=e92] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Task-Management
+                - paragraph [ref=e93]: 任务管理
+              - link "任务对话" [ref=e97] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Conversation
+                - paragraph [ref=e98]: 任务对话
+              - link "结果查看" [ref=e102] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Results
+                - paragraph [ref=e103]: 结果查看
+          - link "Figma" [ref=e107] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Figma
+            - paragraph [ref=e108]: Figma
+          - link "代码补全" [ref=e112] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Completion
+            - paragraph [ref=e113]: 代码补全
+          - link "内联对话" [ref=e117] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/inline-chat
+            - paragraph [ref=e118]: 内联对话
+          - link "斜杠命令" [ref=e122] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Slash-Commands
+            - paragraph [ref=e123]: 斜杠命令
+          - link "上下文" [ref=e127] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Context
+            - paragraph [ref=e128]: 上下文
+          - link "规则" [ref=e132] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Rules
+            - paragraph [ref=e133]: 规则
+          - link "检查点" [ref=e137] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Checkpoint
+            - paragraph [ref=e138]: 检查点
+          - link "历史记录" [ref=e142] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/History
+            - paragraph [ref=e143]: 历史记录
+          - link "记忆" [ref=e147] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Memory
+            - paragraph [ref=e148]: 记忆
+          - link "MCP" [ref=e152] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/MCP
+            - paragraph [ref=e153]: MCP
+          - link "配置集成" [ref=e157] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Integration
+            - paragraph [ref=e158]: 配置集成
+          - link "预览" [ref=e162] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/preview
+            - paragraph [ref=e163]: 预览
+          - link "部署" [ref=e167] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/deploy
+            - paragraph [ref=e168]: 部署
+          - link "智能提交" [ref=e172] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/smart-commit
+            - paragraph [ref=e173]: 智能提交
+      - generic [ref=e175]:
+        - button "平台接入指南 toggle section" [ref=e176] [cursor=pointer]:
+          - heading "平台接入指南" [level=2] [ref=e178]
+          - button "toggle section" [ref=e179]
+        - link "微信 ClawBot 接入指南（推荐）" [ref=e185] [cursor=pointer]:
+          - /url: /docs/ide/Platform-integration/weixinbot-guide
+          - paragraph [ref=e186]: 微信 ClawBot 接入指南（推荐）
+      - generic [ref=e188]:
+        - button "高级功能 toggle section" [ref=e189] [cursor=pointer]:
+          - heading "高级功能" [level=2] [ref=e191]
+          - button "toggle section" [ref=e192]
+        - generic [ref=e194]:
+          - link "模型配置" [ref=e198] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/models
+            - paragraph [ref=e199]: 模型配置
+          - link "Plan 模式" [ref=e203] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Plan-Mode
+            - paragraph [ref=e204]: Plan 模式
+          - link "Subagents" [ref=e208] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Subagents
+            - paragraph [ref=e209]: Subagents
+          - link "Skills" [ref=e213] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Skills
+            - paragraph [ref=e214]: Skills
+          - link "Hooks" [ref=e218] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Hooks
+            - paragraph [ref=e219]: Hooks
+      - generic [ref=e221]:
+        - button "账号 toggle section" [ref=e222] [cursor=pointer]:
+          - heading "账号" [level=2] [ref=e224]
+          - button "toggle section" [ref=e225]
+        - generic [ref=e227]:
+          - link "订阅" [ref=e231] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/Subscription
+            - paragraph [ref=e232]: 订阅
+          - link "定价" [ref=e236] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/pricing
+            - paragraph [ref=e237]: 定价
+          - link "积分" [ref=e241] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/credits
+            - paragraph [ref=e242]: 积分
+          - link "用量" [ref=e246] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/usage
+            - paragraph [ref=e247]: 用量
+          - link "账单" [ref=e251] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/billing
+            - paragraph [ref=e252]: 账单
+          - link "发票" [ref=e256] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/invoice
+            - paragraph [ref=e257]: 发票
+      - link "最佳实践" [ref=e264] [cursor=pointer]:
+        - /url: /docs/zh/ide/Best-practice/best-practice
+        - paragraph [ref=e265]: 最佳实践
+      - generic [ref=e267]:
+        - button "支持 toggle section" [ref=e268] [cursor=pointer]:
+          - heading "支持" [level=2] [ref=e270]
+          - button "toggle section" [ref=e271]
+        - generic [ref=e273]:
+          - link "故障排除" [ref=e277] [cursor=pointer]:
+            - /url: /docs/zh/ide/Support/Troubleshooting
+            - paragraph [ref=e278]: 故障排除
+          - link "安全与隐私" [ref=e282] [cursor=pointer]:
+            - /url: /docs/zh/ide/Support/security-privacy
+            - paragraph [ref=e283]: 安全与隐私
+          - link "联系我们" [ref=e287] [cursor=pointer]:
+            - /url: /docs/zh/ide/Support/Contact
+            - paragraph [ref=e288]: 联系我们
+      - button "版本发布 toggle section" [ref=e291] [cursor=pointer]:
+        - heading "版本发布" [level=2] [ref=e293]
+        - button "toggle section" [ref=e294]
+  - generic [ref=e298]:
+    - navigation "快速导航" [ref=e470]:
+      - generic [ref=e471]:
+        - heading "快速导航" [level=2] [ref=e473]
+        - list [ref=e474]:
+          - listitem [ref=e475]:
+            - link "基础能力" [ref=e476] [cursor=pointer]:
+              - /url: "#基础能力"
+          - listitem [ref=e477]:
+            - link "核心能力" [ref=e478] [cursor=pointer]:
+              - /url: "#核心能力"
+          - listitem [ref=e479]:
+            - link "快速开始" [ref=e480] [cursor=pointer]:
+              - /url: "#快速开始"
+          - listitem [ref=e481]:
+            - link "智能工作流" [ref=e482] [cursor=pointer]:
+              - /url: "#智能工作流"
+          - listitem [ref=e483]:
+            - link "进阶特性" [ref=e484] [cursor=pointer]:
+              - /url: "#进阶特性"
+          - listitem [ref=e485]:
+            - link "集成与生态 (Integrations)" [ref=e486] [cursor=pointer]:
+              - /url: "#集成与生态-integrations"
+    - generic [ref=e306]:
+      - main [ref=e307]:
+        - generic [ref=e309]:
+          - heading "概述 Permalink to \"概述\"" [level=1] [ref=e310]:
+            - text: 概述
+            - link "Permalink to \"概述\"":
+              - /url: "#概述"
+          - paragraph [ref=e311]: CodeBuddy IDE 深度融合了设计、编码、调试与部署全流程，旨在通过高度自 动化的工作流，为开发者打造丝滑的 AI 协作体验。
+          - heading "基础能力 Permalink to \"基础能力\"" [level=2] [ref=e312]:
+            - text: 基础能力
+            - link "Permalink to \"基础能力\"":
+              - /url: "#基础能力"
+          - paragraph [ref=e313]: CodeBuddy 覆盖了从创意萌芽到代码上线的全生命周期：
+          - list [ref=e314]:
+            - listitem [ref=e315]:
+              - paragraph [ref=e316]:
+                - strong [ref=e317]: 智能对话
+                - text: ：即时技术咨询，支持多轮对话与复杂逻辑推导。
+            - listitem [ref=e318]:
+              - paragraph [ref=e319]:
+                - strong [ref=e320]: 代码补全
+                - text: ：毫秒级代码预测，深度适配项目私有风格。
+            - listitem [ref=e321]:
+              - paragraph [ref=e322]:
+                - strong [ref=e323]: Figma 转代码
+                - text: ：一键将 UI 设计稿转化为可维护的高质量前端代码。
+            - listitem [ref=e324]:
+              - paragraph [ref=e325]:
+                - strong [ref=e326]: 组件库集成
+                - text: ：预置企业级 UI 组件，支持自然语言调整样式与布局。
+            - listitem [ref=e327]:
+              - paragraph [ref=e328]:
+                - strong [ref=e329]: 智能诊断
+                - text: ：自动发现潜在 Bug 与性能瓶颈，提供一键修复方案。
+          - heading "核心能力 Permalink to \"核心能力\"" [level=2] [ref=e330]:
+            - text: 核心能力
+            - link "Permalink to \"核心能力\"":
+              - /url: "#核心能力"
+          - paragraph [ref=e331]:
+            - text: CodeBuddy 代码补全
+            - strong [ref=e332]: Pro
+            - text: ：引入
+            - code [ref=e333]: NES
+            - text: (Next Edit Suggestions) 前瞻式编辑能力，重新定义智能补全，
+            - link "了解更多" [ref=e334] [cursor=pointer]:
+              - /url: ./Completion
+            - text: 。
+          - paragraph [ref=e335]:
+            - strong [ref=e336]: 核心亮点
+            - text: ：超越光标，预见下一步
+          - paragraph [ref=e337]:
+            - text: 突破传统补全局限，
+            - code [ref=e338]: NES
+            - text: 不仅补全当前行，更能预测接下来的编码意图，自动对相关联的后续代码块（如下一行逻辑、函数体结尾）给出智能建议，真正实现 “写一补十” 的前瞻式体验。
+          - paragraph [ref=e339]:
+            - strong [ref=e340]: 无缝集成
+            - text: ：默认开启，随心触发
+          - paragraph [ref=e341]:
+            - text: 功能默认开启，支持自动预判与手动触发双模式。手动触发快捷键：
+            - code [ref=e342]: Ctrl + Shift + Enter
+            - text: ", 一键召唤灵感，让编码行云流水。"
+          - separator [ref=e343]
+          - heading "快速开始 Permalink to \"快速开始\"" [level=2] [ref=e344]:
+            - text: 快速开始
+            - link "Permalink to \"快速开始\"":
+              - /url: "#快速开始"
+          - heading "快捷唤起 Permalink to \"快捷唤起\"" [level=3] [ref=e345]:
+            - text: 快捷唤起
+            - link "Permalink to \"快捷唤起\"":
+              - /url: "#快捷唤起"
+          - table [ref=e346]:
+            - rowgroup [ref=e347]:
+              - row "操作系统 快捷键 功能描述 快捷键 功能描述" [ref=e348]:
+                - columnheader "操作系统" [ref=e349]
+                - columnheader "快捷键" [ref=e350]
+                - columnheader "功能描述" [ref=e351]
+                - columnheader "快捷键" [ref=e352]
+                - columnheader "功能描述" [ref=e353]
+            - rowgroup [ref=e354]:
+              - row "macOS ⌘ + I 内联对话 Ctrl + ⌘ + I 打开侧边栏对话" [ref=e355]:
+                - cell "macOS" [ref=e356]:
+                  - strong [ref=e357]: macOS
+                - cell "⌘ + I" [ref=e358]:
+                  - code [ref=e359]: ⌘
+                  - text: +
+                  - code [ref=e360]: I
+                - cell "内联对话" [ref=e361]
+                - cell "Ctrl + ⌘ + I" [ref=e362]:
+                  - code [ref=e363]: Ctrl
+                  - text: +
+                  - code [ref=e364]: ⌘
+                  - text: +
+                  - code [ref=e365]: I
+                - cell "打开侧边栏对话" [ref=e366]
+              - row "Windows Ctrl + I 内联对话 Ctrl +Win +I 打开侧边栏对话" [ref=e367]:
+                - cell "Windows" [ref=e368]:
+                  - strong [ref=e369]: Windows
+                - cell "Ctrl + I" [ref=e370]:
+                  - code [ref=e371]: Ctrl
+                  - text: +
+                  - code [ref=e372]: I
+                - cell "内联对话" [ref=e373]
+                - cell "Ctrl +Win +I" [ref=e374]:
+                  - code [ref=e375]: Ctrl
+                  - text: +
+                  - code [ref=e376]: Win
+                  - text: +
+                  - code [ref=e377]: I
+                - cell "打开侧边栏对话" [ref=e378]
+          - heading "基础交互 Permalink to \"基础交互\"" [level=3] [ref=e379]:
+            - text: 基础交互
+            - link "Permalink to \"基础交互\"":
+              - /url: "#基础交互"
+          - list [ref=e380]:
+            - listitem [ref=e381]:
+              - strong [ref=e382]: 新建会话
+              - text: ：点击顶部的
+              - code [ref=e383]: +
+              - text: 图标。
+            - listitem [ref=e384]:
+              - strong [ref=e385]: 上下文引用
+              - text: ：在输入框中输入
+              - code [ref=e386]: "@"
+              - text: 即可引用文件、文件夹或当前代码片段。
+            - listitem [ref=e387]:
+              - strong [ref=e388]: 多模态输入
+              - text: ：支持直接粘贴截图或导入 Figma 链接进行 UI 开发。
+          - heading "智能工作流 Permalink to \"智能工作流\"" [level=2] [ref=e389]:
+            - text: 智能工作流
+            - link "Permalink to \"智能工作流\"":
+              - /url: "#智能工作流"
+          - paragraph [ref=e390]: CodeBuddy 预置了多种专业模式，并支持自定义扩展，以适配不同的开发需求：
+          - heading "1. 核心交互模式 Permalink to \"1. 核心交互模式\"" [level=3] [ref=e391]:
+            - text: 1. 核心交互模式
+            - link "Permalink to \"1. 核心交互模式\"":
+              - /url: "#_1-核心交互模式"
+          - list [ref=e392]:
+            - listitem [ref=e393]:
+              - paragraph [ref=e394]:
+                - strong [ref=e395]: Ask (对话模式)
+                - text: ：专注于技术问答与概念解释，不直接修改代码。适合快速获取思路或查阅 API。
+            - listitem [ref=e396]:
+              - paragraph [ref=e397]:
+                - strong [ref=e398]: Craft (Agent模式)
+                - text: ：专注于当前上下文的代码生成与局部修改。响应迅速，适合精准的函数编写或小范围重构。
+            - listitem [ref=e399]:
+              - paragraph [ref=e400]:
+                - strong [ref=e401]: Plan (计划模式)
+                - text: ：
+                - strong [ref=e402]: 最强自动化模式
+                - text: 。适用于跨文件修改或复杂功能开发。AI 会先制定任务清单（Plan），经您确认后自主执行读取、修改及环境检查。了解更多
+                - link "Plan 模式" [ref=e403] [cursor=pointer]:
+                  - /url: ./../Features/Plan-Mode
+                - text: 。
+          - heading "2. 自定义 Agent Permalink to \"2. 自定义 Agent\"" [level=3] [ref=e404]:
+            - text: 2. 自定义 Agent
+            - link "Permalink to \"2. 自定义 Agent\"":
+              - /url: "#_2-自定义-agent"
+          - paragraph [ref=e405]:
+            - text: 除了预置模式，您还可以点击
+            - strong [ref=e406]: 「+ 创建 Agent」
+            - text: ，根据特定业务逻辑或工作习惯，定制专属的 AI 智能体，实现更高程度的流程自动化。了解更多
+            - link "自定义 Agent" [ref=e407] [cursor=pointer]:
+              - /url: ./../Features/Subagents
+            - text: 。
+          - heading "进阶特性 Permalink to \"进阶特性\"" [level=2] [ref=e408]:
+            - text: 进阶特性
+            - link "Permalink to \"进阶特性\"":
+              - /url: "#进阶特性"
+          - paragraph [ref=e409]: CodeBuddy 的强大之处在于其可配置与可扩展的“大脑”：
+          - list [ref=e410]:
+            - listitem [ref=e411]:
+              - paragraph [ref=e412]:
+                - strong [ref=e413]: Memory (记忆偏好)
+                - text: ：自动记录您的偏好与项目关键背景，让 AI 随时间推移变得越来越精，更多参考
+                - link "Memory" [ref=e414] [cursor=pointer]:
+                  - /url: ./Memory
+                - text: 。
+            - listitem [ref=e415]:
+              - paragraph [ref=e416]:
+                - strong [ref=e417]: Rules (规则)
+                - text: ：通过自定义
+                - code [ref=e418]: .codebuddy/rules
+                - text: ，强制 AI 遵循特定的架构设计或编码规范，更多参考
+                - link "Rules" [ref=e419] [cursor=pointer]:
+                  - /url: ./Rules
+                - text: 。
+            - listitem [ref=e420]:
+              - paragraph [ref=e421]:
+                - strong [ref=e422]: Skills (技能库)
+                - text: ：通过用户/项目级配置
+                - code [ref=e423]: .codebuddy/skills/
+                - text: ", 针对特定场景（如安全审计、性能压测）封装的专业指令集，更多参考"
+                - link "Skills" [ref=e424] [cursor=pointer]:
+                  - /url: ./../Features/Skills
+                - text: 。
+            - listitem [ref=e425]:
+              - paragraph [ref=e426]:
+                - strong [ref=e427]: MCP (模型上下文协议)
+                - text: ：开放协议，支持接入第三方工具（如数据库、实时搜索）作为 AI 的辅助工具，更多参考
+                - link "MCP" [ref=e428] [cursor=pointer]:
+                  - /url: ./MCP
+                - text: 。
+            - listitem [ref=e429]:
+              - paragraph [ref=e430]:
+                - strong [ref=e431]: 自定义模型（API接入）
+                - text: ：支持自定义模型（API 接入），实现更丰富的 AI 能力，更多参考
+                - link "Models" [ref=e432] [cursor=pointer]:
+                  - /url: ./../Features/models
+                - text: 。
+            - listitem [ref=e433]:
+              - paragraph [ref=e434]:
+                - strong [ref=e435]: 自定义指令（个性化适配）
+                - text: ：支持个性化开发习惯，让代码补全贴合个人 / 团队习惯与专属业务场景，更多参考
+                - link "自定义指令" [ref=e436] [cursor=pointer]:
+                  - /url: ./Slash-Commands#自定义斜杠指令
+                - text: 。
+          - heading "集成与生态 (Integrations) Permalink to \"集成与生态 (Integrations)\"" [level=2] [ref=e437]:
+            - text: 集成与生态 (Integrations)
+            - link "Permalink to \"集成与生态 (Integrations)\"":
+              - /url: "#集成与生态-integrations"
+          - paragraph [ref=e438]: CodeBuddy 与主流开发生态深度打通，实现一站式研发闭环：
+          - list [ref=e439]:
+            - listitem [ref=e440]:
+              - paragraph [ref=e441]:
+                - strong [ref=e442]: 云服务集成
+                - text: ：原生支持 CloudBase、Supabase、CloudStudio，实现数据库管理与一键预览部署。
+            - listitem [ref=e443]:
+              - paragraph [ref=e444]:
+                - strong [ref=e445]: 前端组件集成
+                - text: ：支持通过选择标准化组件库规范，直接生成符合企业级设计系统的可维护前端代码。
+            - listitem [ref=e446]:
+              - paragraph [ref=e447]:
+                - strong [ref=e448]: 设计组件集成
+                - text: ：支持通过
+                - code [ref=e449]: Add from Figma
+                - text: 功能按钮从内置的 Figma 中选择设计稿导入到 IDE 中，可准确将 Figma 设计稿转换为生产代码。
+                - link "了解更多" [ref=e450] [cursor=pointer]:
+                  - /url: ./Integration
+          - blockquote [ref=e451]:
+            - paragraph [ref=e452]:
+              - strong [ref=e453]: 小贴士
+              - text: ：您可以根据任务复杂度随时在
+              - strong [ref=e454]: Ask、Craft、Plan
+              - text: 模式间切换。对于需要大范围改动代码的任务，可以尝试使用
+              - link "Plan 模式" [ref=e455] [cursor=pointer]:
+                - /url: ./../Features/Plan-Mode
+              - text: ！
+      - contentinfo [ref=e456]:
+        - paragraph [ref=e459]:
+          - text: "最后更新:"
+          - time [ref=e487]: 2026/1/21 15:41
+        - navigation "Pager" [ref=e460]:
+          - generic [ref=e461]: Pager
+          - link "上一页 快速开始" [ref=e463] [cursor=pointer]:
+            - /url: /docs/zh/ide/Getting-Started/Quickstart
+            - generic [ref=e464]: 上一页
+            - generic [ref=e465]: 快速开始
+          - link "下一页 概览" [ref=e467] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Agent-Mode/Overview
+            - generic [ref=e468]: 下一页
+            - generic [ref=e469]: 概览

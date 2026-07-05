@@ -557,7 +557,7 @@ export default function ExpertDatabasePage() {
 
     return (
         <div className="dmp-page-stack">
-            <Card className="dmp-query-card" bordered={false}>
+            <Card data-annotation-id="expert-query" className="dmp-query-card" bordered={false}>
                 <Form
                     form={form}
                     layout="inline"
@@ -593,6 +593,7 @@ export default function ExpertDatabasePage() {
             </Card>
 
             <Card
+                data-annotation-id="expert-table"
                 title={`专家列表（${filteredExperts.length} 人）`}
                 extra={
                     <Space>

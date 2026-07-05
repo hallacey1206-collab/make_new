@@ -869,7 +869,7 @@ export default function ProductionLinePage() {
             </div>
 
             {/* 树形表格 */}
-            <div className="admin-card" style={{ padding: 0 }}>
+            <div data-annotation-id="production-line-table" className="admin-card" style={{ padding: 0 }}>
                 <Table
                     rowKey="key"
                     columns={columns}

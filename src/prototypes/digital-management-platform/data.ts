@@ -513,6 +513,10 @@ export const orgTreeData: OrgTreeNode[] = [
         title: '集团总部',
         key: 'group',
         children: [
+            { title: '中建材投资', key: '07' },
+            { title: '中国建材总院', key: '09' },
+            { title: '凯盛科技', key: '11' },
+            { title: '中国巨石', key: '15' },
             {
                 title: '中国中材国际工程股份有限公司',
                 key: '06',
@@ -610,10 +614,6 @@ export const orgTreeData: OrgTreeNode[] = [
                     },
                 ],
             },
-            { title: '中建材投资', key: '07' },
-            { title: '中国建材总院', key: '09' },
-            { title: '凯盛科技', key: '11' },
-            { title: '中国巨石', key: '15' },
         ],
     },
 ];
@@ -674,7 +674,7 @@ function buildBaseRecord(overrides: Partial<PlatformPlanRecord> & Pick<PlatformP
 export const initialPlanRecords: PlatformPlanRecord[] = [
     buildBaseRecord({
         id: 'plan-001',
-        code: `IP-${currentPlanYear}-001`,
+        code: `JH-ZCGJ-${currentPlanYear}-0001`,
         name: '中材南京年度数字化平台整合计划',
         orgKey: '06-01',
         companyLevelTwo: '06-01 | 中材国际（南京）',
@@ -684,7 +684,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-002',
-        code: `IP-${currentPlanYear}-002`,
+        code: `JH-ZCGJ-${currentPlanYear}-0002`,
         name: '中国建材装备集团协同能力提升计划',
         orgKey: '06-02',
         companyLevelTwo: '06-02 | 中国建材装备集团',
@@ -700,7 +700,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-003',
-        code: `IP-${currentPlanYear}-003`,
+        code: `JH-ZCGJ-${currentPlanYear}-0003`,
         name: '合肥装备科技智能制造数据看板计划',
         orgKey: '06-03',
         companyLevelTwo: '06-03 | 中建材（合肥）装备科技有限公司',
@@ -712,7 +712,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-004',
-        code: `IP-${currentPlanYear}-004`,
+        code: `JH-ZCGJ-${currentPlanYear}-0004`,
         name: '合肥水泥研究院预算联动计划',
         orgKey: '06-04',
         companyLevelTwo: '06-04 | 合肥水泥研究设计院有限公司',
@@ -724,7 +724,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-005',
-        code: `IP-${currentPlanYear}-005`,
+        code: `JH-ZCGJ-${currentPlanYear}-0005`,
         name: '成都建材院数字底座优化计划',
         orgKey: '06-05',
         companyLevelTwo: '06-05 | 成都建筑材料工业设计研究院有限公司',
@@ -737,7 +737,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-006',
-        code: `IP-${currentPlanYear}-006`,
+        code: `JH-ZCGJ-${currentPlanYear}-0006`,
         name: '中材国际工地协同执行计划',
         orgKey: '06',
         companyLevelTwo: '06 | 中材国际',
@@ -751,7 +751,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-007',
-        code: `IP-${currentPlanYear}-007`,
+        code: `JH-ZCGJ-${currentPlanYear}-0007`,
         name: '凯盛科技共享资源沉淀计划',
         orgKey: '11',
         companyLevelTwo: '11 | 凯盛科技',
@@ -765,7 +765,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-008',
-        code: `IP-${currentPlanYear}-008`,
+        code: `JH-ZCGJ-${currentPlanYear}-0008`,
         name: '财务公司年度投资收口计划',
         orgKey: '15',
         companyLevelTwo: '15 | 中国巨石',
@@ -779,7 +779,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-009',
-        code: `IP-${currentPlanYear}-009`,
+        code: `JH-ZCGJ-${currentPlanYear}-0009`,
         name: '中建材投资供应链数据平台计划',
         orgKey: '07',
         companyLevelTwo: '07 | 中建材投资',
@@ -790,7 +790,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-010',
-        code: `IP-${currentPlanYear}-010`,
+        code: `JH-ZCGJ-${currentPlanYear}-0010`,
         name: '中国建材总院科研管理数字化计划',
         orgKey: '09',
         companyLevelTwo: '09 | 中国建材总院',
@@ -801,7 +801,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-011',
-        code: `IP-${currentPlanYear}-011`,
+        code: `JH-ZCGJ-${currentPlanYear}-0011`,
         name: '凯盛科技智能制造升级计划',
         orgKey: '11',
         companyLevelTwo: '11 | 凯盛科技',
@@ -812,7 +812,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-012',
-        code: `IP-${currentPlanYear}-012`,
+        code: `JH-ZCGJ-${currentPlanYear}-0012`,
         name: '中国巨石玻纤产线数字化计划',
         orgKey: '15',
         companyLevelTwo: '15 | 中国巨石',
@@ -823,7 +823,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-013',
-        code: `IP-${currentPlanYear}-013`,
+        code: `JH-ZCGJ-${currentPlanYear}-0013`,
         name: '中建材投资境外项目管理系统计划',
         orgKey: '07',
         companyLevelTwo: '07 | 中建材投资',
@@ -835,7 +835,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
     }),
     buildBaseRecord({
         id: 'plan-014',
-        code: `IP-${currentPlanYear}-014`,
+        code: `JH-ZCGJ-${currentPlanYear}-0014`,
         name: '中国巨石物流仓储智能化计划',
         orgKey: '15',
         companyLevelTwo: '15 | 中国巨石',
@@ -848,5 +848,5 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
 ];
 
 export function getNextPlanCode(sequence: number) {
-    return `IP-${currentPlanYear}-${String(sequence).padStart(3, '0')}`;
+    return `JH-ZCGJ-${currentPlanYear}-${String(sequence).padStart(4, '0')}`;
 }

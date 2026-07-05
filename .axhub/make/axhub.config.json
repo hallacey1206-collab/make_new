@@ -1,0 +1,14 @@
+{
+  "server": {
+    "host": "localhost",
+    "allowLAN": true,
+    "lanHost": "192.168.114.214",
+    "enableCommandAPI": false
+  },
+  "projectDefaults": {
+    "defaultTheme": null
+  },
+  "projectInfo": {
+    "description": null
+  }
+}

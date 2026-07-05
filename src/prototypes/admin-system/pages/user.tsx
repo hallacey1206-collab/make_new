@@ -492,7 +492,7 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
 
     return (
         <div>
-            <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <div data-annotation-id="user-filter-bar" style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <Button type="primary" icon={<Plus size={14} />} onClick={openAdd}>新增用户</Button>
                 {selectedIds.size > 0 && (
                     <Space>
@@ -553,7 +553,7 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
                 </div>
 
                 <div className="admin-split-right">
-                    <div className="admin-card" style={{ padding: 0 }}>
+                    <div data-annotation-id="user-table" className="admin-card" style={{ padding: 0 }}>
                         <Table
                             rowKey="id"
                             rowSelection={rowSelection}

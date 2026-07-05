@@ -500,7 +500,7 @@ const initialPositionUsers: Record<string, string[]> = {
                 />
             </div>
 
-            <div className="admin-card" style={{ padding: 0 }}>
+            <div data-annotation-id="position-table" className="admin-card" style={{ padding: 0 }}>
                 <Table rowKey="id" columns={columns} dataSource={filtered} pagination={false} />
                 {filtered.length === 0 && <div className="admin-empty">未找到匹配的岗位</div>}
             </div>

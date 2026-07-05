@@ -534,7 +534,7 @@ export default function RulePage() {
                 />
             </div>
 
-            <div className="admin-card" style={{ padding: 0 }}>
+            <div data-annotation-id="rule-table" className="admin-card" style={{ padding: 0 }}>
                 <Table
                     rowKey="id"
                     columns={columns}

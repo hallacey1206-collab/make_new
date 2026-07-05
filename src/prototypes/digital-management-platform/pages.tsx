@@ -271,16 +271,6 @@ function buildPlanColumns({
             render: (_, record) => `¥ ${formatMoney(getPlanTotal(record))}`,
         },
         {
-            title: '状态',
-            width: 90,
-            render: (_, record) => <Tag color={statusMeta[record.status].color}>{statusMeta[record.status].label}</Tag>,
-        },
-        {
-            title: '更新时间',
-            dataIndex: 'updatedAt',
-            width: 140,
-        },
-        {
             title: '操作',
             width: 140,
             render: (_, record) => (
@@ -1095,7 +1085,7 @@ function PlanFillPage() {
 
     return (
         <div className="dmp-page-stack">
-            <Card className="dmp-query-card" bordered={false}>
+            <Card className="dmp-query-card" bordered={false} data-annotation-id="plan-fill-query">
                 <Form
                     layout="inline"
                     className="dmp-query-form"
@@ -1134,6 +1124,7 @@ function PlanFillPage() {
             </Card>
 
             <Card
+                data-annotation-id="plan-fill-table"
                 title={`投资计划填报列表（${filteredDraftRecords.length} 条）`}
                 extra={(
                     <Space wrap>
@@ -1141,7 +1132,7 @@ function PlanFillPage() {
                         <Button icon={<CloudUploadOutlined />} onClick={() => setImportOpen(true)}>导入</Button>
                         <Button icon={<ReloadOutlined />} onClick={() => message.success('填报列表已刷新。')}>刷新</Button>
                         <Button type="primary" icon={<ArrowUpOutlined />} onClick={submitDrafts} disabled={draftRecords.length === 0}>
-                            批量提交
+                            提交
                         </Button>
                         <Button type="primary" icon={<ScheduleOutlined />} onClick={openCreateDrawer}>新增</Button>
                     </Space>
@@ -1258,6 +1249,26 @@ function PlanReviewPage() {
     const [includeChildren, setIncludeChildren] = useState(true);
     const [treeSearch, setTreeSearch] = useState('');
     const [treeExpandedKeys, setTreeExpandedKeys] = useState<string[]>(['group']);
+    const [returnModalVisible, setReturnModalVisible] = useState(false);
+    const [returnBatchRemark, setReturnBatchRemark] = useState('');
+    const [treeColWidth, setTreeColWidth] = useState<number | null>(null);
+    const resizingRef = useRef(false);
+    const colRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleWindowResize = () => {
+            if (colRef.current && treeColWidth) {
+                // Clamp to screen bounds on window resize
+                setTreeColWidth((prev) => {
+                    if (!prev) return null;
+                    const maxAllowed = colRef.current!.parentElement?.clientWidth! - 200;
+                    return Math.min(prev, Math.max(200, maxAllowed));
+                });
+            }
+        };
+        window.addEventListener('resize', handleWindowResize);
+        return () => window.removeEventListener('resize', handleWindowResize);
+    }, [treeColWidth]);
 
     useEffect(() => {
         if (!currentRecord || !pendingRecords.some((item) => item.id === currentRecord.id)) {
@@ -1312,6 +1323,36 @@ function PlanReviewPage() {
         [treeSearch],
     );
 
+    const coloredTreeData = useMemo(() => {
+        const getNodeColor = (orgKey: string): string | undefined => {
+            const orgRecords = records.filter((r) => r.orgKey === orgKey || r.orgKey.startsWith(orgKey + '-'));
+            if (orgRecords.length === 0) return undefined;
+            const statuses = new Set(orgRecords.map((r) => r.status));
+            if (statuses.has('returned')) return '#ff4d4f';
+            if (statuses.has('approved')) return '#52c41a';
+            if (statuses.has('pending-review')) return '#1677ff';
+            return undefined;
+        };
+        const getChildStats = (node: TreeDataNode): string => {
+            if (!node.children || node.children.length === 0) return '';
+            const children = node.children as TreeDataNode[];
+            const total = children.length;
+            const filled = children.filter((child) => {
+                const childKey = child.key as string;
+                return records.some((r) => r.orgKey === childKey || r.orgKey.startsWith(childKey + '-'));
+            }).length;
+            return `（${filled}/${total}）`;
+        };
+        const applyColor = (nodes: TreeDataNode[]): TreeDataNode[] =>
+            nodes.map((node) => ({
+                ...node,
+                title: `${node.title}${getChildStats(node)}`,
+                style: { color: getNodeColor(node.key as string) },
+                children: node.children ? applyColor(node.children as TreeDataNode[]) : node.children,
+            }));
+        return applyColor(treeData);
+    }, [treeData, records]);
+
     const expandedKeys = useMemo(() => {
         const kw = treeSearch.trim().toLowerCase();
         if (!kw) return treeExpandedKeys;
@@ -1345,8 +1386,22 @@ function PlanReviewPage() {
         filteredRecords.forEach((record) => approvePlan(record.id, '计划符合要求，予以通过。'));
     };
 
-    const handleBatchReturn = () => {
-        filteredRecords.forEach((record) => returnPlan(record.id, '请补充材料后重新提交。'));
+    const handleBatchReturnWithRemark = () => {
+        if (!returnBatchRemark.trim()) {
+            message.warning('请填写退回原因。');
+            return;
+        }
+        filteredRecords.forEach((record) => returnPlan(record.id, returnBatchRemark));
+        setReturnModalVisible(false);
+        setReturnBatchRemark('');
+    };
+
+    const exportReviewRows = () => {
+        downloadTextFile(
+            `待审核计划导出-${Date.now()}.csv`,
+            buildCsv(filteredRecords),
+        );
+        message.success('已导出当前审核列表数据（CSV 演示版）。');
     };
 
     const columns: ColumnsType<PlatformPlanRecord> = [
@@ -1386,18 +1441,23 @@ function PlanReviewPage() {
 
     return (
         <div className="dmp-page-stack">
-            <Row gutter={16}>
-                <Col xs={24} lg={6}>
-                    <Card className="dmp-card-fill">
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-                            <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
-                            <Checkbox
-                                checked={includeChildren}
-                                onChange={(e) => setIncludeChildren(e.target.checked)}
-                            >
-                                包含下级
-                            </Checkbox>
-                        </div>
+            <div style={{ display: 'flex', gap: 16, width: '100%', minWidth: 0, overflow: 'hidden' }}>
+                <div ref={colRef} style={{ width: treeColWidth ?? '25%', flex: '0 0 auto', minWidth: 200, maxWidth: 600, position: 'relative' }}>
+                    <Card
+                        data-annotation-id="plan-review-tree"
+                        className="dmp-card-fill"
+                        title={<span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px', whiteSpace: 'nowrap' }}>组织树</span>}
+                        extra={
+                            <Space>
+                                <Checkbox
+                                    checked={includeChildren}
+                                    onChange={(e) => setIncludeChildren(e.target.checked)}
+                                >
+                                    包含下级
+                                </Checkbox>
+                            </Space>
+                        }
+                    >
                         <Input
                             allowClear
                             placeholder="输入关键字进行过滤"
@@ -1406,19 +1466,54 @@ function PlanReviewPage() {
                             style={{ marginBottom: 12 }}
                         />
                         <Tree
-                            treeData={treeData}
+                            treeData={coloredTreeData}
                             expandedKeys={expandedKeys}
                             selectedKeys={normalizeSelectedKeys(selectedOrgKey)}
                             onExpand={handleTreeExpand}
                             onSelect={(keys) => setSelectedOrgKey((keys[0] as string) || 'group')}
                         />
                     </Card>
-                </Col>
-                <Col xs={24} lg={18}>
-                    <Card className="dmp-query-card" bordered={false}>
+                    {/* Resize handle - visible drag bar */}
+                    <div
+                        style={{
+                            position: 'absolute', right: 0, top: 0, bottom: 0, width: 8,
+                            cursor: 'col-resize', zIndex: 10,
+                            background: 'transparent',
+                            transition: 'background 0.15s',
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(0,0,0,0.06)'; e.currentTarget.style.borderRight = '2px solid #d9d9d9'; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderRight = 'none'; }}
+                        onMouseDown={(e) => {
+                            const colEl = colRef.current;
+                            if (!colEl) return;
+                            const startX = e.clientX;
+                            const startWidth = colEl.getBoundingClientRect().width;
+                            resizingRef.current = true;
+                            document.body.style.cursor = 'col-resize';
+                            document.body.style.userSelect = 'none';
+                            const handleMouseMove = (ev: MouseEvent) => {
+                                if (!resizingRef.current) return;
+                                const newWidth = Math.max(200, Math.min(600, startWidth + (ev.clientX - startX)));
+                                setTreeColWidth(newWidth);
+                            };
+                            const handleMouseUp = () => {
+                                resizingRef.current = false;
+                                document.body.style.cursor = '';
+                                document.body.style.userSelect = '';
+                                document.removeEventListener('mousemove', handleMouseMove);
+                                document.removeEventListener('mouseup', handleMouseUp);
+                            };
+                            document.addEventListener('mousemove', handleMouseMove);
+                            document.addEventListener('mouseup', handleMouseUp);
+                        }}
+                    />
+                </div>
+                <div style={{ flex: '1 1 0%', minWidth: 0, overflow: 'hidden' }}>
+                    <Card data-annotation-id="plan-review-query" className="dmp-query-card" bordered={false}>
                         <Form
                             layout="inline"
                             className="dmp-query-form"
+                            style={{ flexWrap: 'nowrap' }}
                             initialValues={{}}
                             onValuesChange={(_, allValues) => setFilters(allValues)}
                         >
@@ -1446,10 +1541,12 @@ function PlanReviewPage() {
                     </Card>
 
                     <Card
+                        data-annotation-id="plan-review-table"
                         title={`待审核计划（${filteredRecords.length} 条）`}
                         style={{ marginTop: 12 }}
                         extra={filteredRecords.length > 0 ? (
                             <Space>
+                                <Button icon={<CloudDownloadOutlined />} onClick={exportReviewRows}>导出</Button>
                                 <Button
                                     style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: '#fff' }}
                                     onClick={handleBatchApprove}
@@ -1458,7 +1555,7 @@ function PlanReviewPage() {
                                 </Button>
                                 <Button
                                     danger
-                                    onClick={handleBatchReturn}
+                                    onClick={() => setReturnModalVisible(true)}
                                 >
                                     退回
                                 </Button>
@@ -1473,8 +1570,8 @@ function PlanReviewPage() {
                             scroll={{ x: 1200 }}
                         />
                     </Card>
-                </Col>
-            </Row>
+                </div>
+            </div>
 
             <ReviewDrawer
                 record={currentRecord}
@@ -1493,6 +1590,37 @@ function PlanReviewPage() {
                     setDrawerOpen(false);
                 }}
             />
+
+            {/* Batch return remark modal for plan-review page */}
+            <Modal
+                title="批量退回"
+                open={returnModalVisible}
+                onCancel={() => {
+                    setReturnModalVisible(false);
+                    setReturnBatchRemark('');
+                }}
+                onOk={handleBatchReturnWithRemark}
+                okText="确认退回"
+                okButtonProps={{ danger: true }}
+            >
+                <Alert
+                    type="warning"
+                    showIcon
+                    message="退回后，申报单位可修改后重新提交。"
+                    style={{ marginBottom: 16 }}
+                />
+                <div style={{ marginBottom: 8 }}>
+                    <Text strong>退回原因：</Text>
+                </div>
+                <TextArea
+                    value={returnBatchRemark}
+                    onChange={(e) => setReturnBatchRemark(e.target.value)}
+                    placeholder="请填写退回原因和建议..."
+                    rows={4}
+                    maxLength={500}
+                    showCount
+                />
+            </Modal>
         </div>
     );
 }
@@ -1579,7 +1707,7 @@ function PlanViewPage() {
     }, [selectedOrgKey]);
 
     const columns: ColumnsType<PlatformPlanRecord> = [
-        { title: '计划编码', dataIndex: 'code', width: 130 },
+        { title: '计划编码', dataIndex: 'code', width: 160, ellipsis: true },
         { title: '计划名称', dataIndex: 'name', width: 200, ellipsis: true },
         { title: '单位名称', width: 140, render: () => selectedOrgName },
         { title: '项目类别', dataIndex: 'category', width: 160, ellipsis: true },
@@ -1617,6 +1745,36 @@ function PlanViewPage() {
         [treeSearch],
     );
 
+    const coloredTreeData = useMemo(() => {
+        const getNodeColor = (orgKey: string): string | undefined => {
+            const orgRecords = records.filter((r) => r.orgKey === orgKey || r.orgKey.startsWith(orgKey + '-'));
+            if (orgRecords.length === 0) return undefined;
+            const statuses = new Set(orgRecords.map((r) => r.status));
+            if (statuses.has('returned')) return '#ff4d4f';
+            if (statuses.has('approved')) return '#52c41a';
+            if (statuses.has('pending-review')) return '#1677ff';
+            return undefined;
+        };
+        const getChildStats = (node: TreeDataNode): string => {
+            if (!node.children || node.children.length === 0) return '';
+            const children = node.children as TreeDataNode[];
+            const total = children.length;
+            const filled = children.filter((child) => {
+                const childKey = child.key as string;
+                return records.some((r) => r.orgKey === childKey || r.orgKey.startsWith(childKey + '-'));
+            }).length;
+            return `（${filled}/${total}）`;
+        };
+        const applyColor = (nodes: TreeDataNode[]): TreeDataNode[] =>
+            nodes.map((node) => ({
+                ...node,
+                title: `${node.title}${getChildStats(node)}`,
+                style: { color: getNodeColor(node.key as string) },
+                children: node.children ? applyColor(node.children as TreeDataNode[]) : node.children,
+            }));
+        return applyColor(treeData);
+    }, [treeData, records]);
+
     const expandedKeys = useMemo(() => {
         const kw = treeSearch.trim().toLowerCase();
         if (!kw) return treeExpandedKeys;
@@ -1647,7 +1805,7 @@ function PlanViewPage() {
 
             <Row gutter={16}>
                 <Col xs={24} lg={6}>
-                    <Card className="dmp-card-fill">
+                    <Card data-annotation-id="plan-view-tree" className="dmp-card-fill">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                             <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
                             <Checkbox
@@ -1675,6 +1833,7 @@ function PlanViewPage() {
                 </Col>
                 <Col xs={24} lg={18}>
                     <Card
+                        data-annotation-id="plan-view-table"
                         title={`投资计划列表（${filteredRecords.length} 条）`}
                         extra={<Button icon={<CloudDownloadOutlined />} onClick={exportRows}>导出</Button>}
                     >
@@ -1952,7 +2111,7 @@ function AppContent() {
                 trigger={null}
             >
                 <div className={collapsed ? 'dmp-brand is-collapsed' : 'dmp-brand'}>
-                    <div className="dmp-brand-mark">DM</div>
+                    <img src="./assets/logo.png" className="dmp-brand-mark" alt="logo" />
                     {!collapsed ? (
                         <div>
                             <Title level={4}>数字化管理平台</Title>

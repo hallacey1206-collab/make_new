@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-24T08:36:16.379Z",
+  "updatedAt": "2026-06-30T02:21:22.778Z",
   "prototypes": [
     {
-      "id": "item-prototypes-digital-management-platform",
+      "id": "item:prototypes:digital-management-platform",
       "kind": "item",
-      "title": "digital management platform",
+      "title": "数字化管理平台原型",
       "itemKey": "prototypes/digital-management-platform"
     },
     {
@@ -13,6 +13,18 @@
       "kind": "item",
       "title": "水泥集团系统管理后台",
       "itemKey": "prototypes/admin-system"
+    },
+    {
+      "id": "item:prototypes:beginner-guide",
+      "kind": "item",
+      "title": "新手指导",
+      "itemKey": "prototypes/beginner-guide"
+    },
+    {
+      "id": "item:prototypes:touch-and-talk-annotation-demo",
+      "kind": "item",
+      "title": "批注演示",
+      "itemKey": "prototypes/touch-and-talk-annotation-demo"
     },
     {
       "id": "item:prototypes:annotation-demo",

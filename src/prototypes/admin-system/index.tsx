@@ -3,7 +3,7 @@
  * @mode axure
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
     Building2,
     Users,
@@ -17,6 +17,13 @@ import {
 } from 'lucide-react';
 import { Layout, Menu, Button, Avatar, Badge } from 'antd';
 import { defineHashPageRoute, useHashPage } from '../../common/useHashPage';
+import {
+    AnnotationViewer,
+    type AnnotationDirectoryRouteNode,
+    type AnnotationSourceDocument,
+    type AnnotationViewerOptions,
+} from '@axhub/annotation';
+import annotationSource from './annotation-source.json';
 import OrgPage from './pages/org';
 import PositionPage from './pages/position';
 import UserPage from './pages/user';
@@ -59,7 +66,7 @@ function TopNav({ activeId, onChange }: { activeId: string; onChange: (id: strin
     }));
 
     return (
-        <Header style={{ display: 'flex', alignItems: 'center', padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0' }}>
+        <Header data-annotation-id="admin-topnav" style={{ display: 'flex', alignItems: 'center', padding: '0 24px', background: '#fff', borderBottom: '1px solid #f0f0f0' }}>
             <div style={{ fontSize: 16, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 10, marginRight: 24, whiteSpace: 'nowrap' }}>
                 <Building2 size={18} strokeWidth={2} />
                 <span>IPOM系统管理后台</span>
@@ -103,6 +110,16 @@ function SafePage({ name, children }: { name: string; children: React.ReactNode 
 
 export default function Component() {
     const { page, setPage } = useHashPage(route);
+
+    const options = useMemo<AnnotationViewerOptions>(() => ({
+        currentPageId: page,
+        showToolbar: true,
+        showThemeToggle: false,
+        showColorFilter: true,
+        onDirectoryRoute: (node: AnnotationDirectoryRouteNode) => {
+            setPage(node.route);
+        },
+    }), [page, setPage]);
 
     const renderPage = () => {
         switch (page) {
@@ -163,6 +180,10 @@ export default function Component() {
             <Content style={{ padding: 24, background: '#f5f5f5', overflow: 'auto' }}>
                 {renderPage()}
             </Content>
+            <AnnotationViewer
+                source={annotationSource as AnnotationSourceDocument}
+                options={options}
+            />
         </Layout>
     );
 }

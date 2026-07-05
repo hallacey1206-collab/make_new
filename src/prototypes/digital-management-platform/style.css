@@ -35,13 +35,9 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #e60012, #ff4d4f);
-    color: #fff;
-    display: grid;
-    place-items: center;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    box-shadow: 0 10px 24px rgba(230, 0, 18, 0.24);
+    object-fit: contain;
+    background: #fff;
+    display: block;
     flex: none;
 }
 
@@ -378,6 +374,26 @@
 
 .dmp-card-fill .ant-card-body {
     min-height: 100%;
+    overflow: hidden;
+}
+
+.dmp-card-fill .ant-tree-treenode {
+    white-space: nowrap !important;
+}
+
+.dmp-card-fill .ant-tree-node-content-wrapper {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0 !important;
+    display: block !important;
+}
+
+.dmp-card-fill .ant-tree-title {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
 }
 
 .dmp-page-stack .ant-card,

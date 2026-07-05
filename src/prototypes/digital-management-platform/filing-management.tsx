@@ -1,11 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
     AppstoreOutlined,
     ArrowLeftOutlined,
     CheckCircleOutlined,
     CloseCircleOutlined,
+    CloudDownloadOutlined,
     CloudUploadOutlined,
     DeleteOutlined,
+    DragOutlined,
     EditOutlined,
     ExclamationCircleOutlined,
     EyeOutlined,
@@ -22,6 +24,7 @@ import {
 } from '@ant-design/icons';
 import {
     Alert,
+    AutoComplete,
     Badge,
     Button,
     Card,
@@ -53,7 +56,7 @@ import type { ColumnsType } from 'antd/es/table';
 import type { UploadProps } from 'antd';
 import type { TabsProps } from 'antd';
 import type { TreeDataNode } from 'antd';
-import { orgTreeData } from './data';
+import { orgTreeData, USER_POOL, type ExpertRecord, specialtyFieldOptions } from './data';
 import { useExpertStore } from './expert-database';
 
 const { Title, Text, Paragraph } = Typography;
@@ -160,13 +163,15 @@ const PROJECT_LEVEL_OPTIONS = [
 ];
 
 const DEFAULT_NODES: ExecutionNode[] = [
-    { id: 'node-1', name: '项目启动', description: '', nodeType: 'apply', order: 1, materials: [] },
-    { id: 'node-2', name: '项目启动审核', description: '', nodeType: 'review', order: 2, materials: [] },
-    { id: 'node-3', name: '需求确认', description: '', nodeType: 'apply', order: 3, materials: [] },
-    { id: 'node-4', name: '需求确认审核', description: '', nodeType: 'review', order: 4, materials: [] },
-    { id: 'node-5', name: '方案设计', description: '', nodeType: 'apply', order: 5, materials: [] },
-    { id: 'node-6', name: '方案设计审核', description: '', nodeType: 'review', order: 6, materials: [] },
-    { id: 'node-7', name: '测试', description: '', nodeType: 'apply', order: 7, materials: [] },
+    { id: 'node-init-apply', name: '项目立项（申请）', description: '', nodeType: 'apply', order: 1, materials: [] },
+    { id: 'node-init-review', name: '项目立项（审核）', description: '', nodeType: 'review', order: 2, materials: [] },
+    { id: 'node-1', name: '项目启动', description: '', nodeType: 'apply', order: 3, materials: [] },
+    { id: 'node-2', name: '项目启动审核', description: '', nodeType: 'review', order: 4, materials: [] },
+    { id: 'node-3', name: '需求确认', description: '', nodeType: 'apply', order: 5, materials: [] },
+    { id: 'node-4', name: '需求确认审核', description: '', nodeType: 'review', order: 6, materials: [] },
+    { id: 'node-5', name: '方案设计', description: '', nodeType: 'apply', order: 7, materials: [] },
+    { id: 'node-6', name: '方案设计审核', description: '', nodeType: 'review', order: 8, materials: [] },
+    { id: 'node-7', name: '测试', description: '', nodeType: 'apply', order: 9, materials: [] },
 ];
 
 const NODE_TEMPLATES: Record<string, ExecutionNode[]> = {
@@ -215,6 +220,15 @@ const MATERIAL_OPTIONS = [
     { value: 'acceptance-report', label: '验收报告' },
     { value: 'eia-report', label: '环评报告' },
     { value: 'contract', label: '合同文件' },
+];
+
+const NODE_NAME_OPTIONS = [
+    { value: '项目启动' },
+    { value: '需求确认' },
+    { value: '方案设计' },
+    { value: '测试' },
+    { value: '预验收' },
+    { value: '最终验收' },
 ];
 
 const statusMeta: Record<FilingStatus, { label: string; color: string }> = {
@@ -720,6 +734,164 @@ const initialFilingRecords: FilingRecord[] = [
 
 // ============ Expert Selector Modal ============
 
+function ExpertTableSelector({
+    open,
+    onClose,
+    onConfirm,
+    selectedNames,
+}: {
+    open: boolean;
+    onClose: () => void;
+    onConfirm: (selected: ExpertRecord[]) => void;
+    selectedNames: string[];
+}) {
+    const { experts } = useExpertStore();
+    const [filterName, setFilterName] = useState('');
+    const [filterOrg, setFilterOrg] = useState('');
+    const [filterSpecialty, setFilterSpecialty] = useState('');
+    const [filterMajor, setFilterMajor] = useState('');
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    useEffect(() => {
+        if (open) {
+            const names = new Set(selectedNames);
+            const keys = experts.filter((e) => names.has(e.name)).map((e) => e.id);
+            setSelectedRowKeys(keys);
+            setFilterName('');
+            setFilterOrg('');
+            setFilterSpecialty('');
+            setFilterMajor('');
+        }
+    }, [open, selectedNames, experts]);
+
+    const filteredExperts = useMemo(() => {
+        let result = experts;
+        const nm = filterName.trim().toLowerCase();
+        const org = filterOrg.trim().toLowerCase();
+        const mj = filterMajor.trim().toLowerCase();
+        if (nm) {
+            result = result.filter((e) => e.name.toLowerCase().includes(nm));
+        }
+        if (org) {
+            result = result.filter((e) => e.org.toLowerCase().includes(org));
+        }
+        if (filterSpecialty) {
+            result = result.filter((e) => e.specialtyField === filterSpecialty);
+        }
+        if (mj) {
+            result = result.filter((e) => e.major.toLowerCase().includes(mj));
+        }
+        return result;
+    }, [experts, filterName, filterOrg, filterSpecialty, filterMajor]);
+
+    const columns: ColumnsType<ExpertRecord> = [
+        {
+            title: '姓名',
+            dataIndex: 'name',
+            width: 90,
+        },
+        {
+            title: '性别',
+            dataIndex: 'gender',
+            width: 60,
+        },
+        {
+            title: '单位',
+            dataIndex: 'org',
+            width: 140,
+            ellipsis: true,
+        },
+        {
+            title: '专业领域',
+            dataIndex: 'specialtyField',
+            width: 110,
+        },
+        {
+            title: '专业',
+            dataIndex: 'major',
+            width: 120,
+            ellipsis: true,
+        },
+        {
+            title: '从业年限',
+            dataIndex: 'majorYears',
+            width: 90,
+        },
+        {
+            title: '入库时间',
+            dataIndex: 'createTime',
+            width: 150,
+            ellipsis: true,
+        },
+    ];
+
+    const handleOk = () => {
+        const selected = experts.filter((e) => selectedRowKeys.includes(e.id));
+        onConfirm(selected);
+    };
+
+    return (
+        <Modal
+            title="选择专家"
+            open={open}
+            onCancel={onClose}
+            onOk={handleOk}
+            width={720}
+            okText="确认选择"
+            cancelText="取消"
+        >
+            <Row gutter={[8, 8]} style={{ marginBottom: 12 }}>
+                <Col xs={12} md={6}>
+                    <Input
+                        allowClear
+                        placeholder="姓名"
+                        value={filterName}
+                        onChange={(e) => setFilterName(e.target.value)}
+                    />
+                </Col>
+                <Col xs={12} md={6}>
+                    <Input
+                        allowClear
+                        placeholder="单位"
+                        value={filterOrg}
+                        onChange={(e) => setFilterOrg(e.target.value)}
+                    />
+                </Col>
+                <Col xs={12} md={6}>
+                    <Select
+                        allowClear
+                        placeholder="专业领域"
+                        value={filterSpecialty || undefined}
+                        onChange={(v) => setFilterSpecialty(v || '')}
+                        options={specialtyFieldOptions.map((o) => ({ value: o.value, label: o.label }))}
+                        style={{ width: '100%' }}
+                    />
+                </Col>
+                <Col xs={12} md={6}>
+                    <Input
+                        allowClear
+                        placeholder="专业"
+                        value={filterMajor}
+                        onChange={(e) => setFilterMajor(e.target.value)}
+                    />
+                </Col>
+            </Row>
+            <Table
+                rowKey="id"
+                dataSource={filteredExperts}
+                columns={columns}
+                rowSelection={{
+                    selectedRowKeys,
+                    onChange: (keys) => setSelectedRowKeys(keys),
+                }}
+                pagination={{ pageSize: 10, showTotal: (total) => `共 ${total} 人` }}
+                size="small"
+                scroll={{ y: 360 }}
+            />
+        </Modal>
+    );
+}
+
 function ExpertSelectorModal({
     open,
     onClose,
@@ -732,19 +904,18 @@ function ExpertSelectorModal({
     existingExperts: ExpertOpinion[];
 }) {
     const [needExpertReview, setNeedExpertReview] = useState(false);
-    const [selectedExpertIds, setSelectedExpertIds] = useState<string[]>([]);
+    const [selectedExpertRecords, setSelectedExpertRecords] = useState<ExpertRecord[]>([]);
     const [needBusinessReview, setNeedBusinessReview] = useState(false);
     const [selectedBusinessIds, setSelectedBusinessIds] = useState<string[]>([]);
+    const [expertTableOpen, setExpertTableOpen] = useState(false);
 
-    const { getExpertOptions, experts } = useExpertStore();
+    const { experts } = useExpertStore();
 
     // 专家选项从专家库获取，兜底使用原有 EXPERT_POOL
-    const expertOptions = getExpertOptions();
     const fallbackExpertOptions = EXPERT_POOL.filter((e) => e.type === 'expert').map((e) => ({
         value: e.name,
         label: `${e.name} · ${e.org}`,
     }));
-    const displayExpertOptions = expertOptions.length > 0 ? expertOptions : fallbackExpertOptions;
 
     // 组织树仅叶子节点可勾选，并在叶子下挂模拟人员
     const businessTreeData = useMemo(() => {
@@ -783,13 +954,14 @@ function ExpertSelectorModal({
     useEffect(() => {
         if (open) {
             const expertNames = existingExperts.filter((e) => e.expertType === 'expert').map((e) => e.expertName);
-            const businessNames = existingExperts.filter((e) => e.expertType === 'business-domain').map((e) => e.expertName);
+            const selectedRecords = experts.filter((e) => expertNames.includes(e.name));
+            setSelectedExpertRecords(selectedRecords);
             setNeedExpertReview(expertNames.length > 0);
-            setSelectedExpertIds(expertNames);
+            const businessNames = existingExperts.filter((e) => e.expertType === 'business-domain').map((e) => e.expertName);
             setNeedBusinessReview(businessNames.length > 0);
             setSelectedBusinessIds(businessNames);
         }
-    }, [open, existingExperts]);
+    }, [open, existingExperts, experts]);
 
     // 从树中根据 key 查找标题
     const findTitleByKey = (nodes: TreeDataNode[], key: string): string | null => {
@@ -806,18 +978,15 @@ function ExpertSelectorModal({
     const handleConfirm = () => {
         const selected: { name: string; type: ExpertType; org: string }[] = [];
         if (needExpertReview) {
-            // 优先从专家库获取专家信息，兜底使用 EXPERT_POOL
-            selectedExpertIds.forEach((name) => {
-                const storeExpert = experts.find((e) => e.name === name);
-                if (storeExpert) {
-                    selected.push({ name: storeExpert.name, type: 'expert', org: storeExpert.org });
-                } else {
-                    const fallback = EXPERT_POOL.find((e) => e.type === 'expert' && e.name === name);
-                    if (fallback) {
-                        selected.push({ name: fallback.name, type: 'expert', org: fallback.org });
-                    }
-                }
+            selectedExpertRecords.forEach((record) => {
+                selected.push({ name: record.name, type: 'expert', org: record.org });
             });
+            // Fallback: if no matching records in store, try EXPERT_POOL
+            if (selected.length === 0) {
+                fallbackExpertOptions.forEach((opt) => {
+                    selected.push({ name: opt.value, type: 'expert', org: opt.label.split(' · ')[1] || '' });
+                });
+            }
         }
         if (needBusinessReview) {
             selectedBusinessIds.forEach((key) => {
@@ -829,66 +998,76 @@ function ExpertSelectorModal({
     };
 
     return (
-        <Modal
-            title="选择评审人员"
-            open={open}
-            onCancel={onClose}
-            onOk={handleConfirm}
-            width={640}
-            okText="确认选择"
-            cancelText="取消"
-        >
-            <Space direction="vertical" style={{ width: '100%' }} size={16}>
-                {/* 专家评审 */}
-                <Card size="small" title={<span>专家评审 <Switch
-                    checked={needExpertReview}
-                    onChange={(v) => {
-                        setNeedExpertReview(v);
-                        if (!v) setSelectedExpertIds([]);
-                    }}
-                    style={{ marginLeft: 8 }}
-                /></span>}>
-                    {needExpertReview && (
-                        <Select
-                            mode="multiple"
-                            value={selectedExpertIds}
-                            onChange={(v) => setSelectedExpertIds(v)}
-                            options={displayExpertOptions}
-                            placeholder="请选择专家"
-                            style={{ width: '100%' }}
-                            maxTagCount={3}
-                        />
-                    )}
-                </Card>
+        <>
+            <Modal
+                title="选择评审人员"
+                open={open}
+                onCancel={onClose}
+                onOk={handleConfirm}
+                width={640}
+                okText="确认选择"
+                cancelText="取消"
+            >
+                <Space direction="vertical" style={{ width: '100%' }} size={16}>
+                    {/* 专家评审 */}
+                    <Card size="small" title={<span>专家评审 <Switch
+                        checked={needExpertReview}
+                        onChange={(v) => {
+                            setNeedExpertReview(v);
+                            if (!v) { setSelectedExpertRecords([]); }
+                        }}
+                        style={{ marginLeft: 8 }}
+                    /></span>}>
+                        {needExpertReview && (
+                            <Button
+                                icon={<SearchOutlined />}
+                                onClick={() => setExpertTableOpen(true)}
+                            >
+                                选择专家（已选 {selectedExpertRecords.length} 人）
+                            </Button>
+                        )}
+                    </Card>
 
-                {/* 业务域评审 */}
-                <Card size="small" title={<span>业务域评审 <Switch
-                    checked={needBusinessReview}
-                    onChange={(v) => {
-                        setNeedBusinessReview(v);
-                        if (!v) setSelectedBusinessIds([]);
-                    }}
-                    style={{ marginLeft: 8 }}
-                /></span>}>
-                    {needBusinessReview && (
-                        <TreeSelect
-                            treeData={businessTreeData}
-                            value={selectedBusinessIds}
-                            onChange={(v) => setSelectedBusinessIds(v as string[])}
-                            placeholder="请选择业务域人员"
-                            treeCheckable
-                            showCheckedStrategy={TreeSelect.SHOW_CHILD}
-                            maxTagCount={3}
-                            style={{ width: '100%' }}
-                            fieldNames={{ value: 'key', label: 'title', children: 'children' }}
-                            showSearch
-                            treeNodeFilterProp="title"
-                            treeDefaultExpandAll
-                        />
-                    )}
-                </Card>
-            </Space>
-        </Modal>
+                    {/* 业务域评审 */}
+                    <Card size="small" title={<span>业务域评审 <Switch
+                        checked={needBusinessReview}
+                        onChange={(v) => {
+                            setNeedBusinessReview(v);
+                            if (!v) setSelectedBusinessIds([]);
+                        }}
+                        style={{ marginLeft: 8 }}
+                    /></span>}>
+                        {needBusinessReview && (
+                            <TreeSelect
+                                treeData={businessTreeData}
+                                value={selectedBusinessIds}
+                                onChange={(v) => setSelectedBusinessIds(v as string[])}
+                                placeholder="请选择业务域人员"
+                                treeCheckable
+                                showCheckedStrategy={TreeSelect.SHOW_CHILD}
+                                maxTagCount={3}
+                                style={{ width: '100%' }}
+                                fieldNames={{ value: 'key', label: 'title', children: 'children' }}
+                                showSearch
+                                treeNodeFilterProp="title"
+                                treeDefaultExpandAll
+                            />
+                        )}
+                    </Card>
+                </Space>
+            </Modal>
+
+            {/* 专家选择子弹窗 - 表格模式 */}
+            <ExpertTableSelector
+                open={expertTableOpen}
+                onClose={() => setExpertTableOpen(false)}
+                onConfirm={(selected) => {
+                    setSelectedExpertRecords(selected);
+                    setExpertTableOpen(false);
+                }}
+                selectedNames={selectedExpertRecords.map((e) => e.name)}
+            />
+        </>
     );
 }
 
@@ -919,8 +1098,14 @@ function FilingDetailDrawer({
     const [returnRemark, setReturnRemark] = useState('');
     const [expertOpinion, setExpertOpinion] = useState('');
     const [uploadedFiles, setUploadedFiles] = useState<FilingAttachment[]>([]);
+    const savingNodesRef = useRef(false);
+    const dragIndexRef = useRef<number | null>(null);
 
     useEffect(() => {
+        if (savingNodesRef.current) {
+            savingNodesRef.current = false;
+            return;
+        }
         if (open && record) {
             setNodes([...record.nodes]);
             setProjectLevel(record.projectLevel);
@@ -963,11 +1148,38 @@ function FilingDetailDrawer({
         setNodes(arr.map((n, i) => ({ ...n, order: i + 1 })));
     };
 
+    const handleDragStart = (e: React.DragEvent, index: number) => {
+        dragIndexRef.current = index;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(index));
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+    };
+
+    const handleDrop = (e: React.DragEvent, targetIndex: number) => {
+        e.preventDefault();
+        const fromIndex = dragIndexRef.current;
+        dragIndexRef.current = null;
+        if (fromIndex === null || fromIndex === targetIndex) return;
+        const arr = [...nodes];
+        const [moved] = arr.splice(fromIndex, 1);
+        arr.splice(targetIndex, 0, moved);
+        setNodes(arr.map((n, i) => ({ ...n, order: i + 1 })));
+    };
+
+    const handleDragEnd = () => {
+        dragIndexRef.current = null;
+    };
+
     const handleSaveNodes = () => {
         if (nodes.some((n) => !n.name.trim())) {
             message.warning('请填写所有节点名称。');
             return;
         }
+        savingNodesRef.current = true;
         onSaveNodes(record.id, nodes);
         message.success('节点配置已保存。');
     };
@@ -1189,11 +1401,16 @@ function FilingDetailDrawer({
                                 width={200}
                                 render={(_, node: ExecutionNode) =>
                                     isReviewing ? (
-                                        <Input
+                                        <AutoComplete
                                             size="small"
                                             value={node.name}
-                                            onChange={(e) => handleNodeNameChange(node.id, e.target.value)}
+                                            options={NODE_NAME_OPTIONS}
+                                            onChange={(value) => handleNodeNameChange(node.id, value)}
                                             placeholder="节点名称"
+                                            style={{ width: '100%' }}
+                                            filterOption={(inputValue, option) =>
+                                                option!.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                                            }
                                         />
                                     ) : (
                                         <Text>{node.name}</Text>
@@ -1261,15 +1478,36 @@ function FilingDetailDrawer({
                             {isReviewing && (
                                 <Table.Column
                                     title="操作"
-                                    width={70}
-                                    render={(_, node: ExecutionNode) => (
-                                        <Button
-                                            type="text"
-                                            size="small"
-                                            danger
-                                            icon={<DeleteOutlined />}
-                                            onClick={() => handleRemoveNode(node.id)}
-                                        />
+                                    width={90}
+                                    render={(_, node: ExecutionNode, index: number) => (
+                                        <Space size={0}>
+                                            <span
+                                                draggable
+                                                onDragStart={(e) => handleDragStart(e, index)}
+                                                onDragOver={handleDragOver}
+                                                onDrop={(e) => handleDrop(e, index)}
+                                                onDragEnd={handleDragEnd}
+                                                style={{
+                                                    cursor: 'grab',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    width: 24,
+                                                    height: 24,
+                                                    color: '#8c8c8c',
+                                                }}
+                                                title="按住拖拽以调整顺序"
+                                            >
+                                                <DragOutlined />
+                                            </span>
+                                            <Button
+                                                type="text"
+                                                size="small"
+                                                danger
+                                                icon={<DeleteOutlined />}
+                                                onClick={() => handleRemoveNode(node.id)}
+                                            />
+                                        </Space>
                                     )}
                                 />
                             )}
@@ -1663,6 +1901,32 @@ function FilingManagementList({
         [treeSearch],
     );
 
+    // Color-code tree nodes based on filing statuses
+    const coloredTreeData = useMemo(() => {
+        const getNodeColor = (orgKey: string): string | undefined => {
+            const orgRecords = records.filter((r) => r.orgKey === orgKey || r.orgKey.startsWith(orgKey + '-'));
+            if (orgRecords.length === 0) return undefined;
+            const statuses = new Set(orgRecords.map((r) => r.status));
+            if (statuses.has('returned')) return '#ff4d4f';
+            if (statuses.has('approved')) return '#52c41a';
+            if (
+                statuses.has('pending-review')
+                || statuses.has('expert-reviewing')
+                || statuses.has('approved-level1')
+            ) {
+                return '#1677ff';
+            }
+            return undefined;
+        };
+        const applyColor = (nodes: TreeDataNode[]): TreeDataNode[] =>
+            nodes.map((node) => ({
+                ...node,
+                style: { color: getNodeColor(node.key as string) },
+                children: node.children ? applyColor(node.children as TreeDataNode[]) : node.children,
+            }));
+        return applyColor(treeData);
+    }, [treeData, records]);
+
     const expandedKeys = useMemo(() => {
         const kw = treeSearch.trim().toLowerCase();
         if (!kw) return userExpandedKeys;
@@ -1678,6 +1942,34 @@ function FilingManagementList({
         walk(orgTreeData as TreeDataNode[], []);
         return [...new Set([...userExpandedKeys, ...searchKeys])];
     }, [treeSearch, userExpandedKeys]);
+
+    const handleExport = () => {
+        const header = ['项目名称', '单位名称', '项目级别', '计划开始时间', '计划结束时间', '计划建设工期(月)', '预算总额(万元)', '项目总投资(万元)', '状态'];
+        const rows = filteredRecords.map((r) => [
+            r.projectName,
+            r.orgName,
+            r.projectLevel === 'key' ? '重点项目' : '普通项目',
+            r.startDate,
+            r.endDate,
+            String(computeMonths(r.startDate, r.endDate)),
+            String(r.totalInvestment),
+            String(r.totalProjectInvestment),
+            statusMeta[r.status].label,
+        ]);
+        const csvContent = [header, ...rows]
+            .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+            .join('\n');
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `备案列表导出-${Date.now()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        message.success('已导出当前列表数据（CSV）。');
+    };
 
     const filteredRecords = useMemo(() => {
         return records.filter((r) => {
@@ -1758,6 +2050,7 @@ function FilingManagementList({
         {
             title: '状态',
             width: 110,
+            fixed: 'right',
             render: (_, r) => (
                 <Tag color={statusMeta[r.status].color}>{statusMeta[r.status].label}</Tag>
             ),
@@ -1785,7 +2078,7 @@ function FilingManagementList({
         <div className="dmp-page-stack">
             <Row gutter={16}>
                 <Col xs={24} lg={6}>
-                    <Card className="dmp-card-fill">
+                    <Card data-annotation-id="filing-tree" className="dmp-card-fill">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                             <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
                             <Checkbox
@@ -1806,7 +2099,7 @@ function FilingManagementList({
                             style={{ marginBottom: 12 }}
                         />
                         <Tree
-                            treeData={treeData}
+                            treeData={coloredTreeData}
                             expandedKeys={expandedKeys}
                             selectedKeys={normalizeSelectedKeys(selectedOrgKey)}
                             onSelect={(keys) => setSelectedOrgKey((keys[0] as string) || '06')}
@@ -1816,7 +2109,7 @@ function FilingManagementList({
                 </Col>
                 <Col xs={24} lg={18}>
                     {/* 查询条件 */}
-                    <Card className="dmp-query-card" bordered={false}>
+                    <Card data-annotation-id="filing-query" className="dmp-query-card" bordered={false}>
                         <Form
                             layout="inline"
                             className="dmp-query-form"
@@ -1855,7 +2148,12 @@ function FilingManagementList({
                     </Card>
 
                     {/* 备案列表 */}
-                    <Card style={{ marginTop: 12 }}>
+                    <Card
+                        data-annotation-id="filing-table"
+                        style={{ marginTop: 12 }}
+                        title={`备案列表（${filteredRecords.length} 条）`}
+                        extra={<Button icon={<CloudDownloadOutlined />} onClick={handleExport}>导出</Button>}
+                    >
                         <Table
                             rowKey="id"
                             dataSource={filteredRecords}

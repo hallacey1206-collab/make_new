@@ -749,7 +749,7 @@ export default function PermissionPage() {
     ];
 
     return (
-        <div>
+        <div data-annotation-id="permission-tabs">
             <Tabs activeKey={activeTab} onChange={(k) => setActiveTab(k as any)} items={items} />
 
             <Modal open={menuModalOpen} title="菜单新增" onCancel={() => setMenuModalOpen(false)} width={900} footer={null}>

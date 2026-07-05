@@ -1,0 +1,573 @@
+{
+  "documentVersion": 1,
+  "format": "axhub-annotation-source",
+  "data": {
+    "version": 2,
+    "prototypeName": "水泥集团系统管理后台",
+    "pageId": "org",
+    "nodes": [
+      {
+        "id": "admin-topnav",
+        "index": 1,
+        "title": "顶部导航栏",
+        "pageId": null,
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"admin-topnav\"]"
+          ],
+          "fingerprint": "Header|admin-topnav",
+          "path": []
+        },
+        "aiPrompt": "说明系统管理后台的整体导航结构和功能分区。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677ff",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "org-tree-panel",
+        "index": 2,
+        "title": "组织架构树",
+        "pageId": "org",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"org-tree-panel\"]"
+          ],
+          "fingerprint": "div|org-tree-panel",
+          "path": []
+        },
+        "aiPrompt": "说明组织架构树的交互方式，包括搜索、新增、编辑、删除和历史变更查看。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#52c41a",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1782788656915
+      },
+      {
+        "id": "org-detail-card",
+        "index": 3,
+        "title": "组织详情卡片",
+        "pageId": "org",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"org-detail-card\"]"
+          ],
+          "fingerprint": "div|org-detail-card",
+          "path": []
+        },
+        "aiPrompt": "说明选中组织节点后右侧展示的详细信息，包括机构属性、管理产线和子节点导航。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#fa8c16",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1782788773174
+      },
+      {
+        "id": "production-line-table",
+        "index": 4,
+        "title": "产线配置表格",
+        "pageId": "production-line",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"production-line-table\"]"
+          ],
+          "fingerprint": "div|production-line-table",
+          "path": []
+        },
+        "aiPrompt": "说明产线配置的树形表格，支持车间/工段和工序两级结构，支持拖拽排序和批量导入。",
+        "annotationText": "树形表格展示车间/工段（一级行）和工序（二级行），支持拖拽排序和调整从属关系，支持通过 CSV/Excel 批量导入。",
+        "hasMarkdown": false,
+        "color": "#722ed1",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "permission-tabs",
+        "index": 5,
+        "title": "权限管理三标签",
+        "pageId": "permission",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"permission-tabs\"]"
+          ],
+          "fingerprint": "div|permission-tabs",
+          "path": []
+        },
+        "aiPrompt": "说明权限管理的三个维度：功能权限（菜单配置）、数据权限（策略管理）和字段权限（字段级控制），以及它们之间的关系。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#eb2f96",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "role-table",
+        "index": 6,
+        "title": "角色管理表格",
+        "pageId": "role",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"role-table\"]"
+          ],
+          "fingerprint": "div|role-table",
+          "path": []
+        },
+        "aiPrompt": "说明角色管理列表的CRUD操作、权限设置入口和状态管理。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#13c2c2",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "position-table",
+        "index": 7,
+        "title": "岗位管理表格",
+        "pageId": "position",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"position-table\"]"
+          ],
+          "fingerprint": "div|position-table",
+          "path": []
+        },
+        "aiPrompt": "说明岗位管理列表，包括岗位基本信息、默认角色配置、使用人数和人员分配功能。",
+        "annotationText": "岗位列表展示每个岗位的名称、上级岗位、默认角色、使用人数等。点击人员数量可以打开分配抽屉，为岗位添加或移除人员。",
+        "hasMarkdown": false,
+        "color": "#2f54eb",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "user-filter-bar",
+        "index": 8,
+        "title": "用户筛选工具栏",
+        "pageId": "user",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"user-filter-bar\"]"
+          ],
+          "fingerprint": "div|user-filter-bar",
+          "path": []
+        },
+        "aiPrompt": "说明用户管理页面的筛选和批量操作工具栏，包括按类型、状态筛选，搜索，以及批量冻结/解冻/删除/重置密码。",
+        "annotationText": "工具栏支持新增用户、批量操作（冻结、解冻、重置密码、删除），以及按用户类型和状态筛选。左侧组织树可快速定位特定组织的用户。",
+        "hasMarkdown": false,
+        "color": "#fa541c",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "user-table",
+        "index": 9,
+        "title": "用户列表表格",
+        "pageId": "user",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"user-table\"]"
+          ],
+          "fingerprint": "div|user-table",
+          "path": []
+        },
+        "aiPrompt": "说明用户列表的列信息，包括用户信息、主岗、角色、类型、状态和操作按钮。",
+        "annotationText": "用户表格展示姓名、登录名、主岗与组织路径、角色标签、用户类型（内部员工/外部承包商/临时人员）、状态（在职/离职/冻结）。点击行可查看用户详情弹窗。",
+        "hasMarkdown": false,
+        "color": "#a0d911",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "rule-table",
+        "index": 10,
+        "title": "业务规则表格",
+        "pageId": "rule",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"rule-table\"]"
+          ],
+          "fingerprint": "div|rule-table",
+          "path": []
+        },
+        "aiPrompt": "说明业务规则引擎的规则列表，包括规则名称、编码、业务对象、触发时机、优先级、生效范围、状态，以及模拟运行功能。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#f5222d",
+        "images": [],
+        "createdAt": 1751212800000,
+        "updatedAt": 1751212800000
+      },
+      {
+        "id": "annotation-11",
+        "index": 11,
+        "locator": {
+          "selectors": [
+            "label",
+            "div:nth-of-type(2) > div > div:nth-of-type(2) > div > div:nth-of-type(1) > div:nth-of-type(2) > form > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div:nth-of-type(1) > label"
+          ],
+          "fingerprint": "label",
+          "path": [
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "form",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "label",
+              "index": 0
+            }
+          ]
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677FF",
+        "images": [],
+        "pageId": "org",
+        "createdAt": 1782788185298,
+        "updatedAt": 1782788185298
+      },
+      {
+        "id": "annotation-12",
+        "index": 12,
+        "locator": {
+          "selectors": [
+            ".ant-tabs-nav",
+            "div:nth-of-type(2) > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div > div:nth-of-type(1)"
+          ],
+          "fingerprint": "div",
+          "path": [
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            }
+          ]
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677FF",
+        "images": [],
+        "pageId": "role",
+        "createdAt": 1782790500784,
+        "updatedAt": 1782790958757
+      }
+    ],
+    "updatedAt": 1782790958757
+  },
+  "markdownMap": {
+    "admin-topnav": "# 顶部导航栏\n\n系统管理后台的统一导航入口，包含以下区域：\n\n- **品牌标识**：左侧显示「IPOM系统管理后台」名称和图标\n- **功能导航**：7 个管理模块的 Tab 导航\n  - 组织架构管理\n  - 产线配置\n  - 权限管理\n  - 角色管理\n  - 岗位管理\n  - 用户管理\n  - 业务规则配置\n- **右侧工具**：全局搜索、通知中心（未读 5 条）、当前用户头像\n\n点击导航 Tab 可在不同管理模块间切换，路由基于 Hash 实现。",
+    "org-tree-panel": "# 组织架构树\n\n左侧面板以树形结构展示组织架构，支持以下功能：\n## 操作\n- 🔍 搜索组织节点：可按组织机构名称模糊搜索\n- ➕ 新增节点：点击【➕】按钮进行新增\n- ✏️ 编辑节点：选中树节点，点击【✏️】按钮进行编辑\n- 🗑️ 删除节点：选中树节点，点击【🗑️】按钮进行编辑\n- 🕐 查看变更历史：弹出变更历史查看窗口\n\n## 节点类型\n- 集团 / 区域公司 / 工厂 / 部门 / 二级部门，组织节点只能按照上述类型层级挂载，不可越级，根节点不限制\n\n每个节点旁显示类型标签，便于识别层级。",
+    "permission-tabs": "# 权限管理\n\n权限管理分为三个维度，通过 Tab 切换：\n\n## 1. 功能权限\n- 管理系统的菜单结构和可见性\n- 配置菜单名称、路由地址、是否启用、排序\n- 支持树形菜单（父子关系），可新增子项\n- 控制用户能访问哪些页面\n\n## 2. 数据权限\n- 定义数据访问策略，控制用户能查看哪些数据\n- 四种策略类型：\n  - **组织与层级**：按组织树控制数据范围\n  - **维度列表**：按产线、仓库等维度过滤\n  - **用户属性**：按用户属性（岗位等）匹配\n  - **自定义 SQL**：直接写 WHERE 条件\n- 支持策略测试、引用查看、操作日志\n\n## 3. 字段权限\n- 控制特定业务对象的字段级读写权限\n- 支持业务对象：设备档案、销售合同、维修工单\n- 每个字段可设置：默认权限（隐藏/只读/可编辑）+ 条件权限 + 脱敏规则\n- 条件权限基于角色或用户属性动态调整\n- 支持规则预览，模拟不同用户/角色的权限效果",
+    "role-table": "# 角色管理\n\n角色是权限的载体，将功能权限、数据权限和字段权限打包分配给用户。\n\n## 角色信息\n- **名称 & 编码**：唯一标识每个角色\n- **类型**：系统内置（不可删除）vs 业务自定义\n- **关联用户数**：使用该角色的用户数量\n- **有效期**：可设置角色到期自动失效\n- **状态**：启用/停用\n\n## 核心操作\n- **设置权限**：打开权限抽屉，配置三方面权限：\n  1. 功能权限 — 选择可访问的菜单\n  2. 数据权限 — 关联数据策略并传参\n  3. 字段权限 — 在字段权限规则基础上定制覆盖\n- **成员管理**：查看和调整角色下的用户\n- **复制**：基于现有角色快速创建新角色\n\n## 权限优先级\n字段权限的覆盖配置 > 字段权限规则的默认配置，条件权限按优先级数字从小到大匹配。",
+    "rule-table": "# 业务规则配置\n\n可配置的业务规则引擎，在数据变化时自动触发检查与动作。\n\n## 规则结构\n每个规则包含以下要素：\n\n| 要素 | 说明 |\n|------|------|\n| 业务对象 | 维修工单、质量检验单、生产批次、库存记录、待办事项 |\n| 触发时机 | 新增前/后、编辑前/后、状态变更、定时执行 |\n| 条件 | AND/OR 组合条件表达式，支持动态值 |\n| 动作 | 设置字段、发通知、启审批、调API、生成任务 |\n| 优先级 | 数字越大越先执行 |\n| 生效范围 | 全部 / 指定组织 / 指定产线 |\n\n## 重要概念\n- **breakAfter**：匹配后是否终止后续规则（类似防火墙规则）\n- **高级配置**：异步执行、最大重试、超时时间、异常忽略\n- **模拟运行**：在不影响实际数据的情况下测试规则触发情况\n\n## 示例规则\n- 熟料热耗超标预警 → 站内通知\n- 出厂水泥强度不足 → 锁定状态 + 钉钉通知\n- 熟料库位低 → 自动生成补库任务\n- 重大质量事故 → 跳级审批",
+    "annotation-11": "上级机构从已选树节点中自动带入",
+    "org-detail-card": "点击左侧组织节点后，右侧展示该组织的详细信息，包括名称、编码、类型、上级机构、管理产线等字段。\n同时，显示该组织的子节点，点击子节点可快速切换组织信息，并同步组织树的选中节点",
+    "annotation-12": "- **功能权限**：为角色分配可访问的功能菜单及操作按钮权限。菜单权限框中显示哪些菜单及操作按钮权限也是通过匹配当前用户角色后动态加载的。\n- **数据权限**：加载权限管理模块中已维护的数据策略列表，通过勾选策略前方的复选框为角色分配策略。若策略配置了参数化，则需要填入相应的参数方可保存。\n- **字段权限**：加载权限管理模块中已维护的字段权限列表，通过勾选字段权限前方的复选框为角色分配权限，勾选后会展开该权限下的字段配置。若针对该权限内有个性化差异，则可开启字段数据行后方的覆盖开关，通过自定义规则去覆盖原规则。\n- **成员列表**：显示已分配当前角色的用户成员列表，可点击【移除】按钮将某个用户对应的角色去掉。\n- **操作记录**：显示对该角色的操作记录，如何时何人创建了角色，何时何人停用了角色等等。"
+  },
+  "assetMap": {},
+  "directory": {
+    "nodes": [
+      {
+        "type": "folder",
+        "id": "dir-root",
+        "title": "水泥集团系统管理后台",
+        "defaultExpanded": true,
+        "children": [
+          {
+            "type": "folder",
+            "id": "dir-overview",
+            "title": "总览",
+            "defaultExpanded": true,
+            "children": [
+              {
+                "type": "markdown",
+                "id": "doc-readme",
+                "title": "项目说明",
+                "markdown": "# 水泥集团系统管理后台\n\n基于苏州中材建设有限公司伊拉克区域的管理需求，构建的水泥生产管理平台的系统管理模块。\n\n## 功能模块\n\n| 模块 | 功能说明 |\n|------|----------|\n| 组织架构管理 | 管理集团→区域→工厂→部门的多级组织树 |\n| 产线配置 | 管理车间/工段与工序的配置和排序 |\n| 权限管理 | 功能权限（菜单）、数据权限（策略）、字段权限 |\n| 角色管理 | 角色 CRUD 及权限分配、成员管理 |\n| 岗位管理 | 岗位定义、默认角色、人员分配 |\n| 用户管理 | 用户信息、主岗兼职、角色分配、状态管理 |\n| 业务规则配置 | 触发式业务规则引擎，条件→动作 |\n\n## 技术栈\n- React 18 + TypeScript\n- Ant Design 组件库\n- Vite 构建\n- Hash 路由\n\n## 典型业务场景\n- 组织变更：DCC水泥厂新增部门\n- 人员入转调离：员工入职、换岗、离职处理\n- 权限配置：新增角色并分配权限\n- 规则告警：窑头负压异常时自动报警并生成巡检任务"
+              }
+            ]
+          },
+          {
+            "type": "folder",
+            "id": "dir-pages",
+            "title": "页面导航",
+            "defaultExpanded": true,
+            "children": [
+              {
+                "type": "route",
+                "id": "route-org",
+                "title": "组织架构管理",
+                "route": "org"
+              },
+              {
+                "type": "route",
+                "id": "route-production-line",
+                "title": "产线配置",
+                "route": "production-line"
+              },
+              {
+                "type": "route",
+                "id": "route-permission",
+                "title": "权限管理",
+                "route": "permission"
+              },
+              {
+                "type": "route",
+                "id": "route-role",
+                "title": "角色管理",
+                "route": "role"
+              },
+              {
+                "type": "route",
+                "id": "route-position",
+                "title": "岗位管理",
+                "route": "position"
+              },
+              {
+                "type": "route",
+                "id": "route-user",
+                "title": "用户管理",
+                "route": "user"
+              },
+              {
+                "type": "route",
+                "id": "route-rule",
+                "title": "业务规则配置",
+                "route": "rule"
+              }
+            ]
+          },
+          {
+            "type": "folder",
+            "id": "dir-business-objects",
+            "title": "业务对象文档",
+            "defaultExpanded": false,
+            "children": [
+              {
+                "type": "markdown",
+                "id": "doc-bo-overview",
+                "title": "业务对象总览",
+                "markdown": "# 业务对象总览\n\n系统管理后台涉及以下核心业务对象，分布在各管理模块中：\n\n| 业务对象 | 所属模块 | 说明 |\n|---------|---------|------|\n| 组织节点（OrgNode） | 组织架构管理 | 集团→区域→工厂→部门→二级部门的多级树结构 |\n| 产线/工段（ProductionLine） | 产线配置 / 组织架构 | 水泥生产线的层级配置数据 |\n| 车间/工段（WorkshopItem） | 产线配置 | 车间或工段的配置信息 |\n| 工序（ProcessItem） | 产线配置 | 车间/工段下的子工序 |\n| 菜单项（MenuItem） | 权限管理（功能权限） | 系统菜单和路由配置 |\n| 数据策略（DataPolicy） | 权限管理（数据权限） | 数据访问范围的策略定义 |\n| 字段规则（FieldRule） | 权限管理（字段权限） | 字段级别的权限控制规则 |\n| 字段配置（FieldConfig） | 权限管理（字段权限） | 业务对象字段的读写/脱敏配置 |\n| 条件权限（ConditionPermission） | 权限管理 / 角色管理 | 条件匹配的权限覆盖规则 |\n| 角色（Role） | 角色管理 | 权限的载体 |\n| 岗位（Position） | 岗位管理 | 组织中的岗位定义 |\n| 用户（UserItem） | 用户管理 | 系统用户档案 |\n| 业务规则（BizRule） | 业务规则配置 | 触发式规则引擎的规则定义 |\n| 条件组（ConditionGroup） | 业务规则配置 | 规则的条件组合 |\n| 动作项（ActionItem） | 业务规则配置 | 规则触发后的执行动作 |\n\n## 对象关系简图\n\n```\n组织节点 ──┬── 岗位（归属组织）\n           │\n           ├── 用户（主岗组织、兼职组织）\n           │\n           ├── 角色 ←── 功能权限（菜单）\n           │          ←── 数据权限（数据策略）\n           │          ←── 字段权限（字段规则 → 字段配置 → 条件权限）\n           │\n           └── 产线 ── 车间/工段 ── 工序\n\n业务规则 ── 条件组 ── 条件项\n        ── 动作项\n        ── 生效范围（组织 / 产线）\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-org",
+                "title": "组织节点（OrgNode）",
+                "markdown": "# 组织节点（OrgNode）\n\n组织架构管理的核心对象，描述企业多级组织结构。\n\n## 字段说明\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 组织名称 |\n| type | OrgType | ✓ | 组织类型，枚举值：`group`（集团）、`region`（区域公司）、`factory`（工厂）、`department`（部门）、`subDepartment`（二级部门） |\n| code | string | ✓ | 组织编码，格式如 `SZCC-IQ-DCC-W01` |\n| active | boolean | ✓ | 是否启用 |\n| fullName | string | | 全称 |\n| tenant | string | | 所属租户，如「DCC项目部」「伊拉克区域公司」 |\n| parentId | string | | 上级组织节点 ID |\n| remark | string | | 备注说明 |\n| productionLines | string[] | | 管理的产线/工段编码列表（仅 department 和 subDepartment） |\n| children | OrgNode[] | | 子组织节点 |\n\n## 类型层级约束\n\n组织节点必须按照以下类型层级挂载，不可越级：\n\n```\ngroup（集团）\n  └── region（区域公司）\n        └── factory（工厂）\n              ├── factory（矿山等子工厂）\n              └── department（部门）\n                    └── subDepartment（二级部门，如班组）\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-production",
+                "title": "产线与车间工序",
+                "markdown": "# 产线配置相关对象\n\n## 产线字典（ProductionLine）\n\n| 产线编码 | 名称 | 子工段 |\n|---------|------|--------|\n| pl1 | 1号窑生产线 | - |\n| pl2 | 2号窑生产线 | - |\n| pl3 | 3号窑生产线 | - |\n| pl4 | 水泥粉磨线 | - |\n| pl5 | 石灰石破碎线 | - |\n\n## 产线树数据（productionLineTreeData）\n\n| 产线 | 工段 | 工段编码 |\n|------|------|---------|\n| 一线 | 生料工段 | line1_raw |\n| 一线 | 烧成工段 | line1_burn |\n| 一线 | 制成工段 | line1_finish |\n| 二线 | 生料工段 | line2_raw |\n| 二线 | 烧成工段 | line2_burn |\n| 二线 | 制成工段 | line2_finish |\n| 三线 | 生料工段 | line3_raw |\n| 三线 | 烧成工段 | line3_burn |\n| 三线 | 制成工段 | line3_finish |\n| 水泥粉磨线 | 制成工段 | line_grind_finish |\n| 石灰石破碎线 | 原料工段 | line_crush_raw |\n\n## 车间/工段（WorkshopItem）\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| productionLineId | string | ✓ | 所属产线 ID（pl1~pl5） |\n| productionLineName | string | | 所属产线名称 |\n| orgId | string | ✓ | 归属组织 ID |\n| orgName | string | | 归属组织全路径 |\n| code | string | ✓ | 编码，如 `WS-YL-001` |\n| name | string | ✓ | 名称，如「原料工段」 |\n| remark | string | | 备注 |\n| deletable | boolean | | 是否可删除（无子工序、未被使用、未绑定设备） |\n| children | ProcessItem[] | | 关联的工序列表 |\n\n## 工序（ProcessItem）\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| code | string | ✓ | 工序编码，如 `PROC-CRUSH` |\n| name | string | ✓ | 工序名称，如「石灰石破碎」 |\n| remark | string | | 备注 |\n| deletable | boolean | | 是否可删除 |"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-permission",
+                "title": "权限相关对象",
+                "markdown": "# 权限相关业务对象\n\n## 菜单项（MenuItem）\n\n系统功能权限的基础单元。\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 菜单名称 |\n| route | string | ✓ | 路由地址 |\n| code | string | ✓ | 菜单编号 |\n| alias | string | ✓ | 菜单别名 |\n| enabled | boolean | | 是否启用 |\n| sort | number | | 排序号 |\n| parentId | string | | 上级菜单 ID |\n| icon | string | | 菜单图标 |\n| type | string | | 类型：`menu`（菜单）/ `button`（按钮） |\n| newWindow | boolean | | 是否新窗口打开 |\n| external | boolean | | 是否跳转第三方页面 |\n| remark | string | | 备注 |\n| children | MenuItem[] | | 子菜单 |\n\n## 数据策略（DataPolicy）\n\n控制用户可访问的数据范围。\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 策略名称 |\n| code | string | ✓ | 策略编码 |\n| entities | string[] | ✓ | 适用的业务对象，如「设备」「维修工单」 |\n| type | PolicyType | ✓ | 策略类型：`org`（组织层级）、`dimension`（维度列表）、`userAttr`（用户属性）、`sql`（自定义SQL） |\n| status | PolicyStatus | ✓ | 状态：`active` / `inactive` |\n| lastModified | string | | 最后修改时间 |\n| description | string | | 策略描述 |\n| ruleConfig | object | | 策略规则配置（根据 type 不同结构不同） |\n\n## 字段权限规则（FieldRule）\n\n控制业务对象字段的可见性和编辑权限。\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 规则名称 |\n| code | string | ✓ | 规则编码 |\n| entity | string | ✓ | 适用业务对象，如「设备档案」「销售合同」 |\n| description | string | | 规则描述 |\n| status | 'active'\\|'inactive' | ✓ | 状态 |\n| lastModified | string | | 最后修改时间 |\n| fieldConfigs | FieldConfig[] | ✓ | 字段配置列表 |\n\n## 字段配置（FieldConfig）\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| fieldName | string | ✓ | 字段技术名 |\n| fieldLabel | string | ✓ | 字段显示名 |\n| fieldType | string | | 字段类型：文本 / 数值 / 日期 / 手机号 / 人员 |\n| defaultPermission | FieldPermissionType | ✓ | 默认权限：`hidden`（隐藏）/ `readonly`（只读）/ `editable`（可编辑） |\n| conditions | ConditionPermission[] | | 条件权限列表 |\n| maskingRule | MaskingType | | 脱敏规则：`none` / `phone`（手机号脱敏）/ `idCard`（身份证脱敏）/ `custom`（自定义正则） |\n\n## 条件权限（ConditionPermission）\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | | 条件名称 |\n| conditionType | ConditionType | ✓ | `userAttr`（用户属性）/ `role`（角色）/ `custom`（自定义） |\n| config | object | ✓ | 条件配置（根据 type 不同） |\n| permission | FieldPermissionType | ✓ | 满足条件时的权限 |\n| priority | number | | 优先级（数字越小越优先） |\n\n## 预置业务对象及字段\n\n### 设备档案\n设备编码、设备名称、管理工段、规格型号、采购价格、安装日期、负责人、联系电话、设备状态\n\n### 销售合同\n合同编号、客户名称、合同金额、折扣率、销售经理、签订日期、付款条款\n\n### 维修工单\n工单编号、设备编码、设备名称、故障描述、维修费用、维修人、开始时间、结束时间"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-role",
+                "title": "角色（Role）",
+                "markdown": "# 角色（Role）\n\n角色是权限的载体，将功能权限（菜单）、数据权限（策略）和字段权限（规则）打包。\n\n## 字段说明\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 角色名称 |\n| code | string | ✓ | 角色编码 |\n| type | 'system'\\|'custom' | ✓ | `system`（系统内置，不可删除）/ `custom`（业务自定义） |\n| description | string | | 角色描述 |\n| parentId | string | | 父角色 ID |\n| parentName | string | | 父角色名称 |\n| permissions | string[] | | 拥有的功能权限（菜单编码列表） |\n| dataScopeRule | string | | 数据范围规则 |\n| fieldRules | string[] | | 关联的字段权限规则 ID 列表 |\n| expiryDate | string | | 有效期截止日期 |\n| userCount | number | | 关联用户数量 |\n| status | 'active'\\|'inactive' | ✓ | 启用/停用 |\n| fieldRuleOverrides | Record | | 字段权限覆盖配置（按规则 ID 和字段名索引） |\n| dataPolicyInstances | DataPolicyInstance[] | | 数据策略实例列表 |\n\n## 业务对象关系\n\n```\n角色（Role）\n  ├── 功能权限 → permissions: string[] （菜单编码）\n  ├── 数据权限 → dataPolicyInstances[] （策略 + 参数化传参）\n  ├── 字段权限 → fieldRules[] + fieldRuleOverrides （规则引用 + 覆盖）\n  └── 成员     → 通过 roleUsers 关联用户\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-position",
+                "title": "岗位（Position）",
+                "markdown": "# 岗位（Position）\n\n组织中定义的工作岗位，承载默认角色和编制信息。\n\n## 字段说明\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 岗位名称 |\n| orgName | string | ✓ | 所属组织名称 |\n| orgPath | string | | 所属组织全路径 |\n| headcount | number | | 编制人数 |\n| occupied | number | | 已占用人数 |\n| supervisorId | string | | 直接上级岗位 ID |\n| supervisorName | string | | 直接上级岗位名称 |\n| defaultRoles | string[] | | 该岗位的默认角色列表 |\n| dataScope | string | | 数据范围 |\n| status | 'active'\\|'inactive' | ✓ | 启用/停用 |\n| description | string | | 岗位描述 |\n\n## 岗位于系统中的作用\n\n- 用户创建/编辑时，选择岗位后自动带出 `defaultRoles`（岗位-角色映射）\n- 岗位的 `headcount` vs `occupied` 用于编制管控\n- 岗位之间通过 `supervisorId` 形成汇报关系"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-user",
+                "title": "用户（UserItem）",
+                "markdown": "# 用户（UserItem）\n\n系统用户的完整档案信息。\n\n## 字段说明\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 姓名 |\n| employeeNo | string | ✓ | 登录账号/员工编号 |\n| phone | string | | 手机号 |\n| email | string | | 邮箱 |\n| entryDate | string | | 入职日期（YYYY-MM-DD） |\n| status | 'active'\\|'leave'\\|'frozen' | ✓ | 状态：`active`（在职）/ `leave`（离职）/ `frozen`（冻结） |\n| userType | 'internal'\\|'contractor'\\|'temp' | ✓ | 类型：`internal`（内部员工）/ `contractor`（外部承包商）/ `temp`（临时人员） |\n| mainPosition | string | ✓ | 主岗名称 |\n| mainOrg | string | ✓ | 主岗所属组织名称 |\n| partTimePositions | string[] | | 兼职岗位名称列表 |\n| partTimeItems | PartTimeItem[] | | 兼职明细（岗位+组织） |\n| roles | string[] | | 分配的角色列表 |\n| accountExpiry | string | | 账户有效期截止日期（仅外部承包商） |\n| loginRestrict | string | | 登录限制说明（仅外部承包商） |\n\n## 兼职岗位项（PartTimeItem）\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| position | string | 兼职岗位名称 |\n| org | string | 兼职岗位所属组织 |\n\n## 类型标签\n\n| userType | 中文标签 | 特殊配置 |\n|----------|---------|---------|\n| internal | 内部员工 | 标准用户 |\n| contractor | 外部承包商 | 可配置账户有效期 + 登录限制 |\n| temp | 临时人员 | 临时账户 |\n\n## 状态说明\n\n| status | 标签 | 颜色 | 说明 |\n|--------|------|------|------|\n| active | 在职 | 绿色 | 正常使用 |\n| leave | 离职 | 红色 | 已离职，不可登录 |\n| frozen | 冻结 | 橙色 | 暂时冻结，不可登录，解冻后恢复 |"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-bo-rule",
+                "title": "业务规则（BizRule）",
+                "markdown": "# 业务规则（BizRule）\n\n可配置的触发式业务规则引擎。\n\n## 字段说明\n\n| 字段 | 类型 | 必填 | 说明 |\n|------|------|------|------|\n| id | string | ✓ | 唯一标识 |\n| name | string | ✓ | 规则名称 |\n| code | string | ✓ | 规则编码，如 `RULE-THERMAL-001` |\n| bizObject | string | ✓ | 业务对象：`maintenance`（维修工单）/ `quality`（质量检验单）/ `todo`（待办事项）/ `production`（生产批次）/ `inventory`（库存记录） |\n| timing | string[] | ✓ | 触发时机：`create_before`（新增前）/ `create_after`（新增后）/ `edit_before`（编辑前）/ `edit_after`（编辑后）/ `delete_before`（删除前）/ `delete_after`（删除后）/ `status_changed`（状态变更）/ `scheduled`（定时执行） |\n| priority | number | ✓ | 优先级，数字越大越先执行 |\n| breakAfter | boolean | | 匹配后是否终止后续规则（类似防火墙规则） |\n| status | 'active'\\|'inactive' | ✓ | 启用/停用 |\n| scopeType | 'all'\\|'org'\\|'line' | ✓ | 生效范围类型：全部 / 指定组织 / 指定产线 |\n| scopeOrgs | string[] | | 生效组织列表 |\n| scopeLines | string[] | | 生效产线列表 |\n| description | string | | 规则描述 |\n| hasCondition | boolean | | 是否有条件 |\n| conditionGroups | ConditionGroup[] | | 条件组列表 |\n| conditionGroupsLogic | 'AND'\\|'OR' | | 条件组之间的逻辑关系 |\n| actions | ActionItem[] | ✓ | 动作列表 |\n| advanced | object | | 高级配置 |\n| schedule | ScheduleConfig | | 定时配置（当 timing 包含 scheduled 时） |\n| version | number | | 版本号 |\n| updatedAt | string | | 最后更新时间 |\n\n## 条件组（ConditionGroup）\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | string | 唯一标识 |\n| logic | 'AND'\\|'OR' | 组内条件之间的逻辑关系 |\n| conditions | ConditionItem[] | 条件列表 |\n\n## 条件项（ConditionItem）\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | string | 唯一标识 |\n| field | string | 字段名，如 `product`、`quantity` |\n| operator | string | 操作符：`eq`（等于）/ `gt`（大于）/ `lt`（小于）/ `gte` / `lte` / `contains` |\n| valueType | string | 值类型：`fixed`（固定值）/ `dynamic`（动态值） |\n| value | any | 比较值 |\n\n## 动作项（ActionItem）\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| id | string | 唯一标识 |\n| type | string | 动作类型：`set_field`（设置字段）/ `send_notification`（发送通知）/ `start_approval`（启动审批）/ `call_api`（调用API）/ `create_task`（生成任务）/ `update_related`（更新关联数据） |\n| params | object | 动作参数 |\n| condition | ConditionGroup | 动作级别的条件（可选） |\n\n## 高级配置\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| async | boolean | 是否异步执行 |\n| maxRetry | number | 最大重试次数 |\n| timeout | number | 超时时间（秒） |\n| ignoreError | boolean | 是否忽略异常继续执行 |\n\n## 定时配置（ScheduleConfig）\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| interval | number | 间隔数值 |\n| unit | string | 间隔单位：`hour` / `day` / `week` / `month` |\n| hour | number | 执行小时（0-23） |\n| minute | number | 执行分钟（0-59） |\n\n## 通知渠道\n\n| channel | 说明 |\n|---------|------|\n| site | 站内信 |\n| dingtalk | 钉钉通知 |\n| wecom | 企业微信 |\n| email | 邮件通知 |"
+              }
+            ]
+          },
+          {
+            "type": "folder",
+            "id": "dir-process",
+            "title": "流程文档",
+            "defaultExpanded": false,
+            "children": [
+              {
+                "type": "markdown",
+                "id": "doc-process-overview",
+                "title": "系统管理整体流程",
+                "markdown": "# 系统管理整体流程\n\n系统管理模块的配置遵循\"自底向上、逐层搭建\"的原则，推荐按以下顺序执行：\n\n## 总体流程图\n\n```\n                    ┌──────────────────────┐\n                    │  1. 组织架构管理      │\n                    │  搭建多级组织树        │\n                    └────────┬─────────────┘\n                             │\n              ┌──────────────┼──────────────┐\n              ▼              ▼              ▼\n    ┌─────────────┐  ┌─────────────┐  ┌─────────────┐\n    │ 2. 产线配置  │  │ 3. 权限管理  │  │ 4. 岗位管理  │\n    │ 车间/工段/工序│  │ 菜单/策略/字段│  │ 岗位定义     │\n    └─────────────┘  └──────┬──────┘  └──────┬──────┘\n                            │                │\n                            ▼                │\n                    ┌──────────────┐         │\n                    │ 5. 角色管理   │◄────────┘\n                    │ 组合权限+成员  │\n                    └──────┬───────┘\n                           │\n                           ▼\n                    ┌──────────────┐\n                    │ 6. 用户管理   │\n                    │ 分配岗位+角色  │\n                    └──────┬───────┘\n                           │\n                           ▼\n                    ┌──────────────┐\n                    │ 7. 业务规则   │\n                    │ 规则引擎配置   │\n                    └──────────────┘\n```\n\n## 各阶段详细说明\n\n### 阶段一：基础架构搭建\n\n**目标**：建立组织治理的地基\n\n1. **组织架构管理** → 建立集团→区域→工厂→部门→二级部门的多级组织树\n2. **产线配置** → 为工厂配置产线、车间/工段和工序\n\n### 阶段二：权限体系构建\n\n**目标**：定义谁可以做什么、看什么\n\n3. **权限管理** → 三管齐下\n   - 功能权限：配置系统菜单和路由（哪些人能进哪些页面）\n   - 数据权限：定义数据策略（哪些人能看到哪些数据）\n   - 字段权限：定义字段规则（哪些人能编辑哪些字段）\n\n4. **岗位管理** → 定义组织内的岗位，设定默认角色\n\n### 阶段三：权限分配\n\n**目标**：将权限体系与组织人员对接\n\n5. **角色管理** → 将功能/数据/字段三类权限打包为角色\n6. **用户管理** → 为用户分配岗位和角色\n\n### 阶段四：规则自动化\n\n**目标**：让系统自动执行业务逻辑\n\n7. **业务规则配置** → 配置触发式规则，实现自动预警、审批流转等"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-org",
+                "title": "组织架构管理流程",
+                "markdown": "# 组织架构管理流程\n\n## 新增组织节点\n\n```\n选择父节点 → 点击【➕】→ 填写表单 → 保存\n                                  │\n                    ┌─────────────┼─────────────┐\n                    ▼             ▼             ▼\n              机构名称        机构编码        所属租户\n              机构全称        上级机构        机构类型\n              是否启用        管理产线        备注\n```\n\n### 注意事项\n- 节点类型必须按层级约束挂载：group → region → factory → department → subDepartment\n- 部门/二级部门类型可关联管理产线（多选）\n- 新增弹窗中「上级机构」默认带入当前选中的树节点，可手动修改\n\n## 编辑组织节点\n\n```\n在树中选中节点 → 点击【✏️】→ 修改表单 → 保存\n```\n\n## 查看组织详情\n\n```\n在树中选中节点 → 右侧面板展示详情\n  ├── 基本信息：名称、编码、类型、上级机构、租户、全称\n  ├── 管理产线（仅部门/二级部门显示）\n  ├── 子节点列表（可点击快速切换）\n  └── 备注\n```\n\n## 查看变更历史\n\n```\n点击【🕐】→ 弹出历史记录表格\n  ├── 时间\n  ├── 操作人\n  ├── 变更内容\n  └── 生效日期\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-production",
+                "title": "产线配置流程",
+                "markdown": "# 产线配置流程\n\n## 树形表格编辑\n\n产线配置以两级树形表格展示：\n- **第一级（蓝色标签）**：车间/工段\n- **第二级（灰色标签）**：工序\n\n## 新增车间/工段\n\n```\n点击【新增车间/工段】→ 填写表单 → 保存\n  ├── 所属产线：选择 pl1~pl5\n  ├── 归属组织：从组织树中选择（仅部门和二级部门可选）\n  ├── 编码 + 名称（不可重复）\n  └── 备注\n```\n\n## 新增工序\n\n```\n车间/工段行 → 点击【新增工序】→ 填写表单 → 保存\n  ├── 所属车间/工段：下拉选择\n  ├── 编码 + 名称（全局不可重复）\n  └── 备注\n```\n\n## 拖拽排序与调整从属\n\n- **同级排序**：拖拽行到目标位置的上方/下方\n- **变更从属**：拖拽工序到另一个车间/工段行内部（显示蓝色高亮）\n- 自动展开：悬停在未展开的车间行中间区域时自动展开\n\n## 批量导入\n\n```\n点击【导入】→ 三步流程：\n  1. 上传文件 → 下载模板 / 拖拽上传 CSV/XLSX\n  2. 数据预览 → 查看正确数据（绿色✓）和错误数据（红色✗，将跳过）\n  3. 确认导入 → 进度条展示导入进度 → 完成\n  \n选项：数据覆盖（开启后重复数据更新，未开启则跳过）\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-permission",
+                "title": "权限配置流程",
+                "markdown": "# 权限配置流程\n\n权限管理页面有三个 Tab，推荐按顺序配置：\n\n## 流程总览\n\n```\nTab 1: 功能权限 → Tab 2: 数据权限 → Tab 3: 字段权限\n     │                  │                  │\n     ▼                  ▼                  ▼\n 配置菜单结构       定义数据策略       定义字段规则\n 控制页面可见性     控制数据访问范围   控制字段读写权限\n```\n\n## 功能权限操作流程\n\n```\n【新增】→ 填写菜单表单 → 保存\n  ├── 菜单名称、路由地址（必填）\n  ├── 菜单编号、菜单别名（必填）\n  ├── 上级菜单（选择父节点，为空则为顶级菜单）\n  ├── 菜单类型：menu（菜单）/ button（按钮）\n  ├── 菜单图标、排序号\n  ├── 新窗口打开、是否跳转第三方页面\n  └── 是否启用\n\n支持操作：【新增子项】【编辑】【删除】\n```\n\n## 数据权限操作流程\n\n```\n【新建策略】→ 打开抽屉 → 配置基本信息 → 配置规则 → 保存\n\n基本信息：\n  ├── 策略名称、编码（必填）\n  ├── 适用业务对象（多选：设备、维修工单、销售订单等）\n  └── 策略类型：\n        ├── 组织与层级 → 配置基础范围（本组织/本组织及下级/指定组织）\n        ├── 维度列表 → 配置维度类型 + 匹配规则（AND组合）\n        ├── 用户属性 → 配置用户属性匹配规则\n        └── 自定义SQL → 编写WHERE条件片段\n\n操作栏：【编辑】【启用/停用】【复制】【引用（查看哪些角色引用）】【日志】【删除】\n```\n\n## 字段权限操作流程\n\n```\n【新建规则】→ 打开抽屉 → 配置基本信息 → 同步字段 → 逐字段配置 → 保存\n\n步骤：\n  1. 填写规则名称、编码\n  2. 选择适用业务对象（设备档案/销售合同/维修工单）\n  3. 点击【从业务对象同步字段】自动加载所有字段\n  4. 对每个字段配置：\n       ├── 默认权限：隐藏 / 只读 / 可编辑\n       ├── 条件权限（可选）：按角色/用户属性添加覆盖规则\n       └── 脱敏规则：无 / 手机号脱敏 / 身份证脱敏 / 自定义正则\n  5. 点击【预览】模拟不同用户的权限效果\n\n操作栏：【编辑】【启用/停用】【复制】【引用】【日志】【删除】\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-role",
+                "title": "角色管理流程",
+                "markdown": "# 角色管理流程\n\n## 角色 CRUD\n\n```\n【新增角色】→ 填写表单 → 保存\n  ├── 角色名称、编码\n  ├── 类型：系统内置 / 业务自定义\n  ├── 描述\n  └── 权限和数据范围留到后续配置\n\n【编辑】除系统内置角色外可编辑\n【复制】基于现有角色快速创建\n【删除】仅业务自定义角色可删除\n【启用/停用】停用需填写停用原因\n```\n\n## 权限配置流程（核心操作）\n\n点击角色的【设置权限】，打开配置抽屉，包含以下 Tab：\n\n### Tab 1: 功能权限\n\n```\n勾选菜单树 → 保存\n  - 选中父菜单自动选中所有子菜单\n  - 菜单权限即用户登录后可见的导航\n```\n\n### Tab 2: 数据权限\n\n```\n勾选数据策略 → 填写参数（如有）→ 保存\n  - 加载权限管理模块中已维护的数据策略\n  - 策略需参数化时，填写相应的参数值\n  - 可对策略排序（拖拽）\n```\n\n### Tab 3: 字段权限\n\n```\n勾选字段权限规则 → 展开字段配置 → 按需覆盖 → 保存\n  - 加载已启用的字段权限规则\n  - 展开后显示各字段的默认权限/条件/脱敏配置\n  - 开启【覆盖】开关，可在角色层面定制覆盖规则\n  - 覆盖后可修改：默认权限、条件权限、脱敏规则\n```\n\n### Tab 4: 成员列表\n\n```\n查看已分配该角色的用户 → 可【移除】成员\n```\n\n### Tab 5: 操作记录\n\n```\n查看角色操作日志（创建、修改、停用等）\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-position",
+                "title": "岗位管理流程",
+                "markdown": "# 岗位管理流程\n\n## 岗位 CRUD\n\n```\n【新增岗位】→ 填写表单 → 保存\n  ├── 岗位名称（必填）\n  ├── 直接上级岗位（可选）\n  ├── 默认角色（多选）\n  └── 岗位描述\n\n【编辑】【启用/停用】【删除】\n```\n\n## 人员分配流程\n\n```\n岗位列表 → 点击使用人数 → 打开人员抽屉\n\n抽屉内容：\n  ├── 已使用人数统计\n  ├── 【添加人员】→ 弹出人员选择器\n  │     ├── 左侧：可选人员（按组织树展示，支持搜索）\n  │     │   - 勾选人员（支持按组织批量勾选）\n  │     └── 右侧：已选择人员列表（可移除）\n  ├── 已分配人员表格（分页）\n  └── 【移除】按钮\n```\n\n## 岗位-角色映射规则\n\n- 用户选择岗位时，自动带出该岗位的默认角色\n- 用户可在此基础上增删角色\n- 岗位角色作为初始角色建议，不强制绑定"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-user",
+                "title": "用户管理流程",
+                "markdown": "# 用户管理流程\n\n## 用户 CRUD\n\n```\n【新增用户】→ 填写表单 → 保存\n\n表单字段：\n  ├── 基本信息：姓名、登录账号（必填）\n  ├── 联系方式：手机号、邮箱\n  ├── 工作信息：入职日期、用户类型\n  │    └── 外部承包商：额外的账户有效期、登录限制\n  ├── 岗位信息：主岗（必填）、所属组织（必填）\n  │    ├── 选择主岗后自动带入默认角色\n  │    └── 角色可手动增删\n  └── 兼职信息：【添加】兼职岗位+组织\n```\n\n## 筛选与搜索\n\n```\n左侧组织树 → 按组织筛选用户\n  └── 【清除筛选】恢复全部\n\n顶部工具栏：\n  ├── 类型筛选：全部 / 内部员工 / 外部承包商 / 临时人员\n  ├── 状态筛选：全部 / 在职 / 冻结 / 离职\n  └── 搜索框：按姓名/工号/手机/岗位搜索\n```\n\n## 批量操作\n\n```\n勾选用户（表格复选框）→ 显示已选数量 → 批量操作\n  ├── 【冻结】：批量冻结选中用户\n  ├── 【解冻】：批量解冻选中用户\n  ├── 【重置密码】：批量重置密码\n  └── 【删除】：批量删除选中用户\n```\n\n## 单用户操作\n\n表格每行操作栏：\n- **编辑**：打开编辑弹窗\n- **冻结/解冻**：切换用户状态\n- **重置密码**：重置该用户密码\n- **删除**：删除用户\n\n## 查看用户详情\n\n```\n点击用户行 → 打开详情弹窗\n  展示：姓名、状态、登录名、类型、联系方式、入职日期、\n        主岗/组织、兼职信息、角色、账户有效期、登录限制\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-rule",
+                "title": "业务规则配置流程",
+                "markdown": "# 业务规则配置流程\n\n## 规则 CRUD\n\n```\n【新增规则】→ 打开配置抽屉 → 逐步填写 → 保存\n\n抽屉分为以下区域：\n  ├── 基本信息\n  │    ├── 规则名称、规则编码（必填，唯一）\n  │    ├── 业务对象（必选）\n  │    ├── 触发时机（必选，多选）\n  │    ├── 优先级（数字越大越先执行）\n  │    ├── 命中终止（breakAfter，匹配后是否停止后续规则）\n  │    ├── 生效范围（全部 / 指定组织 / 指定产线）\n  │    └── 描述\n  │\n  ├── 触发时机（timing）\n  │    ├── 数据变更时机：新增前后、编辑前后、删除前后、状态变更\n  │    └── 定时执行（scheduled）：需配置定时参数\n  │\n  ├── 条件配置（conditionGroups）\n  │    ├── 支持多条件组（组间 AND/OR）\n  │    ├── 每组内支持多条件（组内 AND/OR）\n  │    ├── 条件项：字段 + 操作符 + 值\n  │    └── 无条件时：对所有符合触发时机的数据生效\n  │\n  ├── 动作配置（actions）\n  │    ├── 支持多动作顺序执行\n  │    ├── 动作类型：\n  │    │    ├── 设置字段值\n  │    │    ├── 发送通知（站内/钉钉/企微/邮件）\n  │    │    ├── 启动审批流\n  │    │    ├── 调用 API\n  │    │    ├── 生成任务\n  │    │    └── 更新关联数据\n  │    └── 动作可自带条件（IF-THEN 模式）\n  │\n  └── 高级配置\n       ├── 异步执行\n       ├── 最大重试次数\n       ├── 超时时间\n       └── 忽略异常继续\n```\n\n## 规则调试\n\n### 模拟运行\n\n```\n点击【模拟运行】→ 弹出对话框 → 点击运行\n  模拟触发规则引擎，展示：\n  - 事件注入（模拟数据变更）\n  - 规则匹配过程\n  - 条件满足情况\n  - 动作执行结果\n  - 黑色终端风格日志\n```\n\n### 规则详情\n\n```\n点击规则行 → 打开详情抽屉\n  展示完整规则配置，包括：\n  - 条件组结构（树形展示）\n  - 动作参数明细\n  - 高级配置各项\n```\n\n## 规则历史\n\n```\n点击【历史】→ 查看版本历史\n  - 版本号、修改时间、修改人、变更摘要\n  - 支持【回滚】到历史版本\n```\n\n## 规则执行优先级说明\n\n```\n事件触发\n  │\n  ├── 加载所有活跃规则\n  ├── 按 priority 从高到低排序\n  └── 逐个检查：\n        ├── 生效范围匹配？\n        │    ├── scopeType=all → 继续\n        │    ├── scopeType=org → 检查组织是否在 scopeOrgs 中\n        │    └── scopeType=line → 检查产线是否在 scopeLines 中\n        │\n        ├── 条件匹配？\n        │    ├── hasCondition=false → 直接执行\n        │    └── hasCondition=true → 逐组检查（groupsLogic=AND则全部满足，OR则任一满足）\n        │\n        ├── 执行动作（async? timeout? maxRetry?）\n        │\n        └── breakAfter?\n              ├── true → 停止后续规则\n              └── false → 继续下一规则\n```"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-process-lifecycle",
+                "title": "典型业务场景流程",
+                "markdown": "# 典型业务场景流程\n\n## 场景一：人员入职\n\n```\nHR 发起入职 → 系统管理员操作：\n\n1. 确认岗位是否存在？\n   ├── 不存在 → 岗位管理 → 新增岗位（设置默认角色）\n   └── 已存在 → 下一步\n\n2. 确认角色是否存在？\n   ├── 不存在 → 角色管理 → 新增角色 → 设置权限 → 分配成员\n   └── 已存在 → 下一步\n\n3. 用户管理 → 新增用户\n   ├── 填写基本信息\n   ├── 选择主岗 → 自动带入默认角色\n   ├── 调整角色（增删）\n   └── 如有兼职，添加兼职岗位\n\n4. 检查岗位编制\n   ├── 已占满 → 需扩容或通知 HR\n   └── 有空缺 → 入职完成\n```\n\n## 场景二：权限变更\n\n```\n业务方申请 → 系统管理员操作：\n\n方案 A：调整现有角色权限\n  角色管理 → 找到目标角色 → 设置权限 → 修改权限配置 → 保存\n\n方案 B：创建新角色\n  1. 角色管理 → 新增角色\n  2. 设置权限 → 勾选功能/数据/字段权限\n  3. 用户管理 → 找到用户 → 分配新角色\n\n方案 C：仅修改个人的字段权限\n  角色管理 → 权限配置 → 字段权限 Tab → 为特定规则开启覆盖\n```\n\n## 场景三：组织变更\n\n```\n公司决策 → 系统管理员操作：\n\n1. 组织架构管理\n   ├── 新增节点（如新建分厂）\n   ├── 停用节点（如合并部门）\n   └── 修改节点信息\n\n2. 产线配置\n   └── 为新组织关联产线和车间\n\n3. 岗位管理\n   └── 为新组织创建岗位\n\n4. 用户管理\n   └── 批量调整用户的主岗组织\n```\n\n## 场景四：规则告警配置\n\n```\n生产部提出需求 → 系统管理员配置：\n\n示例：窑头负压异常自动报警\n\n1. 业务规则配置 → 新增规则\n   ├── 业务对象：维修工单\n   ├── 触发时机：新增后 + 定时（每天 9:00）\n   ├── 条件：设备名称=窑头负压传感器 OR 优先级=紧急\n   └── 动作：\n        ├── 发送企业微信通知 → 管理员\n        └── 生成巡检任务\n\n2. 模拟运行 → 验证规则是否正确触发\n```"
+              }
+            ]
+          },
+          {
+            "type": "folder",
+            "id": "dir-guides",
+            "title": "操作指南",
+            "defaultExpanded": false,
+            "children": [
+              {
+                "type": "markdown",
+                "id": "doc-org-guide",
+                "title": "如何管理组织架构",
+                "markdown": "# 组织架构管理操作指南\n\n## 新增组织节点\n1. 在左侧树中选中父节点（如 DCC水泥厂）\n2. 点击 ➕ 按钮\n3. 填写：机构名称、编码、类型、租户等信息\n4. 如果是部门类型，可关联管理产线\n\n## 调整组织层级\n目前不支持在 UI 中直接拖拽调整层级，需要在「新增/编辑」弹窗中修改上级机构。\n\n## 查看变更历史\n点击 🕐 按钮可以查看该组织的变更记录，包括操作时间、操作人和变更内容。"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-perm-guide",
+                "title": "权限配置流程",
+                "markdown": "# 权限配置标准流程\n\n## 推荐步骤\n1. **功能权限** → 先建好菜单结构\n2. **数据权限** → 定义数据策略（组织/维度/用户属性/SQL）\n3. **字段权限** → 定义字段级别控制规则\n4. **角色管理** → 将功能权限、数据策略、字段规则组合成角色\n5. **用户管理** → 为用户分配岗位和角色\n\n## 权限生效规则\n- 用户拥有多个角色时，权限取**并集**（最宽松）\n- 字段权限：条件匹配按优先级数字从小到大判断，第一个匹配的为准\n- 数据权限：默认并集，可切换为交集（限制性）"
+              },
+              {
+                "type": "markdown",
+                "id": "doc-rule-guide",
+                "title": "业务规则配置示例",
+                "markdown": "# 业务规则配置教程\n\n## 如何配置一条新规则\n\n### 示例：窑头负压异常报警\n1. 点击「新增规则」\n2. 填写基本信息：\n   - 名称：窑头负压异常报警\n   - 业务对象：维修工单\n   - 触发时机：新增后、定时\n3. 设置条件：\n   - 条件组1（OR）：设备名称 = 窑头负压传感器 OR 优先级 = 紧急\n4. 配置动作：\n   - 动作1：发送通知（企业微信）→ 给管理员\n   - 动作2：生成巡检任务\n5. 设置生效范围：指定产线 → 一线\n\n## 定时执行\n当触发时机包含「定时执行」时，需要配置 schedule：\n- 间隔（如每小时、每天 9:00）\n- 首次执行时间\n\n## 调试\n使用「模拟运行」功能可以在沙箱中测试规则是否按预期触发。"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

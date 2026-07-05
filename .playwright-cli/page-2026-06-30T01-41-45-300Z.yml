@@ -1,0 +1,396 @@
+- generic [ref=e3]:
+  - link "Skip to content" [ref=e4] [cursor=pointer]:
+    - /url: "#VPContent"
+  - banner:
+    - generic:
+      - generic:
+        - generic:
+          - generic:
+            - link "logo" [ref=e6] [cursor=pointer]:
+              - /url: /
+              - img "logo" [ref=e7]
+            - generic [ref=e8]:
+              - generic [ref=e9] [cursor=pointer]: IDE
+              - generic [ref=e10] [cursor=pointer]: CLI
+              - generic [ref=e11] [cursor=pointer]: WorkBuddy
+          - generic [ref=e12]:
+            - button "搜索文档" [ref=e15] [cursor=pointer]:
+              - generic [ref=e18]: 搜索
+              - generic [ref=e19]:
+                - generic [ref=e20]: Ctrl
+                - generic [ref=e21]: K
+            - button "🌐 中文 ▼" [ref=e23] [cursor=pointer]:
+              - generic [ref=e24]: 🌐
+              - generic [ref=e25]: 中文
+              - generic [ref=e26]: ▼
+  - complementary [ref=e27]:
+    - navigation "Sidebar Navigation" [ref=e29]:
+      - generic [ref=e30]: Sidebar Navigation
+      - generic [ref=e32]:
+        - button "入门指南 toggle section" [ref=e33] [cursor=pointer]:
+          - heading "入门指南" [level=2] [ref=e35]
+          - button "toggle section" [ref=e36]
+        - generic [ref=e38]:
+          - link "简介" [ref=e42] [cursor=pointer]:
+            - /url: /docs/zh/ide/Introduction
+            - paragraph [ref=e43]: 简介
+          - link "安装" [ref=e47] [cursor=pointer]:
+            - /url: /docs/zh/ide/Getting-Started/Installation
+            - paragraph [ref=e48]: 安装
+          - link "快速开始" [ref=e52] [cursor=pointer]:
+            - /url: /docs/zh/ide/Getting-Started/Quickstart
+            - paragraph [ref=e53]: 快速开始
+      - generic [ref=e55]:
+        - button "使用指南 toggle section" [ref=e56] [cursor=pointer]:
+          - heading "使用指南" [level=2] [ref=e58]
+          - button "toggle section" [ref=e59]
+        - generic [ref=e61]:
+          - link "概览" [ref=e65] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Overview
+            - paragraph [ref=e66]: 概览
+          - generic [ref=e67]:
+            - button "智能体模式 toggle section" [ref=e68] [cursor=pointer]:
+              - heading "智能体模式" [level=3] [ref=e70]
+              - button "toggle section" [ref=e71]
+            - generic [ref=e73]:
+              - link "概览" [ref=e77] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Overview
+                - paragraph [ref=e78]: 概览
+              - link "快速开始" [ref=e82] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Quickstart
+                - paragraph [ref=e83]: 快速开始
+              - link "创建任务" [ref=e87] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Create-Task
+                - paragraph [ref=e88]: 创建任务
+              - link "任务管理" [ref=e92] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Task-Management
+                - paragraph [ref=e93]: 任务管理
+              - link "任务对话" [ref=e97] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Conversation
+                - paragraph [ref=e98]: 任务对话
+              - link "结果查看" [ref=e102] [cursor=pointer]:
+                - /url: /docs/zh/ide/User-guide/Agent-Mode/Results
+                - paragraph [ref=e103]: 结果查看
+          - link "Figma" [ref=e107] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Figma
+            - paragraph [ref=e108]: Figma
+          - link "代码补全" [ref=e112] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Completion
+            - paragraph [ref=e113]: 代码补全
+          - link "内联对话" [ref=e117] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/inline-chat
+            - paragraph [ref=e118]: 内联对话
+          - link "斜杠命令" [ref=e122] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Slash-Commands
+            - paragraph [ref=e123]: 斜杠命令
+          - link "上下文" [ref=e127] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Context
+            - paragraph [ref=e128]: 上下文
+          - link "规则" [ref=e132] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Rules
+            - paragraph [ref=e133]: 规则
+          - link "检查点" [ref=e137] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Checkpoint
+            - paragraph [ref=e138]: 检查点
+          - link "历史记录" [ref=e142] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/History
+            - paragraph [ref=e143]: 历史记录
+          - link "记忆" [ref=e147] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Memory
+            - paragraph [ref=e148]: 记忆
+          - link "MCP" [ref=e152] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/MCP
+            - paragraph [ref=e153]: MCP
+          - link "配置集成" [ref=e157] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/Integration
+            - paragraph [ref=e158]: 配置集成
+          - link "预览" [ref=e162] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/preview
+            - paragraph [ref=e163]: 预览
+          - link "部署" [ref=e167] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/deploy
+            - paragraph [ref=e168]: 部署
+          - link "智能提交" [ref=e172] [cursor=pointer]:
+            - /url: /docs/zh/ide/User-guide/smart-commit
+            - paragraph [ref=e173]: 智能提交
+      - generic [ref=e175]:
+        - button "平台接入指南 toggle section" [ref=e176] [cursor=pointer]:
+          - heading "平台接入指南" [level=2] [ref=e178]
+          - button "toggle section" [ref=e179]
+        - link "微信 ClawBot 接入指南（推荐）" [ref=e185] [cursor=pointer]:
+          - /url: /docs/ide/Platform-integration/weixinbot-guide
+          - paragraph [ref=e186]: 微信 ClawBot 接入指南（推荐）
+      - generic [ref=e188]:
+        - button "高级功能 toggle section" [ref=e189] [cursor=pointer]:
+          - heading "高级功能" [level=2] [ref=e191]
+          - button "toggle section" [ref=e192]
+        - generic [ref=e194]:
+          - link "模型配置" [ref=e198] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/models
+            - paragraph [ref=e199]: 模型配置
+          - link "Plan 模式" [ref=e203] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Plan-Mode
+            - paragraph [ref=e204]: Plan 模式
+          - link "Subagents" [ref=e208] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Subagents
+            - paragraph [ref=e209]: Subagents
+          - link "Skills" [ref=e213] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Skills
+            - paragraph [ref=e214]: Skills
+          - link "Hooks" [ref=e218] [cursor=pointer]:
+            - /url: /docs/zh/ide/Features/Hooks
+            - paragraph [ref=e219]: Hooks
+      - generic [ref=e221]:
+        - button "账号 toggle section" [ref=e222] [cursor=pointer]:
+          - heading "账号" [level=2] [ref=e224]
+          - button "toggle section" [ref=e225]
+        - generic [ref=e227]:
+          - link "订阅" [ref=e231] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/Subscription
+            - paragraph [ref=e232]: 订阅
+          - link "定价" [ref=e236] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/pricing
+            - paragraph [ref=e237]: 定价
+          - link "积分" [ref=e241] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/credits
+            - paragraph [ref=e242]: 积分
+          - link "用量" [ref=e246] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/usage
+            - paragraph [ref=e247]: 用量
+          - link "账单" [ref=e251] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/billing
+            - paragraph [ref=e252]: 账单
+          - link "发票" [ref=e256] [cursor=pointer]:
+            - /url: /docs/zh/ide/Account/invoice
+            - paragraph [ref=e257]: 发票
+      - link "最佳实践" [ref=e264] [cursor=pointer]:
+        - /url: /docs/zh/ide/Best-practice/best-practice
+        - paragraph [ref=e265]: 最佳实践
+      - generic [ref=e267]:
+        - button "支持 toggle section" [ref=e268] [cursor=pointer]:
+          - heading "支持" [level=2] [ref=e270]
+          - button "toggle section" [ref=e271]
+        - generic [ref=e273]:
+          - link "故障排除" [ref=e277] [cursor=pointer]:
+            - /url: /docs/zh/ide/Support/Troubleshooting
+            - paragraph [ref=e278]: 故障排除
+          - link "安全与隐私" [ref=e282] [cursor=pointer]:
+            - /url: /docs/zh/ide/Support/security-privacy
+            - paragraph [ref=e283]: 安全与隐私
+          - link "联系我们" [ref=e287] [cursor=pointer]:
+            - /url: /docs/zh/ide/Support/Contact
+            - paragraph [ref=e288]: 联系我们
+      - button "版本发布 toggle section" [ref=e291] [cursor=pointer]:
+        - heading "版本发布" [level=2] [ref=e293]
+        - button "toggle section" [ref=e294]
+  - generic [ref=e306]:
+    - main [ref=e307]:
+      - generic [ref=e309]:
+        - heading "Skills Permalink to \"Skills\"" [level=1] [ref=e310]:
+          - text: Skills
+          - link "Permalink to \"Skills\"":
+            - /url: "#skills"
+        - paragraph [ref=e311]: Skills 是模块化的、自包含的能力包，通过提供专门的知识、工作流和工具来扩展 AI Agent 的能力。它们就像是针对特定领域或任务的“入职指南”，将通用的 AI Agent 转变为具备专业程序性知识的专家。
+        - heading "Skills 能提供什么 Permalink to \"Skills 能提供什么\"" [level=2] [ref=e312]:
+          - text: Skills 能提供什么
+          - link "Permalink to \"Skills 能提供什么\"":
+            - /url: "#skills-能提供什么"
+        - list [ref=e313]:
+          - listitem [ref=e314]:
+            - strong [ref=e315]: 专业工作流
+            - text: ：针对特定领域的自动多步骤程序。
+          - listitem [ref=e316]:
+            - strong [ref=e317]: 工具集成
+            - text: ：处理特定文件格式或 API 的指令。
+          - listitem [ref=e318]:
+            - strong [ref=e319]: 领域专业知识
+            - text: ：公司特定的知识、架构和业务逻辑。
+          - listitem [ref=e320]:
+            - strong [ref=e321]: 打包资源
+            - text: ：用于复杂和重复任务的脚本、参考资料和资产。
+        - heading "Skill 的结构 Permalink to \"Skill 的结构\"" [level=2] [ref=e322]:
+          - text: Skill 的结构
+          - link "Permalink to \"Skill 的结构\"":
+            - /url: "#skill-的结构"
+        - paragraph [ref=e323]:
+          - text: 每个 Skill 由一个必需的
+          - code [ref=e324]: SKILL.md
+          - text: 文件和可选的打包资源组成。Skill 应建立在工作区的
+          - code [ref=e325]: .codebuddy/skills/
+          - text: 目录下。
+        - generic [ref=e326]:
+          - button "Copy Code" [ref=e327] [cursor=pointer]
+          - code [ref=e329]:
+            - generic [ref=e330]: skill-name/
+            - generic [ref=e331]: ├── SKILL.md (必需)
+            - generic [ref=e332]: │ ├── YAML frontmatter 元数据 (必需)
+            - generic [ref=e333]: "│ │ ├── name: (必需)"
+            - generic [ref=e334]: "│ │ └── description: (必需)"
+            - generic [ref=e335]: │ └── Markdown 指令 (必需)
+            - generic [ref=e336]: └── Bundled Resources (可选)
+            - generic [ref=e337]: ├── scripts/ - 可执行代码 (Python/Bash 等)
+            - generic [ref=e338]: ├── references/ - 旨在根据需要加载到上下文中的文档
+            - generic [ref=e339]: └── assets/ - 用在输出中的文件 (模板、图标、字体等)
+        - heading "SKILL.md (必需) Permalink to \"SKILL.md (必需)\"" [level=3] [ref=e340]:
+          - text: SKILL.md (必需)
+          - link "Permalink to \"SKILL.md (必需)\"":
+            - /url: "#skill-md-必需"
+        - paragraph [ref=e341]: 这是 Skill 的核心定义文件。
+        - paragraph [ref=e342]:
+          - strong [ref=e343]: "元数据 (YAML Frontmatter):"
+          - code [ref=e344]: name
+          - text: 和
+          - code [ref=e345]: description
+          - text: 决定了 AI 何时会使用这个 Skill。描述需具体说明 Skill 的功能和使用场景。
+        - paragraph [ref=e346]: 示例：
+        - generic [ref=e347]:
+          - button "Copy Code" [ref=e348] [cursor=pointer]
+          - generic [ref=e349]: markdown
+          - code [ref=e351]:
+            - generic [ref=e352]: "---"
+            - generic [ref=e353]: "name: pdf-editor"
+            - generic [ref=e354]: "description: This skill should be used when users ask to modify, rotate, or extract text from PDF files."
+            - generic [ref=e355]: "allowed-tools: # 可选，指定允许使用的工具"
+            - generic [ref=e356]: "disable: false # 可选，是否禁用"
+            - generic [ref=e357]: "---"
+            - generic [ref=e358]: "# PDF Editor"
+            - generic [ref=e359]: To rotate a PDF...
+        - heading "打包资源 (可选) Permalink to \"打包资源 (可选)\"" [level=3] [ref=e360]:
+          - text: 打包资源 (可选)
+          - link "Permalink to \"打包资源 (可选)\"":
+            - /url: "#打包资源-可选"
+        - 'heading "1. Scripts (scripts/) Permalink to \"1. Scripts (`scripts/`)\"" [level=4] [ref=e361]':
+          - text: 1. Scripts (
+          - code [ref=e362]: scripts/
+          - text: )
+          - 'link "Permalink to \"1. Scripts (`scripts/`)\""':
+            - /url: "#_1-scripts-scripts"
+        - paragraph [ref=e363]: 用于需要确定性可靠性或被重复重写的任务的可执行代码。
+        - list [ref=e364]:
+          - listitem [ref=e365]:
+            - strong [ref=e366]: 用途
+            - text: ：当代码被重复重写或需要高可靠性时。
+          - listitem [ref=e367]:
+            - strong [ref=e368]: 示例
+            - text: ：
+            - code [ref=e369]: scripts/rotate_pdf.py
+            - text: 用于 PDF 旋转。
+        - 'heading "2. References (references/) Permalink to \"2. References (`references/`)\"" [level=4] [ref=e370]':
+          - text: 2. References (
+          - code [ref=e371]: references/
+          - text: )
+          - 'link "Permalink to \"2. References (`references/`)\""':
+            - /url: "#_2-references-references"
+        - paragraph [ref=e372]: 旨在根据需要加载到上下文中以辅助 AI 思考的文档和参考资料。
+        - list [ref=e373]:
+          - listitem [ref=e374]:
+            - strong [ref=e375]: 用途
+            - text: ：数据库架构、API 文档、领域知识、公司政策等。
+          - listitem [ref=e376]:
+            - strong [ref=e377]: 优势
+            - text: ：保持
+            - code [ref=e378]: SKILL.md
+            - text: 精简，仅在 AI 确定需要时才加载。
+        - 'heading "3. Assets (assets/) Permalink to \"3. Assets (`assets/`)\"" [level=4] [ref=e379]':
+          - text: 3. Assets (
+          - code [ref=e380]: assets/
+          - text: )
+          - 'link "Permalink to \"3. Assets (`assets/`)\""':
+            - /url: "#_3-assets-assets"
+        - paragraph [ref=e381]: 不打算加载到上下文中，而是用于 AI 生成的输出中的文件。
+        - list [ref=e382]:
+          - listitem [ref=e383]:
+            - strong [ref=e384]: 用途
+            - text: ：品牌资产、PPT 模板、HTML/React 样板代码等。
+        - heading "渐进式披露设计原则 Permalink to \"渐进式披露设计原则\"" [level=2] [ref=e385]:
+          - text: 渐进式披露设计原则
+          - link "Permalink to \"渐进式披露设计原则\"":
+            - /url: "#渐进式披露设计原则"
+        - paragraph [ref=e386]: Skills 使用三级加载系统来高效管理上下文：
+        - list [ref=e387]:
+          - listitem [ref=e388]:
+            - strong [ref=e389]: 元数据 (Metadata)
+            - text: ：始终在上下文中 (~100 词)。
+          - listitem [ref=e390]:
+            - strong [ref=e391]: Skill 主体 (SKILL.md body)
+            - text: ：当 Skill 被触发时加载 (<5k 词)。
+          - listitem [ref=e392]:
+            - strong [ref=e393]: 打包资源 (Bundled resources)
+            - text: ：按需由 AI 加载 (无限制)。
+        - heading "创建 Skill 的流程 Permalink to \"创建 Skill 的流程\"" [level=2] [ref=e394]:
+          - text: 创建 Skill 的流程
+          - link "Permalink to \"创建 Skill 的流程\"":
+            - /url: "#创建-skill-的流程"
+        - list [ref=e395]:
+          - listitem [ref=e396]:
+            - strong [ref=e397]: 理解需求
+            - text: ：明确 Skill 的使用场景和触发条件。
+          - listitem [ref=e398]:
+            - strong [ref=e399]: 规划资源
+            - text: ：分析是否需要脚本、参考文档或资产模板。
+          - listitem [ref=e400]:
+            - strong [ref=e401]: 创建目录
+            - text: ：在
+            - code [ref=e402]: .codebuddy/skills/
+            - text: 下创建新的 Skill 目录。
+          - listitem [ref=e403]:
+            - strong [ref=e404]: 编写 SKILL.md
+            - text: ：
+            - list [ref=e405]:
+              - listitem [ref=e406]: 填写 YAML 元数据。
+              - listitem [ref=e407]: 编写 Markdown 指令。使用指令性语言（如 "To accomplish X, do Y"）。
+              - listitem [ref=e408]: 引用打包的资源。
+        - heading "最佳实践 Permalink to \"最佳实践\"" [level=2] [ref=e409]:
+          - text: 最佳实践
+          - link "Permalink to \"最佳实践\"":
+            - /url: "#最佳实践"
+        - list [ref=e410]:
+          - listitem [ref=e411]:
+            - strong [ref=e412]: 具体明确的描述
+            - text: ：在
+            - code [ref=e413]: description
+            - text: 中清楚地说明 Skill 何时应该被使用。
+          - listitem [ref=e414]:
+            - strong [ref=e415]: 指令性语言
+            - text: ：在
+            - code [ref=e416]: SKILL.md
+            - text: 中使用动词开头的指令，而不是第二人称。
+          - listitem [ref=e417]:
+            - strong [ref=e418]: 按需加载
+            - text: ：将长篇文档放入
+            - code [ref=e419]: references/
+            - text: ，避免
+            - code [ref=e420]: SKILL.md
+            - text: 过于臃肿。
+          - listitem [ref=e421]:
+            - strong [ref=e422]: 避免重复
+            - text: ：信息应存在于
+            - code [ref=e423]: SKILL.md
+            - text: 或引用文件中，不要两处都有。
+        - heading "Skill 管理 Permalink to \"Skill 管理\"" [level=2] [ref=e424]:
+          - text: Skill 管理
+          - link "Permalink to \"Skill 管理\"":
+            - /url: "#skill-管理"
+        - paragraph [ref=e425]: CodeBuddy 在设置页面中提供了可视化的界面来帮助你管理 Skills。
+        - paragraph [ref=e426]: 在设置管理页面中，你可以：
+        - list [ref=e427]:
+          - listitem [ref=e428]:
+            - strong [ref=e429]: 集中管理
+            - text: ：查看和管理当前项目（Project Skills）和用户级别（User Skills）的所有 Skills。
+          - listitem [ref=e430]:
+            - strong [ref=e431]: 导入 Skill
+            - text: ：点击右上角的“导入 Skill”按钮，可以导入你从网络上获取的 Skills。
+    - contentinfo [ref=e432]:
+      - paragraph [ref=e435]:
+        - text: "最后更新:"
+        - time
+      - navigation "Pager" [ref=e436]:
+        - generic [ref=e437]: Pager
+        - link "上一页 Subagents" [ref=e439] [cursor=pointer]:
+          - /url: /docs/zh/ide/Features/Subagents
+          - generic [ref=e440]: 上一页
+          - generic [ref=e441]: Subagents
+        - link "下一页 Hooks" [ref=e443] [cursor=pointer]:
+          - /url: /docs/zh/ide/Features/Hooks
+          - generic [ref=e444]: 下一页
+          - generic [ref=e445]: Hooks

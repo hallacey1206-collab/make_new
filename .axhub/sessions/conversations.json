@@ -2,6 +2,90 @@
   "version": 1,
   "conversations": [
     {
+      "threadId": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-30T02:41:58.552Z",
+      "updatedAt": "2026-06-30T02:44:03.914Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "codex",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "019f1667-b0c7-72f3-b126-8da5a2440a35",
+      "sourcePath": "C:\\Users\\guoxi\\.codex\\sessions\\2026\\06\\30\\rollout-2026-06-30T10-42-07-019f1667-b0c7-72f3-b126-8da5a2440a35.jsonl",
+      "sourceKind": "codex-jsonl",
+      "lastSeenMtime": 1782787443851.4421,
+      "lastActiveAt": "2026-06-30T02:44:03.851Z"
+    },
+    {
+      "threadId": "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-30T02:41:22.404Z",
+      "updatedAt": "2026-06-30T02:41:30.351Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "claude",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "1854ecf1-d18d-45b3-990e-df988315fff3",
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": "2026-06-30T02:41:30.320Z"
+    },
+    {
+      "threadId": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-30T02:41:00.440Z",
+      "updatedAt": "2026-06-30T02:43:08.849Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "codex",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "019f1666-d91c-7db1-bd89-b0af3348268f",
+      "sourcePath": "C:\\Users\\guoxi\\.codex\\sessions\\2026\\06\\30\\rollout-2026-06-30T10-41-11-019f1666-d91c-7db1-bd89-b0af3348268f.jsonl",
+      "sourceKind": "codex-jsonl",
+      "lastSeenMtime": 1782787388579.153,
+      "lastActiveAt": "2026-06-30T02:43:08.579Z"
+    },
+    {
+      "threadId": "direct-a59c55ec-16e6-4472-b9dc-67cfd3fee291",
+      "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
+      "createdAt": "2026-06-30T02:40:46.613Z",
+      "updatedAt": "2026-06-30T02:40:46.623Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "claude",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": null,
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": null
+    },
+    {
       "threadId": "direct-c045aeb6-63c9-4db5-ab08-acf577fcbefe",
       "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
       "createdAt": "2026-06-24T07:54:51.793Z",
@@ -193,6 +277,42 @@
       "createdAt": "2026-06-24T07:55:08.642Z",
       "lastActivityAt": "2026-06-24T07:57:20.918Z",
       "closedAt": null
+    },
+    {
+      "threadId": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d",
+      "acpSessionId": "019f1666-d91c-7db1-bd89-b0af3348268f",
+      "provider": "codex",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "createdAt": "2026-06-30T02:41:12.132Z",
+      "lastActivityAt": "2026-06-30T02:43:08.726Z",
+      "closedAt": null
+    },
+    {
+      "threadId": "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2",
+      "acpSessionId": "1854ecf1-d18d-45b3-990e-df988315fff3",
+      "provider": "claude",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "createdAt": "2026-06-30T02:41:29.844Z",
+      "lastActivityAt": "2026-06-30T02:41:30.320Z",
+      "closedAt": null
+    },
+    {
+      "threadId": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98",
+      "acpSessionId": "019f1667-b0c7-72f3-b126-8da5a2440a35",
+      "provider": "codex",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "createdAt": "2026-06-30T02:42:08.676Z",
+      "lastActivityAt": "2026-06-30T02:44:03.901Z",
+      "closedAt": null
     }
   ],
   "messages": {
@@ -312,6 +432,296 @@
         }
       ],
       "headId": "assistant-mqrs31fj-lm1349nkgg"
+    },
+    "direct-a59c55ec-16e6-4472-b9dc-67cfd3fee291": {
+      "messages": [
+        {
+          "id": "direct-a59c55ec-16e6-4472-b9dc-67cfd3fee291-user",
+          "parent_id": null,
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "direct-a59c55ec-16e6-4472-b9dc-67cfd3fee291-user",
+            "role": "user",
+            "parts": [
+              {
+                "type": "text",
+                "text": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。"
+              }
+            ],
+            "metadata": {
+              "custom": {
+                "acpRun": {
+                  "status": "running",
+                  "threadId": "direct-a59c55ec-16e6-4472-b9dc-67cfd3fee291",
+                  "acpSessionId": null,
+                  "error": null,
+                  "updatedAt": 1782787246621
+                }
+              }
+            }
+          },
+          "createdAt": "2026-06-30T02:40:46.623Z",
+          "updatedAt": "2026-06-30T02:40:46.623Z"
+        }
+      ],
+      "headId": "direct-a59c55ec-16e6-4472-b9dc-67cfd3fee291-user"
+    },
+    "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d": {
+      "messages": [
+        {
+          "id": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d-user",
+          "parent_id": null,
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d-user",
+            "role": "user",
+            "parts": [
+              {
+                "type": "text",
+                "text": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。"
+              }
+            ],
+            "metadata": {
+              "custom": {
+                "acpRun": {
+                  "status": "error",
+                  "threadId": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d",
+                  "acpSessionId": "019f1666-d91c-7db1-bd89-b0af3348268f",
+                  "error": "Internal error\n[agent stderr]\n\u001b[2m2026-06-30T02:42:00.230413Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_acp::thread\u001b[0m\u001b[2m:\u001b[0m Handled error during turn: Reconnecting... 2/5 Some(ResponseStreamDisconnected { http_status_code: None }) Some(\"request timed out\")\n\u001b[2m2026-06-30T02:42:15.659063Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_acp::thread\u001b[0m\u001b[2m:\u001b[0m Handled error during turn: Reconnecting... 3/5 Some(ResponseStreamDisconnected { http_status_code: None }) Some(\"request timed out\")\n\u001b[2m2026-06-30T02:42:31.551968Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_acp::thread\u001b[0m\u001b[2m:\u001b[0m Handled error during turn: Reconnecting... 4/5 Some(ResponseStreamDisconnected { http_status_code: None }) Some(\"request timed out\")\n\u001b[2m2026-06-30T02:42:48.074037Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_acp::thread\u001b[0m\u001b[2m:\u001b[0m Handled error during turn: Reconnecting... 5/5 Some(ResponseStreamDisconnected { http_status_code: None }) Some(\"request timed out\")\n\u001b[2m2026-06-30T02:43:08.578894Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_acp::thread\u001b[0m\u001b[2m:\u001b[0m Unhandled error during turn: You've hit your usage limit. Upgrade to Plus to continue using Codex (https://chatgpt.com/explore/plus), or try again at Jul 24th, 2026 3:57 PM. Some(UsageLimitExceeded)",
+                  "updatedAt": 1782787388713
+                }
+              }
+            }
+          },
+          "createdAt": "2026-06-30T02:41:00.449Z",
+          "updatedAt": "2026-06-30T02:43:08.793Z"
+        },
+        {
+          "id": "assistant-mr01if2v-obcffy0ds8",
+          "parent_id": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d-user",
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "assistant-mr01if2v-obcffy0ds8",
+            "role": "assistant",
+            "metadata": {
+              "custom": {
+                "acpAvailableCommands": {
+                  "byName": {
+                    "review": {
+                      "name": "review",
+                      "description": "Review my current changes and find issues",
+                      "input": {
+                        "hint": "optional custom review instructions"
+                      },
+                      "source": "acp"
+                    },
+                    "review-branch": {
+                      "name": "review-branch",
+                      "description": "Review the code changes against a specific branch",
+                      "input": {
+                        "hint": "branch name"
+                      },
+                      "source": "acp"
+                    },
+                    "review-commit": {
+                      "name": "review-commit",
+                      "description": "Review the code changes introduced by a commit",
+                      "input": {
+                        "hint": "commit sha"
+                      },
+                      "source": "acp"
+                    },
+                    "init": {
+                      "name": "init",
+                      "description": "create an AGENTS.md file with instructions for Codex",
+                      "source": "acp"
+                    },
+                    "compact": {
+                      "name": "compact",
+                      "description": "summarize conversation to prevent hitting the context limit",
+                      "source": "acp"
+                    },
+                    "logout": {
+                      "name": "logout",
+                      "description": "logout of Codex",
+                      "source": "acp"
+                    }
+                  },
+                  "updatedAt": 1782787272339
+                },
+                "acpRun": {
+                  "status": "running",
+                  "threadId": "direct-c57d5694-bae7-47de-9f9a-b2e8b9e9402d",
+                  "acpSessionId": "019f1666-d91c-7db1-bd89-b0af3348268f",
+                  "error": null,
+                  "streamId": "acp:codex:mr01if2z:50204762-fee8-4dc5-96a4-a973cd0a647b",
+                  "updatedAt": 1782787388662
+                }
+              }
+            },
+            "parts": [
+              {
+                "type": "text",
+                "text": "Falling back from WebSockets to HTTPS transport. request timed out",
+                "state": "done"
+              }
+            ]
+          },
+          "createdAt": "2026-06-30T02:43:06.604Z",
+          "updatedAt": "2026-06-30T02:43:08.849Z"
+        }
+      ],
+      "headId": "assistant-mr01if2v-obcffy0ds8"
+    },
+    "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2": {
+      "messages": [
+        {
+          "id": "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2-user",
+          "parent_id": null,
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2-user",
+            "role": "user",
+            "parts": [
+              {
+                "type": "text",
+                "text": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。"
+              }
+            ],
+            "metadata": {
+              "custom": {
+                "acpRun": {
+                  "status": "error",
+                  "threadId": "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2",
+                  "acpSessionId": "1854ecf1-d18d-45b3-990e-df988315fff3",
+                  "error": "Authentication required\n[agent stderr]\nError handling request {\n  jsonrpc: '2.0',\n  id: 2,\n  method: 'session/prompt',\n  params: {\n    sessionId: '1854ecf1-d18d-45b3-990e-df988315fff3',\n    prompt: [ [Object] ]\n  }\n} { code: -32000, message: 'Authentication required', data: undefined }",
+                  "updatedAt": 1782787290323
+                }
+              }
+            }
+          },
+          "createdAt": "2026-06-30T02:41:22.412Z",
+          "updatedAt": "2026-06-30T02:41:30.351Z"
+        }
+      ],
+      "headId": "direct-865a36ac-0bb6-422a-82c0-289d8025bcb2-user"
+    },
+    "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98": {
+      "messages": [
+        {
+          "id": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98-user",
+          "parent_id": null,
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98-user",
+            "role": "user",
+            "parts": [
+              {
+                "type": "text",
+                "text": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。"
+              }
+            ],
+            "metadata": {
+              "custom": {
+                "acpRun": {
+                  "status": "running",
+                  "threadId": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98",
+                  "acpSessionId": null,
+                  "error": null,
+                  "updatedAt": 1782787318558
+                }
+              }
+            }
+          },
+          "createdAt": "2026-06-30T02:41:58.559Z",
+          "updatedAt": "2026-06-30T02:44:03.908Z"
+        },
+        {
+          "id": "assistant-mr01jmp6-p9svwt6j0wn",
+          "parent_id": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98-user",
+          "format": "ai-sdk/v6",
+          "content": {
+            "id": "assistant-mr01jmp6-p9svwt6j0wn",
+            "metadata": {
+              "custom": {
+                "acpAvailableCommands": {
+                  "byName": {
+                    "review": {
+                      "name": "review",
+                      "description": "Review my current changes and find issues",
+                      "input": {
+                        "hint": "optional custom review instructions"
+                      },
+                      "source": "acp"
+                    },
+                    "review-branch": {
+                      "name": "review-branch",
+                      "description": "Review the code changes against a specific branch",
+                      "input": {
+                        "hint": "branch name"
+                      },
+                      "source": "acp"
+                    },
+                    "review-commit": {
+                      "name": "review-commit",
+                      "description": "Review the code changes introduced by a commit",
+                      "input": {
+                        "hint": "commit sha"
+                      },
+                      "source": "acp"
+                    },
+                    "init": {
+                      "name": "init",
+                      "description": "create an AGENTS.md file with instructions for Codex",
+                      "source": "acp"
+                    },
+                    "compact": {
+                      "name": "compact",
+                      "description": "summarize conversation to prevent hitting the context limit",
+                      "source": "acp"
+                    },
+                    "logout": {
+                      "name": "logout",
+                      "description": "logout of Codex",
+                      "source": "acp"
+                    }
+                  },
+                  "updatedAt": 1782787328873
+                },
+                "acpRun": {
+                  "status": "completed",
+                  "threadId": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98",
+                  "acpSessionId": "019f1667-b0c7-72f3-b126-8da5a2440a35",
+                  "error": null,
+                  "updatedAt": 1782787443870
+                },
+                "acpSessionUpdate": {
+                  "usage_update": {
+                    "size": 258400,
+                    "used": 24866,
+                    "sessionUpdate": "usage_update"
+                  },
+                  "updatedAt": 1782787443853
+                }
+              }
+            },
+            "role": "assistant",
+            "parts": [
+              {
+                "type": "step-start"
+              },
+              {
+                "type": "text",
+                "text": "Falling back from WebSockets to HTTPS transport. request timed outAXHUB_AGENT_TEST_OK",
+                "state": "done"
+              }
+            ]
+          },
+          "createdAt": "2026-06-30T02:43:59.825Z",
+          "updatedAt": "2026-06-30T02:44:03.914Z"
+        }
+      ],
+      "headId": "assistant-mr01jmp6-p9svwt6j0wn"
     }
   }
 }
