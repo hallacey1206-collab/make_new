@@ -88,16 +88,20 @@ interface DataPolicy {
 }
 
 const initialDataPolicies: DataPolicy[] = [
-    { id: 'dp1', name: '工厂数据权限', code: 'data_scope_factory', entities: ['设备', '维修工单'], type: 'org', status: 'active', lastModified: '2024-06-01 14:32:00', description: '限制用户只能查看本工厂及下级工厂的数据' },
-    { id: 'dp2', name: '窑线数据权限', code: 'data_scope_kiln_line', entities: ['窑系统运行记录'], type: 'dimension', status: 'active', lastModified: '2024-05-28 09:15:00', description: '按产线维度过滤数据' },
-    { id: 'dp3', name: '客户区域权限', code: 'data_scope_customer_area', entities: ['销售订单'], type: 'userAttr', status: 'active', lastModified: '2024-05-20 11:00:00', description: '仅查看本人负责区域的销售数据' },
-    { id: 'dp4', name: '物料类型权限', code: 'data_scope_material_type', entities: ['物料库存'], type: 'sql', status: 'inactive', lastModified: '2024-04-15 16:45:00', description: '通过自定义SQL限制物料类型可见范围' },
+    { id: 'dp1a', name: '巡检人员查看权限', code: 'data_scope_inspection_self', entities: ['巡检任务', '巡检记录'], type: 'userAttr', status: 'active', lastModified: '2024-06-15 10:20:00', description: '巡检人员只可查看指派给自己的巡检任务和由自己执行的巡检记录', ruleConfig: { userAttrRule: 'selfOnly', baseScope: 'self', groups: [{ logic: 'AND', conditions: [{ matchMode: 'userAttr', valueSource: 'fixed', userAttrField: '当前用户', operator: 'eq', dataField: '巡检人/执行人' }] }] } },
+    { id: 'dp1b', name: '领导层巡检查看权限', code: 'data_scope_inspection_leader', entities: ['巡检任务', '巡检记录'], type: 'userAttr', status: 'active', lastModified: '2024-06-15 10:25:00', description: '领导层可查看本人及下属的任务和记录', ruleConfig: { userAttrRule: 'selfAndSubordinate', baseScope: 'selfAndChildren', groups: [{ logic: 'AND', conditions: [{ matchMode: 'userAttr', valueSource: 'fixed', userAttrField: '当前用户及下属', operator: 'eq', dataField: '巡检人/执行人' }] }] } },
+    { id: 'dp2', name: '车间维修工单查看权限', code: 'data_scope_workshop_repair', entities: ['设备维修工单', '维修计划'], type: 'dimension', status: 'active', lastModified: '2024-06-10 14:30:00', description: '各个车间主任只可查看自己可访问的产线工段下的设备维修工单和维修计划，以及审批流程中由自己处理过的维修工单和维修计划；领导层可以查看全部记录', ruleConfig: { groups: [{ logic: 'AND', conditions: [{ matchMode: 'userAttr', field: 'device.production_line', operator: 'eq', userAttr: 'accessibleProductionLines' }, { matchMode: 'list', field: 'workorder.creator_id', operator: 'eq', valueSource: 'userAttr', userAttrList: 'accessibleProductionLines' }] }] } },
+    { id: 'dp3', name: '物料类型用料申请权限', code: 'data_scope_material_requisition', entities: ['用料申请单'], type: 'dimension', status: 'active', lastModified: '2024-05-25 09:00:00', description: '管电气物料的库管员只查看电气类物料的用料申请单，管机械物料的库管员只查看机械类物料的用料申请单，仓库主任可查看所有的用料申请单' },
+    { id: 'dp4', name: '车间润滑任务查看权限', code: 'data_scope_lubrication', entities: ['润滑任务', '润滑记录'], type: 'dimension', status: 'active', lastModified: '2024-05-18 16:45:00', description: '各个车间主任只查看自己可访问的产线工段下的润滑任务和润滑记录，领导层可查看全部记录' },
 ];
 
 const POLICY_REFERENCES: Record<string, { role: string; org?: string }[]> = {
-    dp1: [
-        { role: '窑操高级', org: 'DCC水泥厂' },
-        { role: '车间安全管理', org: 'Duhok粉磨站' },
+    dp1a: [
+        { role: '巡检员', org: 'DCC水泥厂' },
+    ],
+    dp1b: [
+        { role: '车间主任', org: 'DCC水泥厂' },
+        { role: '生产经理', org: 'DCC水泥厂' },
     ],
     dp2: [
         { role: '生产经理', org: 'DCC水泥厂' },
@@ -105,8 +109,8 @@ const POLICY_REFERENCES: Record<string, { role: string; org?: string }[]> = {
 };
 
 const fieldPermDemo = [
-    { id: 'fp1', entity: '销售合同', field: '合同金额', role: '销售经理', rule: '可见/可编辑' },
-    { id: 'fp2', entity: '销售合同', field: '折扣率', role: '财务经理', rule: '金额>100万时仅财务经理可编辑' },
+    { id: 'fp1', entity: '设备档案-子设备', field: '专业类型', role: '设备工程师', rule: '可见/可编辑' },
+    { id: 'fp2', entity: '设备档案-子设备', field: '型号/规格', role: '设备工程师', rule: '专业类型为电气时可编辑' },
     { id: 'fp3', entity: '化验单', field: '配方成本', role: '财务经理', rule: '仅财务经理可见' },
     { id: 'fp4', entity: '用户档案', field: '手机号', role: '全部', rule: '脱敏：中间四位星号' },
     { id: 'fp5', entity: '用户档案', field: '身份证号', role: '全部', rule: '脱敏：中间八位星号' },
@@ -153,25 +157,23 @@ const ENTITY_META: Record<string, { label: string; fields: { name: string; label
         fields: [
             { name: 'deviceCode', label: '设备编码', type: '文本' },
             { name: 'deviceName', label: '设备名称', type: '文本' },
-            { name: 'manageSection', label: '管理工段', type: '文本' },
-            { name: 'model', label: '规格型号', type: '文本' },
-            { name: 'purchasePrice', label: '采购价格', type: '数值' },
-            { name: 'installDate', label: '安装日期', type: '日期' },
-            { name: 'responsible', label: '负责人', type: '人员' },
-            { name: 'phone', label: '联系电话', type: '手机号' },
-            { name: 'status', label: '设备状态', type: '枚举' },
+            { name: 'workSection', label: '所属工段', type: '文本' },
+            { name: 'deviceModel', label: '设备型号', type: '文本' },
+            { name: 'manufacturer', label: '生产厂家', type: '文本' },
+            { name: 'wearParts', label: '易损部件', type: '文本' },
+            { name: 'processParams', label: '工艺参数', type: '对象' },
         ],
     },
-    '销售合同': {
-        label: '销售合同',
+    '设备档案-子设备': {
+        label: '设备档案-子设备',
         fields: [
-            { name: 'contractNo', label: '合同编号', type: '文本' },
-            { name: 'customerName', label: '客户名称', type: '文本' },
-            { name: 'amount', label: '合同金额', type: '数值' },
-            { name: 'discountRate', label: '折扣率', type: '数值' },
-            { name: 'salesManager', label: '销售经理', type: '人员' },
-            { name: 'signDate', label: '签订日期', type: '日期' },
-            { name: 'paymentTerms', label: '付款条款', type: '文本' },
+            { name: 'deviceCode', label: '设备编码', type: '文本' },
+            { name: 'deviceName', label: '设备名称', type: '文本' },
+            { name: 'subDeviceCode', label: '子设备编码', type: '文本' },
+            { name: 'subDeviceName', label: '子设备名称', type: '文本' },
+            { name: 'professionType', label: '专业类型', type: '枚举' },
+            { name: 'specModel', label: '型号/规格', type: '文本' },
+            { name: 'processParams', label: '工艺参数', type: '对象' },
         ],
     },
     '维修工单': {
@@ -180,11 +182,24 @@ const ENTITY_META: Record<string, { label: string; fields: { name: string; label
             { name: 'woNo', label: '工单编号', type: '文本' },
             { name: 'deviceCode', label: '设备编码', type: '文本' },
             { name: 'deviceName', label: '设备名称', type: '文本' },
-            { name: 'faultDesc', label: '故障描述', type: '文本' },
-            { name: 'repairCost', label: '维修费用', type: '数值' },
-            { name: 'repairer', label: '维修人', type: '人员' },
-            { name: 'startTime', label: '开始时间', type: '日期时间' },
-            { name: 'endTime', label: '结束时间', type: '日期时间' },
+            { name: 'woSource', label: '工单来源', type: '枚举' },
+            { name: 'relatedRecord', label: '关联记录', type: '文本' },
+            { name: 'repairLocation', label: '维修位置', type: '文本' },
+            { name: 'repairContent', label: '维修内容', type: '文本' },
+            { name: 'professionType', label: '专业类型', type: '枚举' },
+            { name: 'planStartTime', label: '计划开始时间', type: '日期时间' },
+            { name: 'planEndTime', label: '计划结束时间', type: '日期时间' },
+            { name: 'planWorkHours', label: '计划工时', type: '数值' },
+            { name: 'mainTools', label: '主要工具', type: '文本' },
+            { name: 'lockoutTagout', label: '停电上锁', type: '枚举' },
+            { name: 'constructionLeader', label: '施工负责人', type: '人员' },
+            { name: 'safetyLeader', label: '安全负责人', type: '人员' },
+            { name: 'projectLeader', label: '项目负责人', type: '人员' },
+            { name: 'techLeader', label: '技术负责人', type: '人员' },
+            { name: 'publisher', label: '发布人', type: '人员' },
+            { name: 'remark', label: '备注', type: '文本' },
+            { name: 'materialRequisition', label: '物料领用', type: '对象' },
+            { name: 'repairPlan', label: '维修方案', type: '文本' },
         ],
     },
 };
@@ -195,35 +210,34 @@ const initialFieldRules: FieldRule[] = [
         name: '设备档案字段权限',
         code: 'field_perm_device',
         entity: '设备档案',
-        description: '限制设备档案中价格、联系方式等敏感字段的可见性和编辑权限',
+        description: '限制设备档案中生产厂家、易损部件等敏感字段的可见性和编辑权限',
         status: 'active',
         lastModified: '2024-06-10 10:30:00',
         fieldConfigs: [
-            { fieldName: 'manageSection', fieldLabel: '管理工段', fieldType: '文本', defaultPermission: 'editable', conditions: [], maskingRule: 'none' },
+            { fieldName: 'workSection', fieldLabel: '所属工段', fieldType: '文本', defaultPermission: 'editable', conditions: [], maskingRule: 'none' },
             { fieldName: 'deviceCode', fieldLabel: '设备编码', fieldType: '文本', defaultPermission: 'readonly', conditions: [
                 { id: 'c1', conditionType: 'role', config: { roles: ['客服'] }, permission: 'editable', priority: 1 },
             ], maskingRule: 'none' },
-            { fieldName: 'purchasePrice', fieldLabel: '采购价格', fieldType: '数值', defaultPermission: 'hidden', conditions: [
+            { fieldName: 'manufacturer', fieldLabel: '生产厂家', fieldType: '文本', defaultPermission: 'hidden', conditions: [
                 { id: 'c2', conditionType: 'role', config: { roles: ['财务经理'] }, permission: 'readonly', priority: 1 },
                 { id: 'c3', conditionType: 'userAttr', config: { attr: '岗位', operator: 'eq', value: '总监' }, permission: 'readonly', priority: 2 },
             ], maskingRule: 'none' },
-            { fieldName: 'phone', fieldLabel: '联系电话', fieldType: '手机号', defaultPermission: 'readonly', conditions: [], maskingRule: 'phone' },
         ],
     },
     {
         id: 'fr2',
-        name: '销售合同字段权限',
-        code: 'field_perm_contract',
-        entity: '销售合同',
-        description: '销售合同金额和折扣率仅财务和销售经理可编辑',
+        name: '设备档案-子设备字段权限',
+        code: 'field_perm_sub_device',
+        entity: '设备档案-子设备',
+        description: '设备档案子设备的专业类型和型号/规格仅设备工程师可编辑',
         status: 'active',
         lastModified: '2024-06-08 14:20:00',
         fieldConfigs: [
-            { fieldName: 'amount', fieldLabel: '合同金额', fieldType: '数值', defaultPermission: 'readonly', conditions: [
-                { id: 'c4', conditionType: 'role', config: { roles: ['销售经理', '财务经理'] }, permission: 'editable', priority: 1 },
+            { fieldName: 'professionType', fieldLabel: '专业类型', fieldType: '枚举', defaultPermission: 'readonly', conditions: [
+                { id: 'c4', conditionType: 'role', config: { roles: ['设备工程师', '工厂管理员'] }, permission: 'editable', priority: 1 },
             ], maskingRule: 'none' },
-            { fieldName: 'discountRate', fieldLabel: '折扣率', fieldType: '数值', defaultPermission: 'readonly', conditions: [
-                { id: 'c5', conditionType: 'role', config: { roles: ['财务经理'] }, permission: 'editable', priority: 1 },
+            { fieldName: 'specModel', fieldLabel: '型号/规格', fieldType: '文本', defaultPermission: 'readonly', conditions: [
+                { id: 'c5', conditionType: 'role', config: { roles: ['设备工程师'] }, permission: 'editable', priority: 1 },
             ], maskingRule: 'none' },
         ],
     },
@@ -232,11 +246,11 @@ const initialFieldRules: FieldRule[] = [
         name: '维修工单字段权限',
         code: 'field_perm_wo',
         entity: '维修工单',
-        description: '维修费用仅管理层可见',
+        description: '维修工单物料领用仅管理层可见',
         status: 'inactive',
         lastModified: '2024-05-20 09:15:00',
         fieldConfigs: [
-            { fieldName: 'repairCost', fieldLabel: '维修费用', fieldType: '数值', defaultPermission: 'hidden', conditions: [
+            { fieldName: 'materialRequisition', fieldLabel: '物料领用', fieldType: '对象', defaultPermission: 'hidden', conditions: [
                 { id: 'c6', conditionType: 'role', config: { roles: ['工厂管理员', '财务经理'] }, permission: 'readonly', priority: 1 },
             ], maskingRule: 'none' },
         ],
@@ -281,7 +295,7 @@ const CONDITION_TYPE_LABEL: Record<ConditionType, string> = {
 
 const ENTITY_OPTIONS = ['设备', '维修工单', '待办事项', '销售订单', '物料库存', '窑系统运行记录', '工厂产量记录'];
 const DIMENSION_OPTIONS = ['产线', '仓库', '区域', '客户等级', '物料类型'];
-const ORG_TYPE_OPTIONS = ['工厂', '矿山', '粉磨站', '仓库', '部门'];
+const ORG_TYPE_OPTIONS = ['集团', '公司', '工厂', '部门', '二级部门'];
 
 const typeMap: Record<PolicyType, string> = {
     org: '组织与层级',
@@ -696,7 +710,7 @@ export default function PermissionPage() {
         },
         {
             key: 'data',
-            label: '数据权限',
+            label: <span data-annotation-id="annotation-16">数据权限</span>,
             children: (
                 <div>
                     <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -723,7 +737,7 @@ export default function PermissionPage() {
         },
         {
             key: 'field',
-            label: '字段权限',
+            label: <span data-annotation-id="annotation-15">字段权限</span>,
             children: (
                 <div>
                     <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
@@ -867,7 +881,7 @@ export default function PermissionPage() {
                     </div>
                 }
             >
-                <Form form={dataPolicyForm} layout="vertical">
+                <Form form={dataPolicyForm} layout="vertical" data-annotation-id="annotation-15">
                     <Divider plain>基本信息</Divider>
                     <Row gutter={16}>
                         <Col span={12}>
@@ -932,185 +946,207 @@ export default function PermissionPage() {
                                                 </Form.Item>
                                             </Col>
                                             <Col span={12}>
-                                                <Form.Item name={['ruleConfig', 'includeChildren']} label=" " valuePropName="checked">
-                                                    <Checkbox>包含子组织</Checkbox>
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
-                                        <Row gutter={16}>
-                                            <Col span={12}>
                                                 <Form.Item name={['ruleConfig', 'orgTypes']} label="组织类型过滤">
                                                     <Select mode="multiple" placeholder="可选限制组织类型" options={ORG_TYPE_OPTIONS.map((o) => ({ label: o, value: o }))} />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={12}>
-                                                <Form.Item name={['ruleConfig', 'parametrized']} label=" " valuePropName="checked">
-                                                    <Checkbox>参数化设计（占位符 {'{{orgId}}'}）</Checkbox>
-                                                </Form.Item>
-                                            </Col>
                                         </Row>
+                                        <Form.Item noStyle shouldUpdate={(prev, cur) => prev.ruleConfig?.baseScope !== cur.ruleConfig?.baseScope}>
+                                            {({ getFieldValue: gv }) => {
+                                                const baseScope = gv(['ruleConfig', 'baseScope']);
+                                                if (baseScope !== 'specified') return null;
+                                                return (
+                                                    <div style={{ marginBottom: 16, padding: '8px 12px', background: 'rgba(0,0,0,0.04)', borderRadius: 6, fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>
+                                                        参数化设计：该策略使用占位符 {'{{orgId}}'}，绑定角色时由角色实例化传入具体组织参数。
+                                                    </div>
+                                                );
+                                            }}
+                                        </Form.Item>
                                     </div>
                                 );
                             }
                             if (type === 'dimension') {
                                 return (
                                     <div>
-                                        <Row gutter={16}>
-                                            <Col span={12}>
-                                                <Form.Item name={['ruleConfig', 'dimensionType']} label="维度类型" rules={[{ required: true }]}>
-                                                    <Select placeholder="请选择维度" options={DIMENSION_OPTIONS.map((d) => ({ label: d, value: d }))} />
-                                                </Form.Item>
-                                            </Col>
-                                        </Row>
-                                        <Form.List name={['ruleConfig', 'rules']}>
-                                            {(fields, { add, remove }) => (
-                                                <div>
-                                                    {fields.map((field, index) => (
-                                                        <div key={field.key} style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: 16, marginBottom: 12, background: '#fafafa' }}>
-                                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                                                                <span style={{ fontWeight: 600 }}>规则 {index + 1}</span>
-                                                                <Button type="link" danger onClick={() => remove(field.name)}>删除</Button>
+                                        <div style={{ border: '1px solid #f0f0f0', borderRadius: 8, padding: 16 }}>
+                                            <Form.List name={['ruleConfig', 'groups']} initialValue={[{ logic: 'AND', conditions: [{ matchMode: 'userAttr' }] }]}>
+                                                {(groupFields, { add: addGroup, remove: removeGroup }) => (
+                                                    <div>
+                                                        {groupFields.map((group, gIdx) => (
+                                                            <div key={group.key}>
+                                                                {gIdx > 0 && (
+                                                                    <Form.Item name={['ruleConfig', 'groupLogic']} initialValue="AND" style={{ marginBottom: 8, textAlign: 'center' }}>
+                                                                        <Select style={{ width: 80 }} options={[
+                                                                            { label: 'AND', value: 'AND' },
+                                                                            { label: 'OR', value: 'OR' },
+                                                                        ]} />
+                                                                    </Form.Item>
+                                                                )}
+                                                                <div style={{ border: '1px solid #e8e8e8', borderRadius: 6, padding: 16, marginBottom: 8, background: '#fafafa' }}>
+                                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                                                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                                            <span style={{ fontWeight: 600, fontSize: 13 }}>条件组 {gIdx + 1}</span>
+                                                                            <Form.Item name={[group.name, 'logic']} initialValue="AND" noStyle>
+                                                                                <Select style={{ width: 72 }} size="small" options={[
+                                                                                    { label: 'AND', value: 'AND' },
+                                                                                    { label: 'OR', value: 'OR' },
+                                                                                ]} />
+                                                                            </Form.Item>
+                                                                        </div>
+                                                                        {groupFields.length > 1 && (
+                                                                            <Button type="link" danger size="small" onClick={() => removeGroup(group.name)}>删除组</Button>
+                                                                        )}
+                                                                    </div>
+                                                                    <Form.List name={[group.name, 'conditions']}>
+                                                                        {(condFields, { add: addCond, remove: removeCond }) => (
+                                                                            <div>
+                                                                                {condFields.map((cond, cIdx) => (
+                                                                                    <div key={cond.key} style={{ border: '1px dashed #d9d9d9', borderRadius: 4, padding: 12, marginBottom: 8, background: '#fff' }}>
+                                                                                        <Form.Item noStyle shouldUpdate={(prev, cur) => {
+                                                                                            const prevMode = prev.ruleConfig?.groups?.[group.name]?.conditions?.[cond.name]?.matchMode;
+                                                                                            const curMode = cur.ruleConfig?.groups?.[group.name]?.conditions?.[cond.name]?.matchMode;
+                                                                                            return prevMode !== curMode;
+                                                                                        }}>
+                                                                                            {({ getFieldValue }) => {
+                                                                                                const mode = getFieldValue(['ruleConfig', 'groups', group.name, 'conditions', cond.name, 'matchMode']);
+                                                                                                return (
+                                                                                                    <div>
+                                                                                                        {(mode === 'userAttr' || mode === 'list') ? (
+                                                                                                            <Row gutter={16}>
+                                                                                                                <Col span={12}>
+                                                                                                                    <Form.Item name={[cond.name, 'matchMode']} label="匹配模式" rules={[{ required: true }]}>
+                                                                                                                        <Select placeholder="请选择" options={[
+                                                                                                                            { label: '用户属性中的维度值', value: 'userAttr' },
+                                                                                                                            { label: '指定列表（参数化）', value: 'list' },
+                                                                                                                            { label: '自定义表达式', value: 'custom' },
+                                                                                                                        ]} />
+                                                                                                                    </Form.Item>
+                                                                                                                </Col>
+                                                                                                                <Col span={12}>
+                                                                                                                    <Form.Item name={[cond.name, 'field']} label="字段" rules={[{ required: true }]}>
+                                                                                                                        <Select placeholder="选择字段" options={[
+                                                                                                                            { label: '设备.产线工段', value: 'device.production_line' },
+                                                                                                                            { label: '设备.工厂ID', value: 'device.factory_id' },
+                                                                                                                            { label: '工单.创建人', value: 'workorder.creator_id' },
+                                                                                                                        ]} />
+                                                                                                                    </Form.Item>
+                                                                                                                </Col>
+                                                                                                            </Row>
+                                                                                                        ) : (
+                                                                                                            <Form.Item name={[cond.name, 'matchMode']} label="匹配模式" rules={[{ required: true }]}>
+                                                                                                                <Select placeholder="请选择" options={[
+                                                                                                                    { label: '用户属性中的维度值', value: 'userAttr' },
+                                                                                                                    { label: '指定列表（参数化）', value: 'list' },
+                                                                                                                    { label: '自定义表达式', value: 'custom' },
+                                                                                                                ]} />
+                                                                                                            </Form.Item>
+                                                                                                        )}
+                                                                                                        {mode === 'userAttr' && (
+                                                                                                            <Row gutter={16}>
+                                                                                                                <Col span={12}>
+                                                                                                                    <Form.Item name={[cond.name, 'operator']} label="操作符" rules={[{ required: true }]}>
+                                                                                                                        <Select placeholder="请选择" options={[
+                                                                                                                            { label: '等于', value: 'eq' },
+                                                                                                                            { label: '不等于', value: 'ne' },
+                                                                                                                            { label: '在...中', value: 'in' },
+                                                                                                                            { label: '不在...中', value: 'notIn' },
+                                                                                                                        ]} />
+                                                                                                                    </Form.Item>
+                                                                                                                </Col>
+                                                                                                                <Col span={12}>
+                                                                                                                    <Form.Item name={[cond.name, 'userAttr']} label="用户属性" rules={[{ required: true }]}>
+                                                                                                                        <Select placeholder="请选择" options={[
+                                                                                                                            { label: '所属产线', value: 'accessibleProductionLines' },
+                                                                                                                            { label: '所属组织', value: 'accessibleOrgs' },
+                                                                                                                            { label: '所属工厂列表', value: 'accessibleFactories' },
+                                                                                                                            { label: '岗位级别', value: 'positionLevel' },
+                                                                                                                        ]} />
+                                                                                                                    </Form.Item>
+                                                                                                                </Col>
+                                                                                                            </Row>
+                                                                                                        )}
+                                                                                                        {mode === 'list' && (
+                                                                                                            <div>
+                                                                                                                <Row gutter={16}>
+                                                                                                                    <Col span={12}>
+                                                                                                                        <Form.Item name={[cond.name, 'operator']} label="操作符" rules={[{ required: true }]}>
+                                                                                                                            <Select placeholder="请选择" options={[
+                                                                                                                                { label: '等于', value: 'eq' },
+                                                                                                                                { label: '不等于', value: 'ne' },
+                                                                                                                                { label: '在...中', value: 'in' },
+                                                                                                                                { label: '不在...中', value: 'notIn' },
+                                                                                                                            ]} />
+                                                                                                                        </Form.Item>
+                                                                                                                    </Col>
+                                                                                                                    <Col span={12}>
+                                                                                                                        <Form.Item name={[cond.name, 'valueSource']} label="值来源" rules={[{ required: true }]}>
+                                                                                                                            <Radio.Group>
+                                                                                                                                <Radio value="fixed">固定列表</Radio>
+                                                                                                                                <Radio value="userAttr">从用户属性获取</Radio>
+                                                                                                                            </Radio.Group>
+                                                                                                                        </Form.Item>
+                                                                                                                    </Col>
+                                                                                                                </Row>
+                                                                                                                <Form.Item noStyle shouldUpdate={(prev, cur) => {
+                                                                                                                    const prevSrc = prev.ruleConfig?.groups?.[group.name]?.conditions?.[cond.name]?.valueSource;
+                                                                                                                    const curSrc = cur.ruleConfig?.groups?.[group.name]?.conditions?.[cond.name]?.valueSource;
+                                                                                                                    return prevSrc !== curSrc;
+                                                                                                                }}>
+                                                                                                                    {({ getFieldValue: gv }) => {
+                                                                                                                        const src = gv(['ruleConfig', 'groups', group.name, 'conditions', cond.name, 'valueSource']);
+                                                                                                                        if (src === 'fixed') {
+                                                                                                                            return (
+                                                                                                                                <Form.Item name={[cond.name, 'fixedValues']} label="固定列表值">
+                                                                                                                                    <Select mode="tags" placeholder="输入值后回车，如 窑线、磨线" />
+                                                                                                                                </Form.Item>
+                                                                                                                            );
+                                                                                                                        }
+                                                                                                                        if (src === 'userAttr') {
+                                                                                                                            return (
+                                                                                                                                <Form.Item name={[cond.name, 'userAttrList']} label="用户属性" rules={[{ required: true }]}>
+                                                                                                                                    <Select placeholder="选择用户多值属性" options={[
+                                                                                                                                        { label: '可访问产线列表', value: 'accessibleProductionLines' },
+                                                                                                                                        { label: '可访问组织列表', value: 'accessibleOrgs' },
+                                                                                                                                        { label: '可访问工厂列表', value: 'accessibleFactories' },
+                                                                                                                                        { label: '用户角色列表', value: 'roles' },
+                                                                                                                                    ]} />
+                                                                                                                                </Form.Item>
+                                                                                                                            );
+                                                                                                                        }
+                                                                                                                        return null;
+                                                                                                                    }}
+                                                                                                                </Form.Item>
+                                                                                                            </div>
+                                                                                                        )}
+                                                                                                        {mode === 'custom' && (
+                                                                                                            <div>
+                                                                                                                <Form.Item name={[cond.name, 'expression']} label="表达式" rules={[{ required: true }]}>
+                                                                                                                    <Input.TextArea placeholder="输入SQL WHERE片段，可用宏变量 {user.orgId}, {user.userId}, {table}" rows={4} />
+                                                                                                                </Form.Item>
+                                                                                                                <Button icon={<Play size={14} />} onClick={() => message.success('语法校验通过')}>校验语法</Button>
+                                                                                                            </div>
+                                                                                                        )}
+                                                                                                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 8 }}>
+                                                                                                            <Button type="link" danger size="small" onClick={() => removeCond(cond.name)}>删除</Button>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                );
+                                                                                            }}
+                                                                                        </Form.Item>
+                                                                                    </div>
+                                                                                ))}
+                                                                                <Button type="dashed" block size="small" icon={<Plus size={14} />} onClick={() => addCond({ matchMode: 'userAttr' })}>添加原子条件</Button>
+                                                                            </div>
+                                                                        )}
+                                                                    </Form.List>
+                                                                </div>
                                                             </div>
-                                                            <Form.Item name={[field.name, 'matchMode']} label="匹配模式" rules={[{ required: true }]}>
-                                                                <Select placeholder="请选择" options={[
-                                                                    { label: '等于用户属性中的维度值', value: 'userAttr' },
-                                                                    { label: '属于指定列表（参数化）', value: 'list' },
-                                                                    { label: '自定义表达式', value: 'custom' },
-                                                                ]} />
-                                                            </Form.Item>
-                                                            <Form.Item noStyle shouldUpdate={(prev, cur) => {
-                                                                const prevMode = prev.ruleConfig?.rules?.[field.name]?.matchMode;
-                                                                const curMode = cur.ruleConfig?.rules?.[field.name]?.matchMode;
-                                                                return prevMode !== curMode;
-                                                            }}>
-                                                                {({ getFieldValue }) => {
-                                                                    const mode = getFieldValue(['ruleConfig', 'rules', field.name, 'matchMode']);
-                                                                    if (mode === 'userAttr') {
-                                                                        return (
-                                                                            <Row gutter={16}>
-                                                                                <Col span={8}>
-                                                                                    <Form.Item name={[field.name, 'field']} label="字段" rules={[{ required: true }]}>
-                                                                                        <Select placeholder="选择字段" options={[
-                                                                                            { label: '设备.产线工段', value: 'device.production_line' },
-                                                                                            { label: '设备.所属工厂', value: 'device.factory_id' },
-                                                                                            { label: '工单.创建人', value: 'workorder.creator_id' },
-                                                                                        ]} />
-                                                                                    </Form.Item>
-                                                                                </Col>
-                                                                                <Col span={8}>
-                                                                                    <Form.Item name={[field.name, 'operator']} label="操作符" rules={[{ required: true }]}>
-                                                                                        <Select placeholder="请选择" options={[
-                                                                                            { label: '等于', value: 'eq' },
-                                                                                            { label: '不等于', value: 'ne' },
-                                                                                        ]} />
-                                                                                    </Form.Item>
-                                                                                </Col>
-                                                                                <Col span={8}>
-                                                                                    <Form.Item name={[field.name, 'userAttr']} label="用户属性" rules={[{ required: true }]}>
-                                                                                        <Select placeholder="请选择" options={[
-                                                                                            { label: '所属组织ID', value: 'orgId' },
-                                                                                            { label: '所属组织名称', value: 'orgName' },
-                                                                                            { label: '岗位级别', value: 'positionLevel' },
-                                                                                            { label: '用户ID', value: 'userId' },
-                                                                                        ]} />
-                                                                                    </Form.Item>
-                                                                                </Col>
-                                                                            </Row>
-                                                                        );
-                                                                    }
-                                                                    if (mode === 'list') {
-                                                                        return (
-                                                                            <div>
-                                                                                <Row gutter={16}>
-                                                                                    <Col span={8}>
-                                                                                        <Form.Item name={[field.name, 'field']} label="字段" rules={[{ required: true }]}>
-                                                                                            <Select placeholder="选择字段" options={[
-                                                                                                { label: '设备.产线工段', value: 'device.production_line' },
-                                                                                                { label: '设备.所属工厂', value: 'device.factory_id' },
-                                                                                                { label: '工单.创建人', value: 'workorder.creator_id' },
-                                                                                            ]} />
-                                                                                        </Form.Item>
-                                                                                    </Col>
-                                                                                    <Col span={8}>
-                                                                                        <Form.Item name={[field.name, 'operator']} label="操作符" rules={[{ required: true }]}>
-                                                                                            <Select placeholder="请选择" options={[
-                                                                                                { label: '等于', value: 'eq' },
-                                                                                                { label: '不等于', value: 'ne' },
-                                                                                            ]} />
-                                                                                        </Form.Item>
-                                                                                    </Col>
-                                                                                </Row>
-                                                                                <Form.Item name={[field.name, 'valueSource']} label="值来源" rules={[{ required: true }]}>
-                                                                                    <Radio.Group>
-                                                                                        <Radio value="fixed">固定列表</Radio>
-                                                                                        <Radio value="userAttr">从用户属性获取</Radio>
-                                                                                    </Radio.Group>
-                                                                                </Form.Item>
-                                                                                <Form.Item noStyle shouldUpdate={(prev, cur) => {
-                                                                                    const prevSrc = prev.ruleConfig?.rules?.[field.name]?.valueSource;
-                                                                                    const curSrc = cur.ruleConfig?.rules?.[field.name]?.valueSource;
-                                                                                    return prevSrc !== curSrc;
-                                                                                }}>
-                                                                                    {({ getFieldValue: gv }) => {
-                                                                                        const src = gv(['ruleConfig', 'rules', field.name, 'valueSource']);
-                                                                                        if (src === 'fixed') {
-                                                                                            return (
-                                                                                                <Form.Item name={[field.name, 'fixedValues']} label="固定列表值">
-                                                                                                    <Select mode="tags" placeholder="输入值后回车，如 窑线、磨线" />
-                                                                                                </Form.Item>
-                                                                                            );
-                                                                                        }
-                                                                                        if (src === 'userAttr') {
-                                                                                            return (
-                                                                                                <Form.Item name={[field.name, 'userAttrList']} label="用户属性" rules={[{ required: true }]}>
-                                                                                                    <Select placeholder="选择用户多值属性" options={[
-                                                                                                        { label: '可访问产线列表', value: 'accessibleProductionLines' },
-                                                                                                        { label: '可访问组织列表', value: 'accessibleOrgs' },
-                                                                                                        { label: '用户角色列表', value: 'roles' },
-                                                                                                    ]} />
-                                                                                                </Form.Item>
-                                                                                            );
-                                                                                        }
-                                                                                        return null;
-                                                                                    }}
-                                                                                </Form.Item>
-                                                                            </div>
-                                                                        );
-                                                                    }
-                                                                    if (mode === 'custom') {
-                                                                        return (
-                                                                            <div>
-                                                                                <Form.Item name={[field.name, 'expression']} label="表达式编辑器" rules={[{ required: true }]}>
-                                                                                    <Input.TextArea placeholder="输入表达式，业务对象别名为 {table}" rows={4} />
-                                                                                </Form.Item>
-                                                                                <div style={{ marginBottom: 12, padding: 8, background: '#f5f5f5', borderRadius: 4, fontSize: 12 }}>
-                                                                                    <div style={{ marginBottom: 4, fontWeight: 600 }}>可用变量（点击插入）：</div>
-                                                                                    <Space wrap>
-                                                                                        {['{当前用户ID}', '{当前用户组织ID}', '{当前时间}', '{table}'].map((v) => (
-                                                                                            <Tag key={v} style={{ cursor: 'pointer' }} onClick={() => {
-                                                                                                const current = dataPolicyForm.getFieldValue(['ruleConfig', 'rules', field.name, 'expression']) || '';
-                                                                                                dataPolicyForm.setFieldValue(['ruleConfig', 'rules', field.name, 'expression'], current + v);
-                                                                                            }}>{v}</Tag>
-                                                                                        ))}
-                                                                                    </Space>
-                                                                                    <div style={{ marginTop: 4, color: 'rgba(0,0,0,0.45)' }}>业务对象别名约定为 {'{table}'}，例如 {'{table}'}.production_line = '窑线'</div>
-                                                                                </div>
-                                                                                <Button icon={<Play size={14} />} onClick={() => message.success('语法校验通过')}>校验语法</Button>
-                                                                            </div>
-                                                                        );
-                                                                    }
-                                                                    return null;
-                                                                }}
-                                                            </Form.Item>
-                                                            {index < fields.length - 1 && (
-                                                                <div style={{ textAlign: 'center', marginTop: 8, color: 'rgba(0,0,0,0.45)', fontSize: 12 }}>AND</div>
-                                                            )}
-                                                        </div>
-                                                    ))}
-                                                    <Button type="dashed" block icon={<Plus size={14} />} onClick={() => add({ matchMode: 'userAttr' })}>新增匹配规则</Button>
-                                                </div>
-                                            )}
-                                        </Form.List>
+                                                        ))}
+                                                        <Button type="dashed" block icon={<Plus size={14} />} onClick={() => addGroup({ logic: 'AND', conditions: [{ matchMode: 'userAttr' }] })}>添加条件组</Button>
+                                                    </div>
+                                                )}
+                                            </Form.List>
+                                        </div>
                                     </div>
                                 );
                             }
@@ -1124,13 +1160,72 @@ export default function PermissionPage() {
                                                         <Space direction="vertical">
                                                             <Radio value="selfOnly">仅本人创建的数据</Radio>
                                                             <Radio value="selfAndSubordinate">本人及下属创建的数据</Radio>
-                                                            <Radio value="selfPosition">仅本岗位的数据</Radio>
                                                             <Radio value="advanced">高级：选择用户属性字段与数据字段比较</Radio>
                                                         </Space>
                                                     </Radio.Group>
                                                 </Form.Item>
                                             </Col>
                                         </Row>
+                                        <Form.Item noStyle shouldUpdate={(prev, cur) => {
+                                            const prevRule = prev.ruleConfig?.userAttrRule;
+                                            const curRule = cur.ruleConfig?.userAttrRule;
+                                            return prevRule !== curRule;
+                                        }}>
+                                            {({ getFieldValue: gv }) => {
+                                                const rule = gv(['ruleConfig', 'userAttrRule']);
+                                                if (rule !== 'advanced') return null;
+                                                return (
+                                                    <div style={{ marginLeft: 24, marginTop: 8, padding: 16, background: 'rgba(0,0,0,0.02)', borderRadius: 8 }}>
+                                                        <Row gutter={16}>
+                                                            <Col span={8}>
+                                                                <Form.Item name={['ruleConfig', 'advancedUserAttr']} label="用户属性字段" rules={[{ required: true }]}>
+                                                                    <Select placeholder="选择用户属性" options={[
+                                                                        { label: '岗位', value: 'position' },
+                                                                        { label: '部门', value: 'department' },
+                                                                        { label: '组织', value: 'organization' },
+                                                                        { label: '工号', value: 'employeeNo' },
+                                                                        { label: '级别', value: 'level' },
+                                                                        { label: '可访问产线', value: 'accessibleLines' },
+                                                                        { label: '可访问组织', value: 'accessibleOrgs' },
+                                                                        { label: '直属上级', value: 'supervisor' },
+                                                                    ]} />
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={8}>
+                                                                <Form.Item name={['ruleConfig', 'advancedOperator']} label="比较操作符" rules={[{ required: true }]} initialValue="eq">
+                                                                    <Select options={[
+                                                                        { label: '等于（=）', value: 'eq' },
+                                                                        { label: '不等于（≠）', value: 'neq' },
+                                                                        { label: '包含', value: 'contains' },
+                                                                        { label: '属于（IN）', value: 'in' },
+                                                                        { label: '不属于（NOT IN）', value: 'notIn' },
+                                                                        { label: '大于（>）', value: 'gt' },
+                                                                        { label: '小于（<）', value: 'lt' },
+                                                                    ]} />
+                                                                </Form.Item>
+                                                            </Col>
+                                                            <Col span={8}>
+                                                                <Form.Item name={['ruleConfig', 'advancedDataField']} label="数据字段" rules={[{ required: true }]}>
+                                                                    <Select placeholder="选择数据字段" options={[
+                                                                        { label: '创建人', value: 'createdBy' },
+                                                                        { label: '创建人岗位', value: 'createdByPosition' },
+                                                                        { label: '创建人部门', value: 'createdByDept' },
+                                                                        { label: '所属组织', value: 'orgId' },
+                                                                        { label: '所属产线', value: 'productionLineId' },
+                                                                        { label: '负责人', value: 'responsiblePerson' },
+                                                                        { label: '负责人岗位', value: 'responsiblePosition' },
+                                                                        { label: '负责人部门', value: 'responsibleDept' },
+                                                                    ]} />
+                                                                </Form.Item>
+                                                            </Col>
+                                                        </Row>
+                                                        <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginTop: 4 }}>
+                                                            规则说明：当用户的「用户属性字段」与数据记录的「数据字段」满足「比较操作符」关系时，该数据可见。
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }}
+                                        </Form.Item>
                                     </div>
                                 );
                             }
@@ -1151,15 +1246,6 @@ export default function PermissionPage() {
                         }}
                     </Form.Item>
 
-                    <Divider plain>策略优先级与合并规则</Divider>
-                    <Form.Item name={['ruleConfig', 'mergeMode']} initialValue="union">
-                        <Radio.Group>
-                            <Space direction="vertical">
-                                <Radio value="union">并集（默认）：用户能看到所有允许的数据</Radio>
-                                <Radio value="intersection">交集（限制性策略）：仅同时满足所有策略的数据可见</Radio>
-                            </Space>
-                        </Radio.Group>
-                    </Form.Item>
                 </Form>
             </Drawer>
 

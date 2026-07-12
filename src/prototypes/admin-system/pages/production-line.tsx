@@ -909,7 +909,7 @@ export default function ProductionLinePage() {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="归属组织" required>
+                            <Form.Item label="归属组织" required data-annotation-id="annotation-14">
                                 <TreeSelect
                                     placeholder="请选择归属组织"
                                     treeData={orgToTreeSelectData(baseOrgData)}

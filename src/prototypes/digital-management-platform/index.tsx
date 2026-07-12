@@ -23,6 +23,8 @@ const route = defineHashPageRoute(
         { id: 'plan-view', title: '投资计划查看' },
         { id: 'filing-management', title: '备案管理' },
         { id: 'expert-database', title: '专家库' },
+        { id: 'filing-wecom-msg', title: '企微审批提醒' },
+        { id: 'filing-wecom-detail', title: '企微审批详情' },
     ],
     { defaultPageId: 'home' },
 );

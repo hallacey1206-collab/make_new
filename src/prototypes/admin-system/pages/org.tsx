@@ -309,7 +309,7 @@ const orgTypeColors: Record<OrgType, string> = {
                 onOk={handleSave}
                 width={720}
             >
-                <Form layout="vertical">
+                <Form layout="vertical" data-annotation-id="annotation-13">
                     <Row gutter={16}>
                         <Col span={8}>
                             <Form.Item label="机构名称" required>

@@ -92,6 +92,9 @@ import {
 } from './data';
 import FilingManagementPage from './filing-management';
 import ExpertDatabasePage, { ExpertStoreProvider } from './expert-database';
+import BudgetFillPage, { BudgetStoreProvider } from './budget-fill';
+import FilingWecomMsgPage from './filing-wecom-msg';
+import FilingWecomDetailPage from './filing-wecom-detail';
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -155,6 +158,8 @@ const pageGroupOpenKeyMap: Record<MenuPageId, string> = {
     'supplier-eval': 'project',
     'expert-database': 'resource',
     'resource-sharing': 'resource',
+    'filing-wecom-msg': 'project',
+    'filing-wecom-detail': 'project',
 };
 
 function nowString() {
@@ -756,6 +761,44 @@ function BasicFormSection({ form, readonly = false }: { form: any; readonly?: bo
                 <Col xs={24} md={12}>
                     <Form.Item name="buildType" label="建设类型" rules={[{ required: true }]}>
                         <Select options={buildTypeOptions} />
+                    </Form.Item>
+                </Col>
+                <Col xs={24}>
+                    <Form.Item
+                        name="projectBrief"
+                        label="项目简述"
+                        rules={[{ required: true, min: 20, max: 500, message: '请输入20~500字符的项目简述。' }]}
+                    >
+                        <TextArea rows={3} minLength={20} maxLength={500} showCount placeholder="请输入项目简述" />
+                    </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                    <Form.Item
+                        name="projectGoal"
+                        label="项目目标"
+                        rules={[{ required: true, message: '请选择项目目标。' }]}
+                    >
+                        <Select
+                            options={[
+                                { value: '1', label: '降低成本' },
+                                { value: '2', label: '提高效率' },
+                                { value: '3', label: '提升质量' },
+                                { value: '4', label: '自主可控' },
+                                { value: '5', label: '网络安全' },
+                                { value: '6', label: '社会责任' },
+                                { value: '7', label: '变革创新' },
+                            ]}
+                            placeholder="请选择项目目标"
+                        />
+                    </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                    <Form.Item
+                        name="goalContent"
+                        label="目标内容"
+                        rules={[{ required: true, max: 100, message: '请输入最多100字符的目标内容。' }]}
+                    >
+                        <Input maxLength={100} showCount placeholder="请输入目标内容" />
                     </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
@@ -2088,14 +2131,39 @@ function AppContent() {
                 return <PlanReviewPage />;
             case 'plan-view':
                 return <PlanViewPage />;
+            case 'budget-fill':
+                return <BudgetFillPage />;
             case 'filing-management':
                 return <FilingManagementPage />;
             case 'expert-database':
                 return <ExpertDatabasePage />;
+            case 'filing-wecom-msg':
+                return <FilingWecomMsgPage />;
+            case 'filing-wecom-detail':
+                return <FilingWecomDetailPage />;
             default:
                 return <PlaceholderPage pageId={page as MenuPageId} />;
         }
     };
+
+    // H5 企微页面不需要 PC shell 布局，独立渲染（模拟手机预览）
+    const isWecomPage = page === 'filing-wecom-msg' || page === 'filing-wecom-detail';
+
+    if (isWecomPage) {
+        return (
+            <ExpertStoreProvider>
+                <BudgetStoreProvider>
+                    <PlatformStoreProvider>
+                        <App>
+                            <div className="dmp-wecom-preview">
+                                {renderPage()}
+                            </div>
+                        </App>
+                    </PlatformStoreProvider>
+                </BudgetStoreProvider>
+            </ExpertStoreProvider>
+        );
+    }
 
     return (
         <Layout className="dmp-shell">
@@ -2215,11 +2283,13 @@ function AppContent() {
 
                 <Content className="dmp-content">
                     <ExpertStoreProvider>
-                        <PlatformStoreProvider>
-                            <App>
-                                {renderPage()}
-                            </App>
-                        </PlatformStoreProvider>
+                        <BudgetStoreProvider>
+                            <PlatformStoreProvider>
+                                <App>
+                                    {renderPage()}
+                                </App>
+                            </PlatformStoreProvider>
+                        </BudgetStoreProvider>
                     </ExpertStoreProvider>
                 </Content>
             </Layout>

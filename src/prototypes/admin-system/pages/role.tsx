@@ -27,6 +27,7 @@ import {
     Tabs,
     Tree,
     Checkbox,
+    Divider,
     Radio,
     Pagination,
     message,
@@ -155,32 +156,31 @@ const allFieldRules: FieldRule[] = [
         name: '设备档案字段权限',
         code: 'field_perm_device',
         entity: '设备档案',
-        description: '限制设备档案中价格、联系方式等敏感字段的可见性和编辑权限',
+        description: '限制设备档案中生产厂家、易损部件等敏感字段的可见性和编辑权限',
         status: 'active',
         fieldConfigs: [
-            { fieldName: 'manageSection', fieldLabel: '管理工段', fieldType: '文本', defaultPermission: 'editable', conditions: [], maskingRule: 'none' },
+            { fieldName: 'workSection', fieldLabel: '所属工段', fieldType: '文本', defaultPermission: 'editable', conditions: [], maskingRule: 'none' },
             { fieldName: 'deviceCode', fieldLabel: '设备编码', fieldType: '文本', defaultPermission: 'readonly', conditions: [
                 { id: 'c1', conditionType: 'role', config: { roles: ['客服'] }, permission: 'editable', priority: 1 },
             ], maskingRule: 'none' },
-            { fieldName: 'purchasePrice', fieldLabel: '采购价格', fieldType: '数值', defaultPermission: 'hidden', conditions: [
+            { fieldName: 'manufacturer', fieldLabel: '生产厂家', fieldType: '文本', defaultPermission: 'hidden', conditions: [
                 { id: 'c2', conditionType: 'role', config: { roles: ['财务经理'] }, permission: 'readonly', priority: 1 },
             ], maskingRule: 'none' },
-            { fieldName: 'phone', fieldLabel: '联系电话', fieldType: '手机号', defaultPermission: 'readonly', conditions: [], maskingRule: 'phone' },
         ],
     },
     {
         id: 'fr2',
-        name: '销售合同字段权限',
-        code: 'field_perm_contract',
-        entity: '销售合同',
-        description: '销售合同金额和折扣率仅财务和销售经理可编辑',
+        name: '设备档案-子设备字段权限',
+        code: 'field_perm_sub_device',
+        entity: '设备档案-子设备',
+        description: '设备档案子设备的专业类型和型号/规格仅设备工程师可编辑',
         status: 'active',
         fieldConfigs: [
-            { fieldName: 'amount', fieldLabel: '合同金额', fieldType: '数值', defaultPermission: 'readonly', conditions: [
-                { id: 'c4', conditionType: 'role', config: { roles: ['销售经理', '财务经理'] }, permission: 'editable', priority: 1 },
+            { fieldName: 'professionType', fieldLabel: '专业类型', fieldType: '枚举', defaultPermission: 'readonly', conditions: [
+                { id: 'c4', conditionType: 'role', config: { roles: ['设备工程师', '工厂管理员'] }, permission: 'editable', priority: 1 },
             ], maskingRule: 'none' },
-            { fieldName: 'discountRate', fieldLabel: '折扣率', fieldType: '数值', defaultPermission: 'readonly', conditions: [
-                { id: 'c5', conditionType: 'role', config: { roles: ['财务经理'] }, permission: 'editable', priority: 1 },
+            { fieldName: 'specModel', fieldLabel: '型号/规格', fieldType: '文本', defaultPermission: 'readonly', conditions: [
+                { id: 'c5', conditionType: 'role', config: { roles: ['设备工程师'] }, permission: 'editable', priority: 1 },
             ], maskingRule: 'none' },
         ],
     },
@@ -189,10 +189,10 @@ const allFieldRules: FieldRule[] = [
         name: '维修工单字段权限',
         code: 'field_perm_wo',
         entity: '维修工单',
-        description: '维修费用仅管理层可见',
+        description: '维修工单物料领用仅管理层可见',
         status: 'inactive',
         fieldConfigs: [
-            { fieldName: 'repairCost', fieldLabel: '维修费用', fieldType: '数值', defaultPermission: 'hidden', conditions: [
+            { fieldName: 'materialRequisition', fieldLabel: '物料领用', fieldType: '对象', defaultPermission: 'hidden', conditions: [
                 { id: 'c6', conditionType: 'role', config: { roles: ['工厂管理员', '财务经理'] }, permission: 'readonly', priority: 1 },
             ], maskingRule: 'none' },
         ],
@@ -1202,7 +1202,7 @@ function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes }: MenuTr
                             </Space>
                         </div>
                         <div style={{ flex: 1, overflow: 'hidden' }}>
-                        <Tabs className="perm-tabs" activeKey={permTab} onChange={(k) => setPermTab(k)} items={[
+                        <Tabs className="perm-tabs" data-annotation-id="annotation-12" activeKey={permTab} onChange={(k) => setPermTab(k)} items={[
                             {
                                 key: 'operate',
                                 label: '功能权限',
@@ -1319,6 +1319,13 @@ function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes }: MenuTr
                                         {allDataPolicies.filter((p) => p.status === 'active').length === 0 && (
                                             <div className="admin-empty" style={{ padding: 40 }}>暂无启用的数据权限策略</div>
                                         )}
+                                        <Divider plain style={{ marginTop: 24 }}>策略优先级与合并规则</Divider>
+                                        <Radio.Group defaultValue="union" style={{ width: '100%' }}>
+                                            <Space direction="vertical" style={{ width: '100%' }}>
+                                                <Radio value="union">并集（默认）：用户能看到所有允许的数据</Radio>
+                                                <Radio value="intersection">交集（限制性策略）：仅同时满足所有策略的数据可见</Radio>
+                                            </Space>
+                                        </Radio.Group>
                                     </div>
                                 ),
                             },

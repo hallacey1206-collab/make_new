@@ -28,7 +28,9 @@ export type MenuPageId =
     | 'post-eval-management'
     | 'supplier-eval'
     | 'expert-database'
-    | 'resource-sharing';
+    | 'resource-sharing'
+    | 'filing-wecom-msg'
+    | 'filing-wecom-detail';
 
 export type PlanStatus = 'draft' | 'pending-review' | 'approved' | 'returned';
 
@@ -221,6 +223,8 @@ export const menuGroups: MenuGroup[] = [
         children: [
             { id: 'expert-database', title: '专家库', summary: '专家信息维护与查询管理。' },
             { id: 'resource-sharing', title: '资源共享', summary: '模板、制度、附件集中共享。' },
+            { id: 'filing-wecom-msg', title: '企微审批提醒', summary: '企微端备案审批消息提醒。' },
+            { id: 'filing-wecom-detail', title: '企微审批详情', summary: '企微端备案审批详情H5页面。' },
         ],
     },
 ];
@@ -247,7 +251,10 @@ export const pageOrder: MenuPageId[] = [
     'project-post-eval',
     'post-eval-management',
     'supplier-eval',
+    'expert-database',
     'resource-sharing',
+    'filing-wecom-msg',
+    'filing-wecom-detail',
 ];
 
 export const pageMeta: Record<MenuPageId, {
@@ -369,6 +376,16 @@ export const pageMeta: Record<MenuPageId, {
         title: '资源共享',
         group: '资源库',
         summary: '模板、制度和附件统一共享入口。',
+    },
+    'filing-wecom-msg': {
+        title: '企微审批提醒',
+        group: '项目管理',
+        summary: '企微端备案审批消息提醒列表。',
+    },
+    'filing-wecom-detail': {
+        title: '企微审批详情',
+        group: '项目管理',
+        summary: '企微端备案审批详情H5页面。',
     },
 };
 
@@ -846,6 +863,453 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
         submitTime: `${currentPlanYear}-06-23 09:00`,
     }),
 ];
+
+// ============ 预算填报相关类型与数据 ============
+
+export type BudgetStatus = 'draft' | 'pending-review' | 'approved' | 'returned';
+
+export type BudgetTabType = 'inner' | 'outer';
+
+export type BudgetRecord = {
+    id: string;
+    budgetCode: string;
+    linkedToInvestmentPlan: string;
+    investmentPlanName: string;
+    projectName: string;
+    budgetCategory: string;
+    unitName: string;
+    enterpriseType: string;
+    fiveMeasuresCategory: string;
+    measureSubItem: string;
+    businessDomain: string;
+    fiveTransformation: string;
+    projectGoal: string;
+    goalContent: string;
+    buildMode: string;
+    buildType: string;
+    accountingSubject: string;
+    managedDept: string;
+    responsiblePerson: string;
+    projectCategory: string;
+    projectBrief: string;
+    supportSecondCurve: string;
+    planProgress: string;
+    includedInOtherBudget: string;
+    otherBudgetName: string;
+    startDate: string;
+    endDate: string;
+    totalInvestment: number;
+    selfFunding: number;
+    externalFunding: number;
+    otherFunding: number;
+    softwareFunding: number;
+    hardwareFunding: number;
+    otherTechFunding: number;
+    tabType: BudgetTabType;
+    status: BudgetStatus;
+    version: string;
+    creator: string;
+    submitTime?: string;
+    reviewTime?: string;
+    reviewRemark?: string;
+    reviewer?: string;
+    updatedAt: string;
+};
+
+export const budgetCategoryOptions = [
+    { value: '01', label: '01 | 项目类' },
+    { value: '02', label: '02 | 非项目类' },
+];
+
+export const enterpriseTypeOptions = [
+    { value: '01', label: '01 | 集团/股份总部(集团)' },
+    { value: '02', label: '02 | 基础建材' },
+    { value: '03', label: '03 | 新材料' },
+    { value: '04', label: '04 | 工程服务' },
+    { value: '05', label: '05 | 物流贸易(集团)' },
+];
+
+export const fiveMeasuresCategoryOptions = [
+    { value: '0101', label: '0101 | 国有资本做强做优做大(集团)' },
+    { value: '0102', label: '0102 | 管理体系协同高效(集团)' },
+    { value: '0103', label: '0103 | 监管体系全局贯通(集团)' },
+    { value: '0104', label: '0104 | 生产链条转型升级(集团)' },
+    { value: '0105', label: '0105 | 数字服务能力培养(集团)' },
+    { value: '0106', label: '0106 | 数字化治理体系变革' },
+    { value: '0107', label: '0107 | 数据治理体系变革' },
+    { value: '0108', label: '0108 | 管理流程变革' },
+    { value: '0109', label: '0109 | 数字底座' },
+    { value: '0201', label: '0201 | 管理体系标准引领(基础建材)' },
+    { value: '0202', label: '0202 | 监管体系透明贯通(基础建材)' },
+    { value: '0203', label: '0203 | 供销服高效协同(基础建材)' },
+    { value: '0204', label: '0204 | 生产制造提质降本增效(基础建材)' },
+    { value: '0205', label: '0205 | 产业资源共享服务平台(基础建材)' },
+    { value: '0206', label: '0206 | 数字化治理体系变革' },
+    { value: '0207', label: '0207 | 数据治理体系变革' },
+    { value: '0208', label: '0208 | 管理流程变革' },
+    { value: '0209', label: '0209 | 数字底座' },
+    { value: '0301', label: '0301 | 管理体系智能精益(新材料)' },
+    { value: '0302', label: '0302 | 监管体系透明贯通(新材料)' },
+    { value: '0303', label: '0303 | 产业发展创新培育(新材料)' },
+    { value: '0304', label: '0304 | 生产运营优化升级(新材料)' },
+    { value: '0305', label: '0305 | 产业链数字服务平台(新材料)' },
+    { value: '0306', label: '0306 | 数字化治理体系变革' },
+    { value: '0307', label: '0307 | 数据治理体系变革' },
+    { value: '0308', label: '0308 | 管理流程变革' },
+    { value: '0309', label: '0309 | 数字底座' },
+    { value: '0401', label: '0401 | 客户服务体验提升(工程服务)' },
+    { value: '0402', label: '0402 | 主营业务智能升级(工程服务)' },
+    { value: '0403', label: '0403 | 管理体系精细高效(工程服务)' },
+    { value: '0404', label: '0404 | 监管体系透明贯通(工程服务)' },
+    { value: '0405', label: '0405 | 数字化服务增值平台(工程服务)' },
+    { value: '0406', label: '0406 | 数字化治理体系变革' },
+    { value: '0407', label: '0407 | 数据治理体系变革' },
+    { value: '0408', label: '0408 | 管理流程变革' },
+    { value: '0409', label: '0409 | 数字底座' },
+    { value: '0501', label: '0501 | 国有资本做强做优做大(集团)' },
+    { value: '0502', label: '0502 | 管理体系协同高效(集团)' },
+    { value: '0503', label: '0503 | 监管体系全局贯通(集团)' },
+    { value: '0504', label: '0504 | 生产链条转型升级(集团)' },
+    { value: '0505', label: '0505 | 数字服务能力培养(集团)' },
+    { value: '0506', label: '0506 | 数字化治理体系变革' },
+    { value: '0507', label: '0507 | 数据治理体系变革' },
+    { value: '0508', label: '0508 | 管理流程变革' },
+    { value: '0509', label: '0509 | 数字底座' },
+];
+
+export const measureSubItemCascadeMap: Record<string, Array<{ value: string; label: string }>> = {
+    '0101': [
+        { value: '010101', label: '010101 | 行业分析数字化' },
+        { value: '010102', label: '010102 | 投资管理数字化' },
+    ],
+    '0102': [
+        { value: '010201', label: '010201 | 经营管理过程数字化' },
+        { value: '010202', label: '010202 | 经营管理分析决策数字化' },
+    ],
+    '0103': [
+        { value: '010301', label: '010301 | 全级次监管数字化' },
+        { value: '010302', label: '010302 | 监管分析决策数字化' },
+    ],
+    '0104': [
+        { value: '010401', label: '010401 | 研产供销服数字化' },
+        { value: '010402', label: '010402 | 绿色发展数字化' },
+        { value: '010403', label: '010403 | 主业供销赋能数字化' },
+    ],
+    '0105': [
+        { value: '010501', label: '010501 | 产业化数字服务能力' },
+        { value: '010502', label: '010502 | 产融服务能力' },
+    ],
+    '0106': [{ value: '0106', label: '0106 | 数字化治理体系变革' }],
+    '0107': [{ value: '0107', label: '0107 | 数据治理体系变革' }],
+    '0108': [{ value: '0108', label: '0108 | 管理流程变革' }],
+    '0109': [{ value: '0109', label: '0109 | 数字底座' }],
+    '0201': [
+        { value: '020101', label: '020101 | 经营管理过程数字化' },
+        { value: '020102', label: '020102 | 经营管理分析决策数字化' },
+    ],
+    '0202': [
+        { value: '020201', label: '020201 | 监管过程数字化' },
+        { value: '020202', label: '020202 | 监管分析决策数字化' },
+    ],
+    '0203': [
+        { value: '020301', label: '020301 | 供应链数字化' },
+        { value: '020302', label: '020302 | 敏捷服务智能化' },
+    ],
+    '0204': [
+        { value: '020401', label: '020401 | 生产数字化' },
+        { value: '020402', label: '020402 | 绿色发展数字化' },
+    ],
+    '0205': [{ value: '020501', label: '020501 | 平台化服务能力' }],
+    '0206': [{ value: '0206', label: '0206 | 数字化治理体系变革' }],
+    '0207': [{ value: '0207', label: '0207 | 数据治理体系变革' }],
+    '0208': [{ value: '0208', label: '0208 | 管理流程变革' }],
+    '0209': [{ value: '0209', label: '0209 | 数字底座' }],
+    '0301': [
+        { value: '030101', label: '030101 | 经营管理数字化' },
+    ],
+    '0302': [
+        { value: '030201', label: '030201 | 监督管理一体化' },
+        { value: '030202', label: '030202 | 监督决策数字化' },
+    ],
+    '0303': [
+        { value: '030301', label: '030301 | 研发设计数字化' },
+        { value: '030302', label: '030302 | 成果转化数字化' },
+        { value: '030303', label: '030303 | 产品开发集成化' },
+    ],
+    '0304': [
+        { value: '030401', label: '030401 | 生产运营智能化' },
+        { value: '030402', label: '030402 | 绿色发展数字化' },
+    ],
+    '0305': [
+        { value: '030501', label: '030501 | 服务产品化能力' },
+        { value: '030502', label: '030502 | 行业资源共享能力' },
+    ],
+    '0306': [{ value: '0306', label: '0306 | 数字化治理体系变革' }],
+    '0307': [{ value: '0307', label: '0307 | 数据治理体系变革' }],
+    '0308': [{ value: '0308', label: '0308 | 管理流程变革' }],
+    '0309': [{ value: '0309', label: '0309 | 数字底座' }],
+    '0401': [
+        { value: '040101', label: '040101 | 客户需求定制化' },
+        { value: '040102', label: '040102 | 客户管理全面化' },
+    ],
+    '0402': [
+        { value: '040201', label: '040201 | 研发设计一体化' },
+        { value: '040202', label: '040202 | 装备高端化' },
+        { value: '040203', label: '040203 | 采购智能化' },
+        { value: '040204', label: '040204 | 工厂智能化' },
+        { value: '040205', label: '040205 | 工程建造智能化' },
+        { value: '040206', label: '040206 | 工厂运维智能化' },
+        { value: '040207', label: '040207 | EPC与装备制造协同化' },
+        { value: '040208', label: '040208 | 业务板块间协同化' },
+        { value: '040209', label: '040209 | 资源管理智能化' },
+        { value: '040210', label: '040210 | 项目全周期数字化' },
+    ],
+    '0403': [
+        { value: '040301', label: '040301 | 经营管理协同化' },
+        { value: '040302', label: '040302 | 经营决策数字化' },
+    ],
+    '0404': [
+        { value: '040401', label: '040401 | 监督管理一体化' },
+        { value: '040402', label: '040402 | 监督决策数字化' },
+    ],
+    '0405': [
+        { value: '040501', label: '040501 | 智慧矿山增值服务能力' },
+        { value: '040502', label: '040502 | 智能制造增值服务能力' },
+        { value: '040503', label: '040503 | 智能装备增值服务能力' },
+    ],
+    '0406': [{ value: '0406', label: '0406 | 数字化治理体系变革' }],
+    '0407': [{ value: '0407', label: '0407 | 数据治理体系变革' }],
+    '0408': [{ value: '0408', label: '0408 | 管理流程变革' }],
+    '0409': [{ value: '0409', label: '0409 | 数字底座' }],
+    '0501': [
+        { value: '050101', label: '050101 | 行业分析数字化' },
+        { value: '050102', label: '050102 | 投资管理数字化' },
+    ],
+    '0502': [
+        { value: '050201', label: '050201 | 经营管理过程数字化' },
+        { value: '050202', label: '050202 | 经营管理分析决策数字化' },
+    ],
+    '0503': [
+        { value: '050301', label: '050301 | 全级次监管数字化' },
+        { value: '050302', label: '050302 | 监管分析决策数字化' },
+    ],
+    '0504': [
+        { value: '050401', label: '050401 | 研产供销服数字化' },
+        { value: '050402', label: '050402 | 绿色发展数字化' },
+        { value: '050403', label: '050403 | 主业供销赋能数字化' },
+    ],
+    '0505': [
+        { value: '050501', label: '050501 | 产业化数字服务能力' },
+        { value: '050502', label: '050502 | 产融服务能力' },
+    ],
+    '0506': [{ value: '0506', label: '0506 | 数字化治理体系变革' }],
+    '0507': [{ value: '0507', label: '0507 | 数据治理体系变革' }],
+    '0508': [{ value: '0508', label: '0508 | 管理流程变革' }],
+    '0509': [{ value: '0509', label: '0509 | 数字底座' }],
+};
+
+export const budgetBusinessDomainOptions = [
+    { value: '01', label: '01 | 党建工作' },
+    { value: '02', label: '02 | 战略管理' },
+    { value: '03', label: '03 | 资本投资' },
+    { value: '04', label: '04 | 公司治理与改革' },
+    { value: '05', label: '05 | 国际化发展' },
+    { value: '06', label: '06 | 法治风控' },
+    { value: '07', label: '07 | 内部审计' },
+    { value: '08', label: '08 | 纪检监察' },
+    { value: '09', label: '09 | 巡视巡察' },
+    { value: '10', label: '10 | 科研创新' },
+    { value: '11', label: '11 | 安全环保' },
+    { value: '12', label: '12 | 运营管理' },
+    { value: '13', label: '13 | 生产管理' },
+    { value: '14', label: '14 | 营销管理' },
+    { value: '15', label: '15 | 服务管理' },
+    { value: '16', label: '16 | 人力资源管理' },
+    { value: '17', label: '17 | 财务管理' },
+    { value: '18', label: '18 | 采购与供应链' },
+    { value: '19', label: '19 | 数字化管理' },
+    { value: '20', label: '20 | 决策支持与综合服务' },
+    { value: '21', label: '21 | 基础建材业务运营' },
+    { value: '22', label: '22 | 新材料业务运营' },
+    { value: '23', label: '23 | 工程服务业务运营' },
+    { value: '24', label: '24 | 物流贸易业务运营' },
+];
+
+export const fiveTransformationOptions = [
+    { value: 'YF', label: 'YF | 研发数字化' },
+    { value: 'JY', label: 'JY | 经营一体化' },
+    { value: 'SC', label: 'SC | 生产智能化' },
+    { value: 'FW', label: 'FW | 服务敏捷化' },
+    { value: 'CY', label: 'CY | 产业生态化' },
+];
+
+export const projectGoalOptions = [
+    { value: '1', label: '1 | 降低成本' },
+    { value: '2', label: '2 | 提高效率' },
+    { value: '3', label: '3 | 提升质量' },
+    { value: '4', label: '4 | 自主可控' },
+    { value: '5', label: '5 | 网络安全' },
+    { value: '6', label: '6 | 社会责任' },
+    { value: '7', label: '7 | 变革创新' },
+];
+
+export const budgetBuildTypeOptions = [
+    { value: '01', label: '01 | 新建' },
+    { value: '02', label: '02 | 优化' },
+    { value: '03', label: '03 | 运维' },
+    { value: '04', label: '04 | 在建' },
+];
+
+export const planProgressOptions = [
+    { value: '01', label: '01 | 需求分析' },
+    { value: '02', label: '02 | 初步设计' },
+    { value: '03', label: '03 | 详细设计' },
+    { value: '04', label: '04 | 开发' },
+    { value: '05', label: '05 | 测试' },
+    { value: '06', label: '06 | 试运行' },
+    { value: '07', label: '07 | 上线' },
+    { value: '08', label: '08 | 上线验收' },
+];
+
+export const budgetProjectCategoryOptions = [
+    { value: '1', label: `${currentPlanYear}年新增的项目` },
+    { value: '2', label: `${currentPlanYear - 1}年预算内未开工的，${currentPlanYear}年开工的项目` },
+    { value: '3', label: `${currentPlanYear - 1}年预算内开工的，${currentPlanYear}年续建的项目` },
+    { value: '4', label: `已完工、已验收、已开票的，${currentPlanYear}年付款的项目` },
+    { value: '5', label: `已完工，已验收、未开票的，${currentPlanYear}年开票、付款的项目` },
+    { value: '6', label: `已完工、未验收、未开票的，${currentPlanYear}年验收、开票、付款的项目` },
+];
+
+const budgetStatusMeta: Record<BudgetStatus, { label: string; color: string }> = {
+    draft: { label: '草稿', color: 'default' },
+    'pending-review': { label: '待审核', color: 'processing' },
+    approved: { label: '通过', color: 'success' },
+    returned: { label: '退回', color: 'error' },
+};
+
+function buildBaseBudgetRecord(overrides: Partial<BudgetRecord> & Pick<BudgetRecord, 'id' | 'budgetCode' | 'projectName' | 'unitName' | 'tabType' | 'status'>): BudgetRecord {
+    const {
+        id,
+        budgetCode,
+        projectName,
+        unitName,
+        tabType,
+        status,
+        ...rest
+    } = overrides;
+    const now = `${currentPlanYear}-06-24 09:30`;
+    return {
+        id,
+        budgetCode,
+        linkedToInvestmentPlan: '01',
+        investmentPlanName: '集团数字化专项投资计划',
+        projectName,
+        budgetCategory: '01',
+        unitName,
+        enterpriseType: '01',
+        fiveMeasuresCategory: '0101',
+        measureSubItem: '010101',
+        businessDomain: '19',
+        fiveTransformation: 'JY',
+        projectGoal: '2',
+        goalContent: '提升预算编制效率与数据准确性',
+        buildMode: '02',
+        buildType: '01',
+        accountingSubject: '01',
+        managedDept: '数字化管理部',
+        responsiblePerson: '张明远',
+        projectCategory: '1',
+        projectBrief: '预算编制与管理数字化建设，实现统一预算口径、自动关联投资计划与预算执行数据。涵盖预算上报、审核、统计全流程。',
+        supportSecondCurve: '02',
+        planProgress: '04',
+        includedInOtherBudget: '02',
+        otherBudgetName: '',
+        startDate: `${currentPlanYear}-01-08`,
+        endDate: `${currentPlanYear}-12-20`,
+        totalInvestment: 350,
+        selfFunding: 200,
+        externalFunding: 100,
+        otherFunding: 50,
+        softwareFunding: 180,
+        hardwareFunding: 100,
+        otherTechFunding: 70,
+        tabType,
+        status,
+        version: 'V1.0',
+        creator: '预算管理员',
+        updatedAt: now,
+        ...rest,
+    };
+}
+
+export const initialBudgetRecords: BudgetRecord[] = [
+    buildBaseBudgetRecord({
+        id: 'budget-001',
+        budgetCode: `YS-ZCGJ-${currentPlanYear}-0001`,
+        projectName: '中材南京年度预算一体化平台建设',
+        unitName: '信息化管理部',
+        tabType: 'inner',
+        status: 'draft',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-002',
+        budgetCode: `YS-ZCGJ-${currentPlanYear}-0002`,
+        projectName: '中国建材装备集团协同能力预算优化',
+        unitName: '数字化中心',
+        tabType: 'inner',
+        status: 'returned',
+        reviewRemark: '请补充预算拆分明细和关联投资计划。',
+        reviewer: '王审核',
+        reviewTime: `${currentPlanYear}-06-20 15:15`,
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-003',
+        budgetCode: `YS-ZCGJ-${currentPlanYear}-0003`,
+        projectName: '合肥装备科技智能制造数据看板预算',
+        unitName: '运营管理部',
+        tabType: 'inner',
+        enterpriseType: '04',
+        status: 'draft',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-004',
+        budgetCode: `YS-ZCGJ-${currentPlanYear}-0004`,
+        projectName: '凯盛科技共享资源沉淀平台预算外项目',
+        unitName: '数字化管理部',
+        tabType: 'outer',
+        linkedToInvestmentPlan: '02',
+        investmentPlanName: '',
+        enterpriseType: '01',
+        status: 'draft',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-005',
+        budgetCode: `YS-ZCGJ-${currentPlanYear}-0005`,
+        projectName: '财务公司年度预算收口管理项目',
+        unitName: '计划财务部',
+        tabType: 'inner',
+        status: 'pending-review',
+        submitTime: `${currentPlanYear}-06-20 10:08`,
+    }),
+];
+
+export function getNextBudgetCode(sequence: number) {
+    return `YS-ZCGJ-${currentPlanYear}-${String(sequence).padStart(4, '0')}`;
+}
+
+export function getNextBudgetVersion(sequence: number) {
+    return `V${String(sequence).padStart(1, '0')}.0`;
+}
+
+export { budgetStatusMeta };
+
+export function getBudgetStatusLabel(status: BudgetStatus): string {
+    return budgetStatusMeta[status]?.label || status;
+}
+
+export function getBudgetStatusColor(status: BudgetStatus): string {
+    return budgetStatusMeta[status]?.color || 'default';
+}
 
 export function getNextPlanCode(sequence: number) {
     return `JH-ZCGJ-${currentPlanYear}-${String(sequence).padStart(4, '0')}`;

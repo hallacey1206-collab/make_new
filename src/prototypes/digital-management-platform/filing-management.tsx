@@ -6,6 +6,7 @@ import {
     CloseCircleOutlined,
     CloudDownloadOutlined,
     CloudUploadOutlined,
+    UploadOutlined,
     DeleteOutlined,
     DragOutlined,
     EditOutlined,
@@ -30,6 +31,7 @@ import {
     Card,
     Checkbox,
     Col,
+    Collapse,
     Descriptions,
     Divider,
     Drawer,
@@ -76,6 +78,7 @@ interface ExecutionNode {
     nodeType: 'apply' | 'review';
     order: number;
     materials: string[];
+    templates?: string[];
     isFromTemplate?: boolean;
 }
 
@@ -162,39 +165,25 @@ const PROJECT_LEVEL_OPTIONS = [
     { value: 'key', label: '重点项目' },
 ];
 
-const DEFAULT_NODES: ExecutionNode[] = [
-    { id: 'node-init-apply', name: '项目立项（申请）', description: '', nodeType: 'apply', order: 1, materials: [] },
-    { id: 'node-init-review', name: '项目立项（审核）', description: '', nodeType: 'review', order: 2, materials: [] },
-    { id: 'node-1', name: '项目启动', description: '', nodeType: 'apply', order: 3, materials: [] },
-    { id: 'node-2', name: '项目启动审核', description: '', nodeType: 'review', order: 4, materials: [] },
-    { id: 'node-3', name: '需求确认', description: '', nodeType: 'apply', order: 5, materials: [] },
-    { id: 'node-4', name: '需求确认审核', description: '', nodeType: 'review', order: 6, materials: [] },
-    { id: 'node-5', name: '方案设计', description: '', nodeType: 'apply', order: 7, materials: [] },
-    { id: 'node-6', name: '方案设计审核', description: '', nodeType: 'review', order: 8, materials: [] },
-    { id: 'node-7', name: '测试', description: '', nodeType: 'apply', order: 9, materials: [] },
-];
 
 const NODE_TEMPLATES: Record<string, ExecutionNode[]> = {
-    standard: [
-        { id: 't1', name: '项目启动', description: '', nodeType: 'apply', order: 1, materials: [] },
-        { id: 't2', name: '项目启动审核', description: '', nodeType: 'review', order: 2, materials: [] },
-        { id: 't3', name: '需求确认', description: '', nodeType: 'apply', order: 3, materials: [] },
-        { id: 't4', name: '需求确认审核', description: '', nodeType: 'review', order: 4, materials: [] },
-        { id: 't5', name: '方案设计', description: '', nodeType: 'apply', order: 5, materials: [] },
-        { id: 't6', name: '方案设计审核', description: '', nodeType: 'review', order: 6, materials: [] },
-        { id: 't7', name: '测试', description: '', nodeType: 'apply', order: 7, materials: [] },
-        { id: 't8', name: '测试审核', description: '', nodeType: 'review', order: 8, materials: [] },
-        { id: 't9', name: '上线部署', description: '', nodeType: 'apply', order: 9, materials: [] },
-        { id: 't10', name: '上线审核', description: '', nodeType: 'review', order: 10, materials: [] },
-        { id: 't11', name: '项目结项', description: '', nodeType: 'apply', order: 11, materials: [] },
+    key: [
+        { id: 'k1', name: '项目立项（申请）', description: '', nodeType: 'apply', order: 1, materials: [] },
+        { id: 'k2', name: '项目立项（审核）', description: '', nodeType: 'review', order: 2, materials: [] },
+        { id: 'k3', name: '项目启动', description: '', nodeType: 'apply', order: 3, materials: [] },
+        { id: 'k4', name: '周报', description: '', nodeType: 'apply', order: 4, materials: [] },
+        { id: 'k5', name: '需求确认', description: '', nodeType: 'apply', order: 5, materials: [] },
+        { id: 'k6', name: '方案设计', description: '', nodeType: 'apply', order: 6, materials: [] },
+        { id: 'k7', name: '测试', description: '', nodeType: 'apply', order: 7, materials: [] },
+        { id: 'k8', name: '预验收', description: '', nodeType: 'review', order: 8, materials: [] },
+        { id: 'k9', name: '最终验收', description: '', nodeType: 'review', order: 9, materials: [] },
+        { id: 'k10', name: '最终验收审核', description: '', nodeType: 'review', order: 10, materials: [] },
     ],
-    threeSystem: [
-        { id: 's1', name: '启动评审', description: '', nodeType: 'apply', order: 1, materials: [] },
-        { id: 's2', name: '文件审核', description: '', nodeType: 'review', order: 2, materials: [] },
-        { id: 's3', name: '现场审核', description: '', nodeType: 'apply', order: 3, materials: [] },
-        { id: 's4', name: '问题整改', description: '', nodeType: 'apply', order: 4, materials: [] },
-        { id: 's5', name: '整改审核', description: '', nodeType: 'review', order: 5, materials: [] },
-        { id: 's6', name: '关闭', description: '', nodeType: 'review', order: 6, materials: [] },
+    normal: [
+        { id: 'n1', name: '项目启动', description: '', nodeType: 'apply', order: 1, materials: [] },
+        { id: 'n2', name: '周报', description: '', nodeType: 'apply', order: 2, materials: [] },
+        { id: 'n3', name: '最终验收', description: '', nodeType: 'review', order: 3, materials: [] },
+        { id: 'n4', name: '最终验收审核', description: '', nodeType: 'review', order: 4, materials: [] },
     ],
 };
 
@@ -223,12 +212,16 @@ const MATERIAL_OPTIONS = [
 ];
 
 const NODE_NAME_OPTIONS = [
+    { value: '项目立项（申请）' },
+    { value: '项目立项（审核）' },
     { value: '项目启动' },
+    { value: '周报' },
     { value: '需求确认' },
     { value: '方案设计' },
     { value: '测试' },
     { value: '预验收' },
     { value: '最终验收' },
+    { value: '最终验收审核' },
 ];
 
 const statusMeta: Record<FilingStatus, { label: string; color: string }> = {
@@ -309,7 +302,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-20 10:30`,
         submitter: '张工',
         status: 'pending-review',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.key],
         experts: [],
         approvalHistory: [
             {
@@ -369,7 +362,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-22 09:15`,
         submitter: '李工',
         status: 'pending-review',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.key],
         experts: [],
         approvalHistory: [
             {
@@ -429,7 +422,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-23 14:20`,
         submitter: '王工',
         status: 'pending-review',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.normal],
         experts: [],
         approvalHistory: [
             {
@@ -488,7 +481,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-24 08:45`,
         submitter: '赵工',
         status: 'pending-review',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.normal],
         experts: [],
         approvalHistory: [
             {
@@ -547,7 +540,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-21 16:00`,
         submitter: '陈工',
         status: 'expert-reviewing',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.key],
         experts: [
             {
                 id: 'exp-001',
@@ -642,7 +635,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-19 11:00`,
         submitter: '刘工',
         status: 'pending-review',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.normal],
         experts: [],
         approvalHistory: [
             {
@@ -701,7 +694,7 @@ const initialFilingRecords: FilingRecord[] = [
         submitTime: `${currentYear}-06-18 15:30`,
         submitter: '周工',
         status: 'approved-level1',
-        nodes: [...DEFAULT_NODES],
+        nodes: [...NODE_TEMPLATES.key],
         experts: [],
         approvalHistory: [
             {
@@ -1107,7 +1100,10 @@ function FilingDetailDrawer({
             return;
         }
         if (open && record) {
-            setNodes([...record.nodes]);
+            const initialNodes = record.nodes.length > 0
+                ? [...record.nodes]
+                : [...(NODE_TEMPLATES[record.projectLevel] || [])].map((t, i) => ({ ...t, id: `auto-${i}`, isFromTemplate: true }));
+            setNodes(initialNodes);
             setProjectLevel(record.projectLevel);
             setUploadedFiles([...record.attachments]);
             setExpertOpinion('');
@@ -1322,12 +1318,12 @@ function FilingDetailDrawer({
                         style={{ marginBottom: 16 }}
                     >
                         <Descriptions column={1} size="small" colon={false}>
-                            <Descriptions.Item label="立项单位意见">
+                            <Descriptions.Item label="解决方案文档/可行性研究报告">
                                 <Tag icon={<PaperClipOutlined />} color="blue" style={{ cursor: 'pointer' }}>
                                     项目立项意见.pdf
                                 </Tag>
                             </Descriptions.Item>
-                            <Descriptions.Item label="立项建议书">
+                            <Descriptions.Item label="架构看护文档">
                                 <Tag icon={<PaperClipOutlined />} color="blue" style={{ cursor: 'pointer' }}>
                                     项目立项建议书.pdf
                                 </Tag>
@@ -1356,8 +1352,8 @@ function FilingDetailDrawer({
                                         style={{ width: 160 }}
                                         size="small"
                                         options={[
-                                            { value: 'standard', label: '标准流程节点' },
-                                            { value: 'threeSystem', label: '三体系流程节点' },
+                                            { value: 'key', label: '重点项目节点' },
+                                            { value: 'normal', label: '普通项目节点' },
                                         ]}
                                         onChange={(value) => {
                                             if (value && NODE_TEMPLATES[value as string]) {
@@ -1449,6 +1445,34 @@ function FilingDetailDrawer({
                                         />
                                     ) : (
                                         <Text>{(node.materials || []).map((m) => MATERIAL_OPTIONS.find((o) => o.value === m)?.label || m).join('、') || '-'}</Text>
+                                    )
+                                }
+                            />
+                            <Table.Column
+                                title="材料模板"
+                                width={200}
+                                render={(_, node: ExecutionNode) =>
+                                    isReviewing ? (
+                                        <Upload
+                                            size="small"
+                                            fileList={node.templates?.map((t, i) => ({ uid: String(i), name: t, status: 'done' as const })) || []}
+                                            beforeUpload={() => false}
+                                            onChange={({ fileList: fl }) => {
+                                                const names = fl.filter(f => f.status === 'done' || f.status === 'uploading').map(f => f.name);
+                                                setNodes(nodes.map((n) => n.id === node.id ? { ...n, templates: names } : n));
+                                            }}
+                                            showUploadList={{ showRemoveIcon: true }}
+                                            accept=".doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                                        >
+                                            <Button size="small" icon={<UploadOutlined />}>上传模板</Button>
+                                        </Upload>
+                                    ) : (
+                                        <Space size={4} wrap>
+                                            {(node.templates || []).map((t, i) => (
+                                                <Tag key={i} icon={<PaperClipOutlined />} color="blue" style={{ cursor: 'pointer', fontSize: 12 }}>{t}</Tag>
+                                            ))}
+                                            {(!node.templates || node.templates.length === 0) && <Text type="secondary">-</Text>}
+                                        </Space>
                                     )
                                 }
                             />
@@ -1630,72 +1654,115 @@ function FilingDetailDrawer({
                         </Card>
                     )}
 
-                    {/* 审批记录 */}
+                    {/* 审批记录 - 按单位分色块展示 */}
                     <Card size="small" title="审批记录">
-                        <Timeline
-                            items={[
+                        {(() => {
+                            // 将审批历史和专家评审合并为统一节点列表
+                            type UnifiedNode = {
+                                id: string;
+                                reviewer: string;
+                                org: string;
+                                tagLabel: string;
+                                tagColor: string;
+                                remark?: string;
+                                time: string;
+                                dotColor: string;
+                            };
+                            const allNodes: UnifiedNode[] = [
                                 ...record.approvalHistory.map((h) => ({
-                                    color: h.action === 'return' ? 'red' : h.action === 'approve' ? 'green' : 'blue',
-                                    children: (
-                                        <div>
-                                            <div style={{ fontWeight: 500 }}>
-                                                {h.reviewer}
-                                                <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>
-                                                    {h.reviewerOrg}
-                                                </Text>
-                                                <Tag
-                                                    color={
-                                                        h.action === 'approve' ? 'success'
-                                                            : h.action === 'return' ? 'error'
-                                                                : h.action === 'expert-assign' ? 'warning'
-                                                                    : 'default'
-                                                    }
-                                                    style={{ marginLeft: 8, fontSize: 11 }}
-                                                >
-                                                    {h.action === 'submit' ? '提交'
-                                                        : h.action === 'approve' ? '通过'
-                                                            : h.action === 'return' ? '退回'
-                                                                : '转专家'}
-                                                </Tag>
-                                            </div>
-                                            {h.remark && (
-                                                <div style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', marginTop: 4 }}>
-                                                    {h.remark}
-                                                </div>
-                                            )}
-                                            <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', marginTop: 2 }}>
-                                                {h.time}
-                                            </div>
-                                        </div>
-                                    ),
+                                    id: h.id,
+                                    reviewer: h.reviewer,
+                                    org: h.reviewerOrg,
+                                    tagLabel: h.action === 'submit' ? '提交' : h.action === 'approve' ? '通过' : h.action === 'return' ? '退回' : '转专家',
+                                    tagColor: h.action === 'approve' ? 'success' : h.action === 'return' ? 'error' : h.action === 'expert-assign' ? 'processing' : 'default',
+                                    remark: h.remark,
+                                    time: h.time,
+                                    dotColor: h.action === 'return' ? 'red' : h.action === 'approve' ? 'green' : 'blue',
                                 })),
-                                // 专家/业务域评审记录（已提交的评审意见作为Timeline节点）
                                 ...record.experts.filter((e) => e.status === 'submitted').map((exp) => ({
-                                    color: exp.expertType === 'expert' ? 'blue' as const : 'orange' as const,
-                                    children: (
-                                        <div>
-                                            <div style={{ fontWeight: 500 }}>
-                                                {exp.expertName}
-                                                <Text type="secondary" style={{ fontSize: 12, marginLeft: 8 }}>
-                                                    {exp.expertOrg}
-                                                </Text>
-                                                <Tag color={exp.expertType === 'expert' ? 'blue' : 'orange'} style={{ marginLeft: 8, fontSize: 11 }}>
-                                                    {exp.expertType === 'expert' ? '专家评审' : '业务域评审'}
-                                                </Tag>
-                                            </div>
-                                            {exp.opinion && (
-                                                <div style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', marginTop: 4 }}>
-                                                    {exp.opinion}
-                                                </div>
-                                            )}
-                                            <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', marginTop: 2 }}>
-                                                {exp.submitTime}
-                                            </div>
-                                        </div>
-                                    ),
+                                    id: exp.id,
+                                    reviewer: exp.expertName,
+                                    org: exp.expertOrg,
+                                    tagLabel: exp.expertType === 'expert' ? '专家评审' : '业务域评审',
+                                    tagColor: exp.expertType === 'expert' ? 'blue' : 'orange',
+                                    remark: exp.opinion,
+                                    time: exp.submitTime || '',
+                                    dotColor: exp.expertType === 'expert' ? 'blue' : 'orange',
                                 })),
-                            ]}
-                        />
+                            ];
+
+                            // 按单位分组，保持出现顺序
+                            const orgOrder: string[] = [];
+                            const orgMap = new Map<string, UnifiedNode[]>();
+                            allNodes.forEach((node) => {
+                                if (!orgMap.has(node.org)) {
+                                    orgMap.set(node.org, []);
+                                    orgOrder.push(node.org);
+                                }
+                                orgMap.get(node.org)!.push(node);
+                            });
+
+                            // 色块配色方案
+                            const blockColors = [
+                                { bg: '#f0f5ff', border: '#adc6ff' },  // 蓝
+                                { bg: '#fff7e6', border: '#ffd591' },  // 橙
+                                { bg: '#f6ffed', border: '#b7eb8f' },  // 绿
+                                { bg: '#fff1f0', border: '#ffccc7' },  // 红
+                                { bg: '#e6fffb', border: '#87e8de' },  // 青
+                                { bg: '#f9f0ff', border: '#d3adf7' },  // 紫
+                            ];
+
+                            return orgOrder.length === 0 ? (
+                                <Text type="secondary">暂无审批记录</Text>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                    {orgOrder.map((org, idx) => {
+                                        const nodes = orgMap.get(org)!;
+                                        const palette = blockColors[idx % blockColors.length];
+                                        return (
+                                            <div
+                                                key={org}
+                                                style={{
+                                                    background: palette.bg,
+                                                    border: `1px solid ${palette.border}`,
+                                                    borderRadius: 8,
+                                                    padding: '12px 16px',
+                                                }}
+                                            >
+                                                <div style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
+                                                    <div style={{ width: 3, height: 14, background: palette.border, borderRadius: 2 }} />
+                                                    <Text strong style={{ fontSize: 13 }}>{org}</Text>
+                                                    <Text type="secondary" style={{ fontSize: 11 }}>{nodes.length} 条记录</Text>
+                                                </div>
+                                                <Timeline
+                                                    items={nodes.map((node) => ({
+                                                        color: node.dotColor as any,
+                                                        children: (
+                                                            <div>
+                                                                <div style={{ fontWeight: 500 }}>
+                                                                    {node.reviewer}
+                                                                    <Tag color={node.tagColor as any} style={{ marginLeft: 8, fontSize: 11 }}>
+                                                                        {node.tagLabel}
+                                                                    </Tag>
+                                                                </div>
+                                                                {node.remark && (
+                                                                    <div style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', marginTop: 4 }}>
+                                                                        {node.remark}
+                                                                    </div>
+                                                                )}
+                                                                <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', marginTop: 2 }}>
+                                                                    {node.time}
+                                                                </div>
+                                                            </div>
+                                                        ),
+                                                    }))}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })()}
                     </Card>
                 </div>
             ),

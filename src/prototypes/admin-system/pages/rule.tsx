@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Plus, Play } from 'lucide-react';
+import { Plus, Play, FileText, CheckCircle, CircleX, TriangleAlert } from 'lucide-react';
 import {
-    Table, Button, Input, Select, Modal, Tag, Space, Row, Col, message, Drawer,
+    Table, Button, Input, Select, Modal, Tag, Space, Row, Col, message, Drawer, Divider,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import RuleDrawer, {
@@ -326,6 +326,22 @@ export default function RulePage() {
     const [simulateOpen, setSimulateOpen] = useState(false);
     const [simulateLog, setSimulateLog] = useState<string | null>(null);
 
+    // ===== 规则测试状态 =====
+    const [testOpen, setTestOpen] = useState(false);
+    const [testRuleId, setTestRuleId] = useState<string>('');
+    const [testBizObject, setTestBizObject] = useState<string>('');
+    const [testDataMode, setTestDataMode] = useState<'instance' | 'custom'>('custom');
+    const [testInstance, setTestInstance] = useState<string>('');
+    const [testCustomData, setTestCustomData] = useState<Record<string, any>>({});
+    const [testResult, setTestResult] = useState<any>(null);
+    const [testRunning, setTestRunning] = useState(false);
+
+    // ===== 执行日志状态 =====
+    const [logView, setLogView] = useState(false);
+    const [logRuleFilter, setLogRuleFilter] = useState<string>('all');
+    const [logBizFilter, setLogBizFilter] = useState<string>('all');
+    const [logExpanded, setLogExpanded] = useState<string[]>([]);
+
     const filtered = rules.filter((r) => {
         const text = `${r.name}${r.description}${r.code}`.toLowerCase();
         return text.includes(search.toLowerCase())
@@ -393,6 +409,213 @@ export default function RulePage() {
             },
         });
     };
+
+    // ===== 规则测试：模拟实例数据 =====
+    const BIZ_INSTANCES: Record<string, { id: string; name: string; data: Record<string, any> }[]> = {
+        maintenance: [
+            { id: 'WO-2024-001', name: 'WO-2024-001 一线窑头巡检', data: { device: { name: '窑头负压传感器' }, priority: '紧急', status: '待处理' } },
+            { id: 'WO-2024-015', name: 'WO-2024-015 磨机轴承维修', data: { device: { name: '水泥磨主轴承' }, priority: '一般', status: '进行中' } },
+        ],
+        quality: [
+            { id: 'QC-2024-003', name: 'QC-2024-003 P·O42.5出厂检验', data: { item: '三天强度', value: 23.5, result: '重大', status: '待检' } },
+            { id: 'QC-2024-018', name: 'QC-2024-018 熟料游离钙检验', data: { item: '游离钙', value: 1.8, result: '合格', status: '已检' } },
+        ],
+        todo: [
+            { id: 'TD-001', name: 'TD-001 配合比审核', data: { title: '配合比变更审核', assignee: '张工', status: '待办' } },
+        ],
+        production: [
+            { id: 'PR-2024-009', name: 'PR-2024-009 一线熟料批次', data: { product: '熟料', quantity: 850, unit: 't' } },
+            { id: 'PR-2024-022', name: 'PR-2024-022 二线水泥批次', data: { product: '水泥', quantity: 1200, unit: 't' } },
+        ],
+        inventory: [
+            { id: 'INV-001', name: 'INV-001 熟料库位', data: { material: '熟料', ratio: 25, capacity: 5000, current: 1250 } },
+            { id: 'INV-005', name: 'INV-005 石膏库位', data: { material: '石膏', ratio: 65, capacity: 2000, current: 1300 } },
+        ],
+    };
+
+    // ===== 规则测试：条件求值 =====
+    const evaluateCondition = (cond: ConditionItem, data: Record<string, any>): boolean => {
+        const fieldVal = cond.field.split('.').reduce((o, k) => o?.[k], data);
+        const target = cond.valueType === 'field' ? (data as any)[String(cond.value)] : cond.value;
+        const fv = typeof fieldVal === 'string' ? fieldVal.toLowerCase() : fieldVal;
+        const tv = typeof target === 'string' ? String(target).toLowerCase() : target;
+        switch (cond.operator) {
+            case 'eq': return fv === tv || String(fv) === String(tv);
+            case 'ne': return fv !== tv;
+            case 'gt': return Number(fv) > Number(tv);
+            case 'gte': return Number(fv) >= Number(tv);
+            case 'lt': return Number(fv) < Number(tv);
+            case 'lte': return Number(fv) <= Number(tv);
+            case 'contains': return String(fv).includes(String(tv));
+            default: return false;
+        }
+    };
+
+    const evaluateGroup = (group: ConditionGroup, data: Record<string, any>): { matched: boolean; details: { cond: ConditionItem; result: boolean }[] } => {
+        const details = group.conditions.map(c => ({ cond: c, result: evaluateCondition(c, data) }));
+        const matched = group.logic === 'AND' ? details.every(d => d.result) : details.some(d => d.result);
+        return { matched, details };
+    };
+
+    const runTest = () => {
+        const rule = rules.find(r => r.id === testRuleId);
+        if (!rule) return;
+        setTestRunning(true);
+        setTimeout(() => {
+            const data = testDataMode === 'instance'
+                ? (BIZ_INSTANCES[testBizObject] || []).find(i => i.id === testInstance)?.data || {}
+                : testCustomData;
+
+            // 1) Evaluate conditions
+            const conditionResults = rule.conditionGroups.map(group => {
+                const { matched, details } = evaluateGroup(group, data);
+                return { groupId: group.id, logic: group.logic, matched, details };
+            });
+            const allMatched = rule.conditionGroupsLogic === 'AND'
+                ? conditionResults.every(r => r.matched)
+                : conditionResults.some(r => r.matched);
+
+            // 2) Evaluate actions
+            const actionResults = rule.actions.map(action => {
+                const actionCondMet = action.condition
+                    ? evaluateGroup(action.condition, data).matched
+                    : true;
+                return {
+                    action,
+                    conditionMet: actionCondMet,
+                    willExecute: allMatched && actionCondMet,
+                    paramsSnapshot: { ...action.params },
+                };
+            });
+
+            // 3) Build result
+            setTestResult({
+                ruleName: rule.name,
+                ruleCode: rule.code,
+                inputData: data,
+                conditionsMatched: allMatched,
+                conditionResults,
+                actionResults,
+                willExecuteActions: actionResults.filter(a => a.willExecute),
+                skippedActions: actionResults.filter(a => !a.willExecute),
+                errors: [] as string[],
+                timestamp: new Date().toLocaleString(),
+            });
+            setTestRunning(false);
+        }, 800);
+    };
+
+    // ===== 执行日志模拟数据 =====
+    const EXECUTION_LOGS = [
+        {
+            id: 'log1', time: '2024-06-10 09:15:32', ruleName: '熟料热耗超标预警', ruleCode: 'RULE-THERMAL-001',
+            bizObject: 'production', bizInstanceId: 'PR-2024-009', timing: '创建后',
+            result: 'success' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'AND', items: [
+                    { field: 'product', op: 'eq', expected: '熟料', actual: '熟料', passed: true },
+                    { field: 'quantity', op: 'gt', expected: '800', actual: '850', passed: true },
+                ]}],
+                actions: [
+                    { type: 'send_notification', name: '发送站内信', input: { channel: 'site', title: '热耗超标预警', receivers: 'manager' }, output: '通知已发送至 3 人', success: true },
+                ],
+            },
+        },
+        {
+            id: 'log2', time: '2024-06-10 08:00:12', ruleName: '熟料库位低自动补库', ruleCode: 'RULE-INVENTORY-001',
+            bizObject: 'inventory', bizInstanceId: 'INV-001', timing: '定时触发',
+            result: 'success' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'AND', items: [
+                    { field: 'material', op: 'eq', expected: '熟料', actual: '熟料', passed: true },
+                    { field: 'ratio', op: 'lt', expected: '30', actual: '25', passed: true },
+                ]}],
+                actions: [
+                    { type: 'create_task', name: '生成补库任务', input: { taskType: 'restock', assignee: 'role_production' }, output: '任务 TASK-20240610-001 已创建', success: true },
+                    { type: 'send_notification', name: '发送补库提醒', input: { channel: 'site', receivers: 'assignee' }, output: '通知已发送至 1 人', success: true },
+                ],
+            },
+        },
+        {
+            id: 'log3', time: '2024-06-09 16:42:08', ruleName: '出厂水泥强度锁定', ruleCode: 'RULE-QUALITY-001',
+            bizObject: 'quality', bizInstanceId: 'QC-2024-003', timing: '编辑前',
+            result: 'partial' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'AND', items: [
+                    { field: 'item', op: 'eq', expected: '三天强度', actual: '三天强度', passed: true },
+                    { field: 'value', op: 'lt', expected: '25', actual: '23.5', passed: true },
+                ]}],
+                actions: [
+                    { type: 'set_field', name: '设置状态为不合格', input: { field: 'status', value: '不合格' }, output: '字段已更新', success: true },
+                    { type: 'send_notification', name: '发送钉钉通知', input: { channel: 'dingtalk', receivers: 'role_admin,manager' }, output: '钉钉接口超时，重试3次后失败', success: false },
+                ],
+            },
+        },
+        {
+            id: 'log4', time: '2024-06-09 10:30:00', ruleName: '重大质量事故跳级审批', ruleCode: 'RULE-APPROVAL-001',
+            bizObject: 'quality', bizInstanceId: 'QC-2024-003', timing: '创建后',
+            result: 'success' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'AND', items: [
+                    { field: 'result', op: 'eq', expected: '重大', actual: '重大', passed: true },
+                ]}],
+                actions: [
+                    { type: 'start_approval', name: '启动跳级审批', input: { flowId: 'flow_2', initiator: 'creator' }, output: '审批流 APV-20240609-001 已启动', success: true },
+                ],
+            },
+        },
+        {
+            id: 'log5', time: '2024-06-08 14:22:35', ruleName: '窑头负压异常报警', ruleCode: 'RULE-MAINTENANCE-001',
+            bizObject: 'maintenance', bizInstanceId: 'WO-2024-001', timing: '创建后',
+            result: 'failed' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'OR', items: [
+                    { field: 'device.name', op: 'eq', expected: '窑头负压传感器', actual: '窑头负压传感器', passed: true },
+                    { field: 'priority', op: 'eq', expected: '紧急', actual: '紧急', passed: true },
+                ]}],
+                actions: [
+                    { type: 'send_notification', name: '发送企微报警', input: { channel: 'wecom', receivers: 'manager,role_admin' }, output: '企业微信接口返回 500', success: false },
+                    { type: 'create_task', name: '生成巡检任务', input: { taskType: 'inspection', assignee: 'current_user' }, output: '任务创建失败：当前用户无权限', success: false },
+                ],
+            },
+        },
+        {
+            id: 'log6', time: '2024-06-08 09:00:05', ruleName: '熟料库位低自动补库', ruleCode: 'RULE-INVENTORY-001',
+            bizObject: 'inventory', bizInstanceId: 'INV-005', timing: '定时触发',
+            result: 'success' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'AND', items: [
+                    { field: 'material', op: 'eq', expected: '熟料', actual: '石膏', passed: false },
+                    { field: 'ratio', op: 'lt', expected: '30', actual: '65', passed: false },
+                ]}],
+                actions: [],
+            },
+        },
+        {
+            id: 'log7', time: '2024-06-07 17:45:20', ruleName: '混合材掺量超限阻止', ruleCode: 'RULE-QUALITY-002',
+            bizObject: 'quality', bizInstanceId: 'QC-2024-018', timing: '编辑前',
+            result: 'success' as const,
+            detail: {
+                conditions: [{ group: '条件组1', logic: 'AND', items: [
+                    { field: 'item', op: 'eq', expected: '混合材掺量', actual: '游离钙', passed: false },
+                ]}],
+                actions: [],
+            },
+        },
+    ];
+
+    const filteredLogs = EXECUTION_LOGS.filter(l =>
+        (logRuleFilter === 'all' || l.ruleCode === logRuleFilter)
+        && (logBizFilter === 'all' || l.bizObject === logBizFilter)
+    );
+
+    const LOG_RESULT_META: Record<string, { label: string; color: string }> = {
+        success: { label: '成功', color: 'success' },
+        partial: { label: '部分失败', color: 'warning' },
+        failed: { label: '失败', color: 'error' },
+    };
+
+    const OPERATOR_LABELS: Record<string, string> = { eq: '=', ne: '≠', gt: '>', gte: '≥', lt: '<', lte: '≤', contains: '包含' };
 
     const runSimulate = () => {
         setSimulateLog(
@@ -494,6 +717,7 @@ export default function RulePage() {
                         {r.status === 'active' ? '停用' : '启用'}
                     </Button>
                     <Button type="link" size="small" disabled={r.status === 'active'} onClick={(e) => { e.stopPropagation(); handleDelete(r.id); }}>删除</Button>
+
                     <Button type="link" size="small" onClick={(e) => { e.stopPropagation(); setHistoryOpen(true); }}>历史</Button>
                 </Space>
             ),
@@ -504,7 +728,8 @@ export default function RulePage() {
         <div>
             <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
                 <Button type="primary" icon={<Plus size={14} />} onClick={openAdd}>新增规则</Button>
-                <Button icon={<Play size={14} />} onClick={() => setSimulateOpen(true)}>模拟运行</Button>
+                <Button icon={<Play size={14} />} onClick={() => { setTestRuleId(''); setTestBizObject(''); setTestOpen(true); setTestResult(null); setTestCustomData({}); setTestInstance(''); setTestDataMode('custom'); }}>规则测试</Button>
+                <Button icon={<FileText size={14} />} onClick={() => setLogView(true)}>执行日志</Button>
                 <div style={{ flex: 1 }} />
                 <Select
                     value={bizObjectFilter}
@@ -727,6 +952,322 @@ export default function RulePage() {
                     </div>
                 )}
             </Modal>
+
+            {/* ===== 规则测试抽屉 ===== */}
+            <Drawer
+                open={testOpen}
+                title="规则测试"
+                onClose={() => setTestOpen(false)}
+                width={720}
+                footer={
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                        <Button onClick={() => setTestOpen(false)}>关闭</Button>
+                        <Button type="primary" loading={testRunning} disabled={!testRuleId} onClick={runTest}>
+                            执行测试
+                        </Button>
+                    </div>
+                }
+            >
+                {/* 选择规则 */}
+                <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8 }}>选择规则</div>
+                    <Select
+                        value={testRuleId || undefined}
+                        placeholder="请选择要测试的规则"
+                        style={{ width: '100%' }}
+                        onChange={(v) => {
+                            setTestRuleId(v);
+                            const r = rules.find(x => x.id === v);
+                            if (r) setTestBizObject(r.bizObject);
+                            setTestResult(null);
+                        }}
+                        options={rules.map(r => ({ value: r.id, label: `${r.name}（${r.code}）` }))}
+                    />
+                </div>
+
+                {/* 选择测试数据 */}
+                {testRuleId && (
+                    <div style={{ marginBottom: 20 }}>
+                        <div style={{ fontWeight: 600, marginBottom: 8 }}>测试数据</div>
+                        <div style={{ marginBottom: 8, display: 'flex', gap: 12 }}>
+                            <span style={{ lineHeight: '32px', fontSize: 13 }}>数据来源：</span>
+                            <Select
+                                value={testDataMode}
+                                style={{ width: 180 }}
+                                onChange={(v) => { setTestDataMode(v); setTestResult(null); }}
+                                options={[
+                                    { value: 'instance', label: '已有业务对象实例' },
+                                    { value: 'custom', label: '自定义测试数据' },
+                                ]}
+                            />
+                        </div>
+                        {testDataMode === 'instance' ? (
+                            <div>
+                                <Select
+                                    value={testInstance || undefined}
+                                    placeholder="请选择业务对象实例"
+                                    style={{ width: '100%' }}
+                                    onChange={(v) => { setTestInstance(v); setTestResult(null); }}
+                                    options={(BIZ_INSTANCES[testBizObject] || []).map(i => ({ value: i.id, label: i.name }))}
+                                />
+                                {testInstance && (
+                                    <div className="admin-card" style={{ marginTop: 8, background: '#f6f8fa', fontSize: 12 }}>
+                                        <div style={{ fontWeight: 600, marginBottom: 4, color: 'rgba(0,0,0,0.65)' }}>实例数据预览</div>
+                                        <pre style={{ margin: 0, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>
+                                            {JSON.stringify((BIZ_INSTANCES[testBizObject] || []).find(i => i.id === testInstance)?.data, null, 2)}
+                                        </pre>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div>
+                                <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginBottom: 8 }}>
+                                    请输入测试数据（JSON 格式），用于匹配规则条件
+                                </div>
+                                <Input.TextArea
+                                    rows={6}
+                                    placeholder={`例如：\n{\n  "product": "熟料",\n  "quantity": 850\n}`}
+                                    value={Object.keys(testCustomData).length ? JSON.stringify(testCustomData, null, 2) : ''}
+                                    onChange={(e) => {
+                                        try {
+                                            const parsed = JSON.parse(e.target.value);
+                                            setTestCustomData(parsed);
+                                        } catch { /* ignore parse error while typing */ }
+                                        setTestResult(null);
+                                    }}
+                                    style={{ fontFamily: 'monospace', fontSize: 12 }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* 测试结果 */}
+                {testResult && (
+                    <div>
+                        <Divider plain>测试结果</Divider>
+
+                        {/* 结果概要 */}
+                        <div style={{ marginBottom: 16, padding: 16, borderRadius: 8, background: testResult.conditionsMatched ? '#f6ffed' : '#fff2f0', border: `1px solid ${testResult.conditionsMatched ? '#b7eb8f' : '#ffccc7'}` }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                                {testResult.conditionsMatched
+                                    ? <><CheckCircle size={18} style={{ color: '#52c41a' }} /><span style={{ fontWeight: 600, color: '#52c41a' }}>条件匹配</span></>
+                                    : <><CircleX size={18} style={{ color: '#ff4d4f' }} /><span style={{ fontWeight: 600, color: '#ff4d4f' }}>条件不匹配</span></>
+                                }
+                                <span style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginLeft: 'auto' }}>{testResult.timestamp}</span>
+                            </div>
+                            <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.65)' }}>
+                                规则「{testResult.ruleName}」在当前测试数据下，条件{testResult.conditionsMatched ? '满足' : '不满足'}
+                                {testResult.conditionsMatched && `，将执行 ${testResult.willExecuteActions.length} 个动作`}
+                            </div>
+                        </div>
+
+                        {/* 条件匹配详情 */}
+                        <div style={{ marginBottom: 16 }}>
+                            <div style={{ fontWeight: 600, marginBottom: 8 }}>条件匹配详情</div>
+                            {testResult.conditionResults.map((cr: any, gi: number) => (
+                                <div key={cr.groupId} className="admin-card" style={{ background: '#f6f8fa', marginBottom: 8 }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                                        <span style={{ fontWeight: 600, fontSize: 12 }}>条件组 {gi + 1}（{cr.logic === 'AND' ? '全部满足' : '任一满足'}）</span>
+                                        <Tag color={cr.matched ? 'success' : 'error'} style={{ fontSize: 10, margin: 0 }}>
+                                            {cr.matched ? '满足' : '不满足'}
+                                        </Tag>
+                                    </div>
+                                    {cr.details.map((d: any) => (
+                                        <div key={d.cond.id} style={{ display: 'flex', alignItems: 'center', gap: 6, paddingLeft: 12, lineHeight: '24px', fontSize: 12 }}>
+                                            {d.result
+                                                ? <CheckCircle size={12} style={{ color: '#52c41a', flexShrink: 0 }} />
+                                                : <CircleX size={12} style={{ color: '#ff4d4f', flexShrink: 0 }} />
+                                            }
+                                            <span>{d.cond.field} {OPERATOR_LABELS[d.cond.operator] || d.cond.operator} {String(d.cond.value)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* 动作执行结果 */}
+                        <div>
+                            <div style={{ fontWeight: 600, marginBottom: 8 }}>动作执行列表</div>
+                            {testResult.willExecuteActions.length > 0 && (
+                                <div style={{ marginBottom: 8 }}>
+                                    <div style={{ fontSize: 12, color: '#52c41a', fontWeight: 600, marginBottom: 4 }}>将执行</div>
+                                    {testResult.willExecuteActions.map((ar: any, i: number) => (
+                                        <div key={i} className="admin-card" style={{ background: '#f6ffed', marginBottom: 4, fontSize: 12 }}>
+                                            <div style={{ fontWeight: 600 }}>{ACTION_TYPE_LABELS[ar.action.type] || ar.action.type}</div>
+                                            <div style={{ paddingLeft: 12, color: 'rgba(0,0,0,0.65)' }}>
+                                                {Object.entries(ar.paramsSnapshot).map(([k, v]) => (
+                                                    <div key={k}>{k}：{Array.isArray(v) ? v.join('、') : String(v)}</div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                            {testResult.skippedActions.length > 0 && (
+                                <div>
+                                    <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', fontWeight: 600, marginBottom: 4 }}>跳过（条件不满足或规则未命中）</div>
+                                    {testResult.skippedActions.map((ar: any, i: number) => (
+                                        <div key={i} className="admin-card" style={{ background: '#fafafa', marginBottom: 4, fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>
+                                            <div style={{ fontWeight: 600 }}>{ACTION_TYPE_LABELS[ar.action.type] || ar.action.type}</div>
+                                            {ar.action.condition && !ar.conditionMet && (
+                                                <div style={{ paddingLeft: 12, fontStyle: 'italic' }}>动作条件不满足</div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {testResult.errors.length > 0 && (
+                            <div style={{ marginTop: 16, padding: 12, borderRadius: 8, background: '#fff2f0', border: '1px solid #ffccc7' }}>
+                                <div style={{ fontWeight: 600, color: '#ff4d4f', marginBottom: 4 }}>
+                                    <TriangleAlert size={14} style={{ marginRight: 4, verticalAlign: 'text-bottom' }} />异常信息
+                                </div>
+                                {testResult.errors.map((err: string, i: number) => (
+                                    <div key={i} style={{ fontSize: 12, lineHeight: '20px' }}>{err}</div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </Drawer>
+
+            {/* ===== 执行日志抽屉 ===== */}
+            <Drawer
+                open={logView}
+                title="规则执行日志"
+                onClose={() => setLogView(false)}
+                width={900}
+                footer={null}
+            >
+                {/* 筛选栏 */}
+                <div style={{ marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                    <Select
+                        value={logRuleFilter}
+                        style={{ width: 220 }}
+                        onChange={(v) => setLogRuleFilter(v)}
+                        placeholder="按规则筛选"
+                        options={[
+                            { value: 'all', label: '全部规则' },
+                            ...rules.map(r => ({ value: r.code, label: `${r.name}（${r.code}）` })),
+                        ]}
+                    />
+                    <Select
+                        value={logBizFilter}
+                        style={{ width: 160 }}
+                        onChange={(v) => setLogBizFilter(v)}
+                        placeholder="按业务对象筛选"
+                        options={[
+                            { value: 'all', label: '全部对象' },
+                            ...Object.entries(BIZ_OBJECT_LABELS).map(([k, v]) => ({ value: k, label: v })),
+                        ]}
+                    />
+                </div>
+
+                {/* 日志列表 */}
+                <Table
+                    rowKey="id"
+                    dataSource={filteredLogs}
+                    pagination={{ pageSize: 10, size: 'small' }}
+                    expandable={{
+                        expandedRowKeys: logExpanded,
+                        onExpandedRowsChange: (keys) => setLogExpanded(keys as string[]),
+                        expandedRowRender: (record) => (
+                            <div style={{ padding: '0 8px' }}>
+                                {/* 条件判断过程 */}
+                                <div style={{ marginBottom: 12 }}>
+                                    <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 6 }}>条件判断过程</div>
+                                    {record.detail.conditions.map((cond: any, gi: number) => (
+                                        <div key={gi} style={{ marginBottom: 8 }}>
+                                            <Tag style={{ fontSize: 10, marginBottom: 4 }}>{cond.group}（{cond.logic === 'AND' ? '全部满足' : '任一满足'}）</Tag>
+                                            {cond.items.map((item: any, ci: number) => (
+                                                <div key={ci} style={{ display: 'flex', alignItems: 'center', gap: 6, paddingLeft: 16, lineHeight: '24px', fontSize: 12 }}>
+                                                    {item.passed
+                                                        ? <CheckCircle size={12} style={{ color: '#52c41a', flexShrink: 0 }} />
+                                                        : <CircleX size={12} style={{ color: '#ff4d4f', flexShrink: 0 }} />
+                                                    }
+                                                    <span>{item.field} {OPERATOR_LABELS[item.op] || item.op} {item.expected}</span>
+                                                    <span style={{ color: 'rgba(0,0,0,0.45)' }}>（实际值：{String(item.actual)}）</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ))}
+                                    {record.detail.conditions.length === 0 && (
+                                        <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>无条件</div>
+                                    )}
+                                </div>
+
+                                {/* 动作执行过程 */}
+                                <div>
+                                    <div style={{ fontWeight: 600, fontSize: 13, marginBottom: 6 }}>动作执行过程</div>
+                                    {record.detail.actions.length > 0 ? record.detail.actions.map((action: any, ai: number) => (
+                                        <div key={ai} className="admin-card" style={{ background: action.success ? '#f6ffed' : '#fff2f0', marginBottom: 4, fontSize: 12 }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                                                <span style={{ fontWeight: 600 }}>{ai + 1}. {action.name}</span>
+                                                <Tag color={action.success ? 'success' : 'error'} style={{ fontSize: 10, margin: 0 }}>
+                                                    {action.success ? '成功' : '失败'}
+                                                </Tag>
+                                            </div>
+                                            <div style={{ color: 'rgba(0,0,0,0.65)' }}>
+                                                <div>输入：{JSON.stringify(action.input)}</div>
+                                                <div>输出：{action.output}</div>
+                                            </div>
+                                        </div>
+                                    )) : (
+                                        <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>条件不满足，未执行任何动作</div>
+                                    )}
+                                </div>
+                            </div>
+                        ),
+                    }}
+                    columns={[
+                        {
+                            title: '执行时间',
+                            dataIndex: 'time',
+                            width: 170,
+                            render: (v) => <span style={{ fontSize: 12, fontFamily: 'monospace' }}>{v}</span>,
+                        },
+                        {
+                            title: '规则名称',
+                            dataIndex: 'ruleName',
+                            width: 180,
+                            render: (v, r) => (
+                                <div>
+                                    <div style={{ fontWeight: 600, fontSize: 13 }}>{v}</div>
+                                    <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontFamily: 'monospace' }}>{r.ruleCode}</div>
+                                </div>
+                            ),
+                        },
+                        {
+                            title: '业务对象',
+                            width: 140,
+                            render: (_, r) => (
+                                <div>
+                                    <Tag style={{ fontSize: 11 }}>{BIZ_OBJECT_LABELS[r.bizObject]}</Tag>
+                                    <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', fontFamily: 'monospace', marginTop: 2 }}>{r.bizInstanceId}</div>
+                                </div>
+                            ),
+                        },
+                        {
+                            title: '应用时机',
+                            dataIndex: 'timing',
+                            width: 100,
+                            render: (v) => <Tag style={{ fontSize: 10 }}>{v}</Tag>,
+                        },
+                        {
+                            title: '执行结果',
+                            dataIndex: 'result',
+                            width: 100,
+                            render: (v) => (
+                                <Tag color={LOG_RESULT_META[v].color} style={{ fontSize: 11 }}>
+                                    {LOG_RESULT_META[v].label}
+                                </Tag>
+                            ),
+                        },
+                    ]}
+                />
+            </Drawer>
         </div>
     );
 }

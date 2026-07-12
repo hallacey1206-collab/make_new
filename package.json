@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@axhub/annotation": "^1.0.10",
-    "lucide-react": "^0.562.0"
+    "lucide-react": "^0.562.0",
+    "sortablejs": "^1.15.7"
   }
 }
