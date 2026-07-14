@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
     Drawer, Form, Input, Select, TreeSelect, Radio, Checkbox, Switch, InputNumber,
-    Button, Space, Collapse, Card, Row, Col, message, Tag,
+    Button, Space, Collapse, Card, Row, Col, message, Tag, Tabs, Table, Cascader,
 } from 'antd';
-import { Plus, Trash2, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronRight } from 'lucide-react';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -11,11 +11,54 @@ const { TextArea } = Input;
 // ============ 常量数据 ============
 
 export const BIZ_OBJECTS = [
-    { value: 'maintenance', label: '维修工单', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'withdrawn', 'approved', 'rejected', 'status_changed', 'scheduled'] },
-    { value: 'quality', label: '质量检验单', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'approved', 'rejected'] },
-    { value: 'todo', label: '待办事项', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'completed'] },
-    { value: 'production', label: '生产批次', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'status_changed'] },
-    { value: 'inventory', label: '库存记录', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'status_changed', 'scheduled'] },
+    { value: 'maintenance', label: '维修工单', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'withdrawn', 'approved', 'rejected', 'status_changed', 'field_changed', 'scheduled'] },
+    { value: 'quality', label: '质量检验单', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'approved', 'rejected', 'field_changed'] },
+    { value: 'todo', label: '待办事项', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'completed', 'field_changed'] },
+    { value: 'production', label: '生产批次', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'status_changed', 'field_changed'] },
+    { value: 'inventory', label: '库存记录', timings: ['create_before', 'create_after', 'edit_before', 'edit_after', 'deleted', 'status_changed', 'field_changed', 'scheduled'] },
+];
+
+// 业务对象字段定义（用于字段变更级联选择）
+export const BIZ_OBJECT_FIELDS: Record<string, { value: string; label: string; children?: { value: string; label: string }[] }[]> = {
+    maintenance: [
+        { value: 'status', label: '工单状态', children: [{ value: 'draft', label: '草稿' }, { value: 'pending', label: '审批中' }, { value: 'approved', label: '已同意' }, { value: 'rejected', label: '已驳回' }, { value: 'completed', label: '已完成' }] },
+        { value: 'priority', label: '优先级', children: [{ value: 'urgent', label: '紧急' }, { value: 'normal', label: '一般' }, { value: 'low', label: '低' }] },
+        { value: 'device.line', label: '设备产线' },
+        { value: 'assignee', label: '负责人' },
+        { value: 'dueDate', label: '截止日期' },
+    ],
+    material: [
+        { value: 'status', label: '申请状态', children: [{ value: 'draft', label: '草稿' }, { value: 'pending', label: '审批中' }, { value: 'approved', label: '已同意' }] },
+        { value: 'materialType', label: '物料类型' },
+        { value: 'quantity', label: '数量' },
+        { value: 'urgency', label: '紧急程度' },
+    ],
+    quality: [
+        { value: 'status', label: '检验状态', children: [{ value: 'pending', label: '待检验' }, { value: 'qualified', label: '合格' }, { value: 'unqualified', label: '不合格' }] },
+        { value: 'inspector', label: '检验人' },
+        { value: 'result', label: '检验结果' },
+    ],
+    todo: [
+        { value: 'status', label: '任务状态', children: [{ value: 'pending', label: '待处理' }, { value: 'in_progress', label: '进行中' }, { value: 'completed', label: '已完成' }] },
+        { value: 'assignee', label: '执行人' },
+        { value: 'dueDate', label: '截止日期' },
+    ],
+    production: [
+        { value: 'status', label: '批次状态', children: [{ value: 'planned', label: '计划中' }, { value: 'producing', label: '生产中' }, { value: 'completed', label: '已完成' }] },
+        { value: 'quantity', label: '数量' },
+        { value: 'productLine', label: '产线' },
+    ],
+    inventory: [
+        { value: 'status', label: '库存状态', children: [{ value: 'normal', label: '正常' }, { value: 'low', label: '库存不足' }, { value: 'overstock', label: '积压' }] },
+        { value: 'quantity', label: '数量' },
+        { value: 'warehouse', label: '仓库' },
+    ],
+};
+
+// 关联字段定义
+export const RELATED_FIELDS: { value: string; label: string; children: { value: string; label: string }[] }[] = [
+    { value: 'related_device', label: '关联设备', children: [{ value: 'device.status', label: '设备状态' }, { value: 'device.health', label: '健康度' }] },
+    { value: 'related_org', label: '关联组织', children: [{ value: 'org.name', label: '组织名称' }, { value: 'org.type', label: '组织类型' }] },
 ];
 
 export const TIMING_LABELS: Record<string, string> = {
@@ -30,6 +73,7 @@ export const TIMING_LABELS: Record<string, string> = {
     status_changed: '状态变更',
     scheduled: '定时触发',
     completed: '完成时',
+    field_changed: '字段变更',
 };
 
 const SCHEDULE_UNITS: { value: string; label: string }[] = [
@@ -220,11 +264,180 @@ export interface ScheduleConfig {
     month?: number;
 }
 
+// ============ 按钮权限矩阵类型 ============
+
+export interface ButtonPermRow {
+    id: string;
+    bizObject: string;
+    status: string;
+    identityGroup: string;
+    detailButtons: string[];
+    listButtons: string[];
+}
+
+export interface ButtonPermGroup {
+    bizObject: string;
+    rows: ButtonPermRow[];
+}
+
+/** 每个业务对象可配置的按钮选项（static 用于角色管理，dynamic 用于按钮权限矩阵） */
+export const BIZ_OBJECT_BUTTONS: Record<string, {
+    static: { value: string; label: string }[];
+    dynamic: { value: string; label: string }[];
+    /** 兼容：detail 列出所有按钮（static + dynamic），list 同理 */
+    detail: { value: string; label: string }[];
+    list: { value: string; label: string }[];
+}> = {
+    maintenance: {
+        static: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+        ],
+        dynamic: [
+            { value: 'submit', label: '提交审批' },
+            { value: 'approve', label: '通过/退回' },
+            { value: 'withdraw', label: '撤销' },
+            { value: 'verify', label: '发起验收' },
+            { value: 'appendMaterial', label: '追加物料' },
+            { value: 'upload', label: '上传附件' },
+        ],
+        detail: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+            { value: 'submit', label: '提交审批' },
+            { value: 'approve', label: '通过/退回' },
+            { value: 'withdraw', label: '撤销' },
+            { value: 'verify', label: '发起验收' },
+            { value: 'appendMaterial', label: '追加物料' },
+            { value: 'upload', label: '上传附件' },
+        ],
+        list: [
+            { value: 'process', label: '处理' },
+        ],
+    },
+    material: {
+        static: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+        ],
+        dynamic: [
+            { value: 'submit', label: '提交审批' },
+            { value: 'approve', label: '通过/退回' },
+            { value: 'withdraw', label: '撤销' },
+            { value: 'pickup', label: '领料' },
+        ],
+        detail: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+            { value: 'submit', label: '提交审批' },
+            { value: 'approve', label: '通过/退回' },
+            { value: 'withdraw', label: '撤销' },
+            { value: 'pickup', label: '领料' },
+        ],
+        list: [
+            { value: 'pickup', label: '领料' },
+        ],
+    },
+    quality: {
+        static: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+        ],
+        dynamic: [
+            { value: 'submit', label: '提交审批' },
+            { value: 'approve', label: '通过/退回' },
+            { value: 'withdraw', label: '撤销' },
+        ],
+        detail: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+            { value: 'submit', label: '提交审批' },
+            { value: 'approve', label: '通过/退回' },
+            { value: 'withdraw', label: '撤销' },
+        ],
+        list: [],
+    },
+    todo: {
+        static: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+        ],
+        dynamic: [
+            { value: 'complete', label: '完成' },
+        ],
+        detail: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'complete', label: '完成' },
+        ],
+        list: [],
+    },
+    production: {
+        static: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+        ],
+        dynamic: [
+            { value: 'submit', label: '提交审批' },
+        ],
+        detail: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+            { value: 'submit', label: '提交审批' },
+        ],
+        list: [],
+    },
+    inventory: {
+        static: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+        ],
+        dynamic: [],
+        detail: [
+            { value: 'view', label: '查看' },
+            { value: 'create', label: '创建' },
+            { value: 'export', label: '导出' },
+        ],
+        list: [],
+    },
+};
+
+/** 按钮权限矩阵可使用的业务对象列表 */
+export const PERM_BIZ_OBJECTS = [
+    { value: 'maintenance', label: '维修工单' },
+    { value: 'material', label: '用料申请单' },
+    { value: 'quality', label: '质量检验单' },
+    { value: 'todo', label: '待办事项' },
+    { value: 'production', label: '生产批次' },
+    { value: 'inventory', label: '库存记录' },
+];
+
+const PERM_STATUS_OPTIONS = [
+    { value: 'draft', label: '草稿' },
+    { value: 'pending', label: '审批中' },
+    { value: 'waiting', label: '待审批' },
+    { value: 'approved', label: '已同意' },
+];
+
+const PERM_IDENTITY_OPTIONS = [
+    { value: 'creator', label: '创建人' },
+    { value: 'approver', label: '当前审批人' },
+];
+
 export interface BizRuleForm {
     id?: string;
     name: string;
     code: string;
-    bizObject: string;
+    bizObject: string[];
     timing: string[];
     priority: number;
     breakAfter: boolean;
@@ -244,6 +457,8 @@ export interface BizRuleForm {
         ignoreError: boolean;
     };
     schedule?: ScheduleConfig;
+    fieldChangedFields?: string[][];
+    buttonPermissions: ButtonPermGroup[];
 }
 
 // ============ 辅助函数 ============
@@ -272,7 +487,7 @@ export function defaultForm(): BizRuleForm {
     return {
         name: '',
         code: generateCode(),
-        bizObject: 'maintenance',
+        bizObject: ['maintenance', 'material'],
         timing: [],
         priority: 10,
         breakAfter: false,
@@ -286,6 +501,23 @@ export function defaultForm(): BizRuleForm {
         conditionGroupsLogic: 'AND',
         actions: [emptyAction()],
         advanced: { async: false, maxRetry: 3, timeout: 30, ignoreError: false },
+        buttonPermissions: [
+            {
+                bizObject: 'maintenance',
+                rows: [
+                    { id: genId(), bizObject: 'maintenance', status: 'draft', identityGroup: 'creator', detailButtons: ['submit', 'upload', 'appendMaterial'], listButtons: [] },
+                    { id: genId(), bizObject: 'maintenance', status: 'pending', identityGroup: 'approver', detailButtons: ['approve', 'withdraw'], listButtons: [] },
+                    { id: genId(), bizObject: 'maintenance', status: 'approved', identityGroup: 'creator', detailButtons: ['verify', 'upload'], listButtons: [] },
+                ],
+            },
+            {
+                bizObject: 'material',
+                rows: [
+                    { id: genId(), bizObject: 'material', status: 'draft', identityGroup: 'creator', detailButtons: ['submit', 'pickup'], listButtons: ['pickup'] },
+                    { id: genId(), bizObject: 'material', status: 'pending', identityGroup: 'approver', detailButtons: ['approve'], listButtons: [] },
+                ],
+            },
+        ],
     };
 }
 
@@ -482,23 +714,30 @@ export default function RuleDrawer({
         if (open) {
             if (initialData) {
                 const merged = { ...defaultForm(), ...initialData };
-                // 过滤掉当前业务对象不支持的时机（防止数据不一致导致异常）
-                const bizObj = BIZ_OBJECTS.find((b) => b.value === merged.bizObject);
-                const validTimings = bizObj?.timings || [];
+                // 确保 bizObject 是数组
+                if (!Array.isArray(merged.bizObject)) {
+                    merged.bizObject = merged.bizObject ? [merged.bizObject as any] : [];
+                }
+                // 过滤掉当前业务对象不支持的时机（使用第一个 bizObject 的时机选项）
+                const primaryBizObj = BIZ_OBJECTS.find((b) => b.value === merged.bizObject[0]);
+                const validTimings = primaryBizObj?.timings || [];
                 const filteredTiming = merged.timing.filter((t) => validTimings.includes(t));
                 if (filteredTiming.length !== merged.timing.length) {
                     merged.timing = filteredTiming;
-                    // 如果 scheduled 被过滤掉，同步清除 schedule
                     if (!filteredTiming.includes('scheduled')) {
                         merged.schedule = undefined;
                     }
                 }
-                // 已勾选定时触发但没有 schedule 时，自动初始化
                 if (merged.timing.includes('scheduled') && !merged.schedule) {
                     merged.schedule = { interval: 1, unit: 'day', hour: 9, minute: 0 };
                 }
+                // 同步 buttonPermissions 分组与 bizObject
+                merged.buttonPermissions = merged.bizObject.map((biz: string) => {
+                    const existing = merged.buttonPermissions?.find((g) => g.bizObject === biz);
+                    return existing || { bizObject: biz, rows: [] };
+                });
                 setForm(merged);
-                setActiveBizObject(merged.bizObject || 'maintenance');
+                setActiveBizObject(merged.bizObject[0] || 'maintenance');
             } else {
                 setForm(defaultForm());
                 setActiveBizObject('maintenance');
@@ -510,9 +749,14 @@ export default function RuleDrawer({
         setForm((prev) => ({ ...prev, ...patch }));
     };
 
-    const handleBizObjectChange = (value: string) => {
-        updateForm({ bizObject: value, timing: [] });
-        setActiveBizObject(value);
+    const handleBizObjectChange = (values: string[]) => {
+        // 同步 buttonPermissions：保留已有分组，添加新分组，移除已删除的分组
+        const syncedPerms = values.map((biz) => {
+            const existing = form.buttonPermissions.find((g) => g.bizObject === biz);
+            return existing || { bizObject: biz, rows: [] };
+        });
+        updateForm({ bizObject: values, timing: [], buttonPermissions: syncedPerms });
+        setActiveBizObject(values[0] || 'maintenance');
     };
 
     const timingOptions = BIZ_OBJECTS.find((b) => b.value === activeBizObject)?.timings || [];
@@ -666,6 +910,61 @@ export default function RuleDrawer({
 
     const getFieldOptions = () => FIELD_OPTIONS[activeBizObject] || [];
 
+    // ============ 按钮权限矩阵操作 ============
+
+    const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set(['maintenance', 'material']));
+    const [permFilter, setPermFilter] = useState<string[]>([]);
+
+    const toggleGroup = (bizObj: string) => {
+        setExpandedGroups((prev) => {
+            const next = new Set(prev);
+            if (next.has(bizObj)) next.delete(bizObj);
+            else next.add(bizObj);
+            return next;
+        });
+    };
+
+    const addPermRow = (bizObj: string) => {
+        updateForm({
+            buttonPermissions: form.buttonPermissions.map((g) =>
+                g.bizObject === bizObj
+                    ? { ...g, rows: [...g.rows, { id: genId(), bizObject: bizObj, status: 'draft', identityGroup: 'creator', detailButtons: [], listButtons: [] }] }
+                    : g
+            ),
+        });
+    };
+
+    const removePermRow = (bizObj: string, rowId: string) => {
+        updateForm({
+            buttonPermissions: form.buttonPermissions.map((g) =>
+                g.bizObject === bizObj
+                    ? { ...g, rows: g.rows.filter((r) => r.id !== rowId) }
+                    : g
+            ),
+        });
+    };
+
+    const updatePermRow = (bizObj: string, rowId: string, patch: Partial<ButtonPermRow>) => {
+        updateForm({
+            buttonPermissions: form.buttonPermissions.map((g) =>
+                g.bizObject === bizObj
+                    ? { ...g, rows: g.rows.map((r) => (r.id === rowId ? { ...r, ...patch } : r)) }
+                    : g
+            ),
+        });
+    };
+
+    // 权限矩阵分组只看从 form.bizObject 派生，不允许独立增删
+    const filteredPermGroups = permFilter.length > 0
+        ? form.buttonPermissions.filter((g) => permFilter.includes(g.bizObject))
+        : form.buttonPermissions;
+
+    // "只看对象"下拉只显示已选业务对象
+    const permFilterOptions = form.bizObject.map((b) => {
+        const found = PERM_BIZ_OBJECTS.find((p) => p.value === b);
+        return { value: b, label: found?.label || b };
+    });
+
     return (
         <Drawer
             open={open}
@@ -682,8 +981,8 @@ export default function RuleDrawer({
                 </div>
             }
         >
-            <Collapse defaultActiveKey={['basic', 'condition', 'action', 'advanced']}>
-                {/* 基础信息 */}
+            {/* 基础信息 */}
+            <Collapse defaultActiveKey={['basic']} style={{ marginBottom: 16 }}>
                 <Panel header="基础信息" key="basic">
                     <Row gutter={16}>
                         <Col span={12}>
@@ -705,9 +1004,12 @@ export default function RuleDrawer({
                         <Col span={12}>
                             <Form.Item label="业务对象" required>
                                 <Select
+                                    mode="multiple"
                                     value={form.bizObject}
                                     onChange={handleBizObjectChange}
                                     options={BIZ_OBJECTS.map((b) => ({ value: b.value, label: b.label }))}
+                                    maxTagCount="responsive"
+                                    placeholder="选择业务对象"
                                 />
                             </Form.Item>
                         </Col>
@@ -717,112 +1019,6 @@ export default function RuleDrawer({
                             </Form.Item>
                         </Col>
                     </Row>
-                    <Form.Item label="应用时机" required>
-                        <Checkbox.Group
-                            value={form.timing}
-                            onChange={(v) => {
-                                const timing = v as string[];
-                                // 取消定时触发时，清除排程配置
-                                if (!timing.includes('scheduled')) {
-                                    updateForm({ timing, schedule: undefined });
-                                } else {
-                                    updateForm({ timing, schedule: form.schedule || { interval: 1, unit: 'day', hour: 9, minute: 0 } });
-                                }
-                            }}
-                            options={timingOptions.map((t) => ({ value: t, label: TIMING_LABELS[t] }))}
-                        />
-                        {form.timing.includes('scheduled') && form.schedule && (
-                            <div style={{
-                                marginTop: 10,
-                                background: '#f6f8fa',
-                                border: '1px solid #e8e8e8',
-                                borderRadius: 6,
-                                padding: '12px 16px',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 8,
-                                flexWrap: 'wrap',
-                            }}>
-                                <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', whiteSpace: 'nowrap' }}>定时设置：每</span>
-                                <InputNumber
-                                    value={form.schedule?.interval ?? 1}
-                                    onChange={(v) => updateForm({ schedule: { ...form.schedule!, interval: v || 1 } })}
-                                    min={1}
-                                    style={{ width: 56 }}
-                                    size="small"
-                                />
-                                <Select
-                                    value={form.schedule?.unit || 'day'}
-                                    onChange={(v) => {
-                                        const unit = v as ScheduleConfig['unit'];
-                                        const base: ScheduleConfig = {
-                                            interval: form.schedule!.interval,
-                                            unit,
-                                            hour: form.schedule!.hour,
-                                            minute: form.schedule!.minute,
-                                        };
-                                        if (unit === 'month') base.day = form.schedule!.day ?? 1;
-                                        else if (unit === 'year') {
-                                            base.month = form.schedule!.month ?? 1;
-                                            base.day = form.schedule!.day ?? 1;
-                                        }
-                                        updateForm({ schedule: base });
-                                    }}
-                                    options={SCHEDULE_UNITS}
-                                    style={{ width: 68 }}
-                                    size="small"
-                                />
-                                {/* 月 — 仅选"年"时显示 */}
-                                {form.schedule?.unit === 'year' ? (
-                                    <>
-                                        <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>·</span>
-                                        <Select
-                                            value={form.schedule?.month ?? 1}
-                                            onChange={(v) => updateForm({ schedule: { ...form.schedule!, month: v } })}
-                                            options={Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: `${i + 1} 月` }))}
-                                            style={{ width: 76 }}
-                                            size="small"
-                                        />
-                                    </>
-                                ) : null}
-                                {/* 日 — 选"月"或"年"时显示 */}
-                                {form.schedule?.unit === 'month' || form.schedule?.unit === 'year' ? (
-                                    <>
-                                        <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>·</span>
-                                        <Select
-                                            value={form.schedule?.day ?? 1}
-                                            onChange={(v) => updateForm({ schedule: { ...form.schedule!, day: v } })}
-                                            options={Array.from({ length: 31 }, (_, i) => ({ value: i + 1, label: `${i + 1} 日` }))}
-                                            style={{ width: 76 }}
-                                            size="small"
-                                        />
-                                    </>
-                                ) : null}
-                                {/* 时 — 选"小时"时不显示 */}
-                                {form.schedule?.unit !== 'hour' ? (
-                                    <>
-                                        <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>·</span>
-                                        <Select
-                                            value={form.schedule?.hour ?? 9}
-                                            onChange={(v) => updateForm({ schedule: { ...form.schedule!, hour: v } })}
-                                            options={Array.from({ length: 24 }, (_, i) => ({ value: i, label: `${String(i).padStart(2, '0')} 时` }))}
-                                            style={{ width: 88 }}
-                                            size="small"
-                                        />
-                                    </>
-                                ) : null}
-                                {/* 分 — 始终显示 */}
-                                <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>:</span>
-                                <Select
-                                    value={form.schedule?.minute ?? 0}
-                                    onChange={(v) => updateForm({ schedule: { ...form.schedule!, minute: v } })}
-                                    options={Array.from({ length: 60 }, (_, i) => ({ value: i, label: `${String(i).padStart(2, '0')} 分` }))}
-                                    style={{ width: 88 }}
-                                    size="small"
-                                />
-                            </div>
-                        )}
-                    </Form.Item>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item label="状态">
@@ -876,9 +1072,157 @@ export default function RuleDrawer({
                         <TextArea value={form.description} onChange={(e) => updateForm({ description: e.target.value })} rows={2} />
                     </Form.Item>
                 </Panel>
+            </Collapse>
 
-                {/* 条件配置 */}
-                <Panel header="条件配置" key="condition">
+            {/* 触发规则 / 按钮权限矩阵 */}
+            <Tabs
+                defaultActiveKey="trigger"
+                items={[
+                    {
+                        key: 'trigger',
+                        label: '触发规则',
+                        children: (
+                            <Collapse defaultActiveKey={['timing', 'condition', 'action', 'advanced']}>
+                                {/* 应用时机（从基础信息移入） */}
+                                <Panel header="应用时机" key="timing">
+                                    <Form.Item required>
+                                        <Checkbox.Group
+                                            value={form.timing}
+                                            onChange={(v) => {
+                                                const timing = v as string[];
+                                                if (!timing.includes('scheduled')) {
+                                                    updateForm({ timing, schedule: undefined, fieldChangedFields: timing.includes('field_changed') ? form.fieldChangedFields : undefined });
+                                                } else if (!timing.includes('field_changed')) {
+                                                    updateForm({ timing, schedule: form.schedule || { interval: 1, unit: 'day', hour: 9, minute: 0 }, fieldChangedFields: undefined });
+                                                } else {
+                                                    updateForm({ timing, schedule: form.schedule || { interval: 1, unit: 'day', hour: 9, minute: 0 } });
+                                                }
+                                            }}
+                                            options={timingOptions.map((t) => ({ value: t, label: TIMING_LABELS[t] }))}
+                                        />
+                                        {form.timing.includes('field_changed') && (
+                                            <div style={{
+                                                marginTop: 10,
+                                                background: '#f6f8fa',
+                                                border: '1px solid #e8e8e8',
+                                                borderRadius: 6,
+                                                padding: '12px 16px',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: 8,
+                                            }}>
+                                                <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', whiteSpace: 'nowrap' }}>监听字段：</span>
+                                                <Cascader
+                                                    multiple
+                                                    value={form.fieldChangedFields || []}
+                                                    onChange={(v) => updateForm({ fieldChangedFields: v as string[][] })}
+                                                    options={form.bizObject.map((biz) => {
+                                                        const bizObj = BIZ_OBJECTS.find((b) => b.value === biz);
+                                                        const fields = BIZ_OBJECT_FIELDS[biz] || [];
+                                                        return {
+                                                            value: biz,
+                                                            label: bizObj?.label || biz,
+                                                            children: [...fields, ...RELATED_FIELDS],
+                                                        };
+                                                    })}
+                                                    placeholder="选择业务对象字段"
+                                                    style={{ minWidth: 240 }}
+                                                    size="small"
+                                                />
+                                            </div>
+                                        )}
+                                        {form.timing.includes('scheduled') && form.schedule && (
+                                            <div style={{
+                                                marginTop: 10,
+                                                background: '#f6f8fa',
+                                                border: '1px solid #e8e8e8',
+                                                borderRadius: 6,
+                                                padding: '12px 16px',
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: 8,
+                                                flexWrap: 'wrap',
+                                            }}>
+                                                <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', whiteSpace: 'nowrap' }}>定时设置：每</span>
+                                                <InputNumber
+                                                    value={form.schedule?.interval ?? 1}
+                                                    onChange={(v) => updateForm({ schedule: { ...form.schedule!, interval: v || 1 } })}
+                                                    min={1}
+                                                    style={{ width: 56 }}
+                                                    size="small"
+                                                />
+                                                <Select
+                                                    value={form.schedule?.unit || 'day'}
+                                                    onChange={(v) => {
+                                                        const unit = v as ScheduleConfig['unit'];
+                                                        const base: ScheduleConfig = {
+                                                            interval: form.schedule!.interval,
+                                                            unit,
+                                                            hour: form.schedule!.hour,
+                                                            minute: form.schedule!.minute,
+                                                        };
+                                                        if (unit === 'month') base.day = form.schedule!.day ?? 1;
+                                                        else if (unit === 'year') {
+                                                            base.month = form.schedule!.month ?? 1;
+                                                            base.day = form.schedule!.day ?? 1;
+                                                        }
+                                                        updateForm({ schedule: base });
+                                                    }}
+                                                    options={SCHEDULE_UNITS}
+                                                    style={{ width: 68 }}
+                                                    size="small"
+                                                />
+                                                {form.schedule?.unit === 'year' ? (
+                                                    <>
+                                                        <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>·</span>
+                                                        <Select
+                                                            value={form.schedule?.month ?? 1}
+                                                            onChange={(v) => updateForm({ schedule: { ...form.schedule!, month: v } })}
+                                                            options={Array.from({ length: 12 }, (_, i) => ({ value: i + 1, label: `${i + 1} 月` }))}
+                                                            style={{ width: 76 }}
+                                                            size="small"
+                                                        />
+                                                    </>
+                                                ) : null}
+                                                {form.schedule?.unit === 'month' || form.schedule?.unit === 'year' ? (
+                                                    <>
+                                                        <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>·</span>
+                                                        <Select
+                                                            value={form.schedule?.day ?? 1}
+                                                            onChange={(v) => updateForm({ schedule: { ...form.schedule!, day: v } })}
+                                                            options={Array.from({ length: 31 }, (_, i) => ({ value: i + 1, label: `${i + 1} 日` }))}
+                                                            style={{ width: 76 }}
+                                                            size="small"
+                                                        />
+                                                    </>
+                                                ) : null}
+                                                {form.schedule?.unit !== 'hour' ? (
+                                                    <>
+                                                        <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>·</span>
+                                                        <Select
+                                                            value={form.schedule?.hour ?? 9}
+                                                            onChange={(v) => updateForm({ schedule: { ...form.schedule!, hour: v } })}
+                                                            options={Array.from({ length: 24 }, (_, i) => ({ value: i, label: `${String(i).padStart(2, '0')} 时` }))}
+                                                            style={{ width: 88 }}
+                                                            size="small"
+                                                        />
+                                                    </>
+                                                ) : null}
+                                                <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.45)' }}>:</span>
+                                                <Select
+                                                    value={form.schedule?.minute ?? 0}
+                                                    onChange={(v) => updateForm({ schedule: { ...form.schedule!, minute: v } })}
+                                                    options={Array.from({ length: 60 }, (_, i) => ({ value: i, label: `${String(i).padStart(2, '0')} 分` }))}
+                                                    style={{ width: 88 }}
+                                                    size="small"
+                                                />
+                                            </div>
+                                        )}
+                                    </Form.Item>
+                                </Panel>
+
+                                {/* 条件配置 */}
+                                <Panel header="条件配置" key="condition">
                     <Radio.Group
                         value={form.hasCondition ? 'conditional' : 'unconditional'}
                         onChange={(e) => updateForm({ hasCondition: e.target.value === 'conditional' })}
@@ -1471,6 +1815,184 @@ export default function RuleDrawer({
                     </Row>
                 </Panel>
             </Collapse>
+                        ),
+                    },
+                    {
+                        key: 'buttonPerm',
+                        label: '按钮权限矩阵',
+                        children: (
+                            <div>
+                                {/* 配置指引提示条 */}
+                                <div style={{
+                                    background: '#e6f4ff',
+                                    border: '1px solid #91caff',
+                                    borderRadius: 6,
+                                    padding: '10px 16px',
+                                    marginBottom: 16,
+                                    fontSize: 13,
+                                    color: 'rgba(0,0,0,0.65)',
+                                    lineHeight: 1.8,
+                                }}>
+                                    <span style={{ marginRight: 6 }}>💡</span>
+                                    <strong>配置指引：</strong>本矩阵仅控制「动态按钮组」按钮（如提交、通过、退回、撤销、验收等）在不同状态下的显隐。静态类按钮（如创建、导出、查看列表）请移步【角色管理】配置。
+                                </div>
+
+                                {/* 顶部筛选 */}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                                    <span style={{ fontSize: 13, color: 'rgba(0,0,0,0.65)', whiteSpace: 'nowrap' }}>只看对象：</span>
+                                    <Select
+                                        mode="multiple"
+                                        value={permFilter}
+                                        onChange={(v) => setPermFilter(v as string[])}
+                                        options={permFilterOptions}
+                                        placeholder="全部对象"
+                                        allowClear
+                                        style={{ minWidth: 240 }}
+                                        maxTagCount="responsive"
+                                    />
+                                </div>
+
+                                {/* 分组表格 */}
+                                {filteredPermGroups.length === 0 ? (
+                                    <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(0,0,0,0.45)' }}>
+                                        请在基础信息中选择业务对象
+                                    </div>
+                                ) : (
+                                    filteredPermGroups.map((group) => {
+                                        const bizLabel = PERM_BIZ_OBJECTS.find((b) => b.value === group.bizObject)?.label || group.bizObject;
+                                        const btnConfig = BIZ_OBJECT_BUTTONS[group.bizObject] || { detail: [], list: [], static: [], dynamic: [] };
+                                        const isExpanded = expandedGroups.has(group.bizObject);
+
+                                        return (
+                                            <div key={group.bizObject} style={{ marginBottom: 16, border: '1px solid #f0f0f0', borderRadius: 6, overflow: 'hidden' }}>
+                                                {/* 分组标题行 */}
+                                                <div
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        padding: '10px 16px',
+                                                        background: '#fafafa',
+                                                        borderBottom: isExpanded ? '1px solid #f0f0f0' : 'none',
+                                                        gap: 12,
+                                                    }}
+                                                >
+                                                    <Button
+                                                        type="text"
+                                                        size="small"
+                                                        icon={isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                                                        onClick={() => toggleGroup(group.bizObject)}
+                                                    />
+                                                    <span style={{ fontWeight: 600, fontSize: 14 }}>{bizLabel}</span>
+                                                    <span style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)' }}>{group.rows.length} 条配置</span>
+                                                    <div style={{ flex: 1 }} />
+                                                    <Button type="dashed" size="small" icon={<Plus size={14} />} onClick={() => addPermRow(group.bizObject)}>
+                                                        添加行
+                                                    </Button>
+                                                </div>
+
+                                                {/* 展开的子行表格 */}
+                                                {isExpanded && (
+                                                    <div style={{ overflowX: 'auto' }}>
+                                                        {/* 表头 */}
+                                                        <div style={{
+                                                            display: 'grid',
+                                                            gridTemplateColumns: '120px 120px 160px 1fr 1fr 60px',
+                                                            gap: 0,
+                                                            background: '#f5f5f5',
+                                                            borderBottom: '1px solid #f0f0f0',
+                                                            fontSize: 12,
+                                                            fontWeight: 600,
+                                                            color: 'rgba(0,0,0,0.65)',
+                                                        }}>
+                                                            <div style={{ padding: '8px 12px' }}>业务对象</div>
+                                                            <div style={{ padding: '8px 12px' }}>状态</div>
+                                                            <div style={{ padding: '8px 12px' }}>身份组</div>
+                                                            <div style={{ padding: '8px 12px' }}>①详情页流程按钮</div>
+                                                            <div style={{ padding: '8px 12px' }}>②列表操作列按钮</div>
+                                                            <div style={{ padding: '8px 12px' }}>操作</div>
+                                                        </div>
+                                                        {/* 子行 */}
+                                                        {group.rows.length === 0 ? (
+                                                            <div style={{ textAlign: 'center', padding: '20px 0', color: 'rgba(0,0,0,0.45)', fontSize: 13 }}>
+                                                                暂无配置行，点击"添加行"新增
+                                                            </div>
+                                                        ) : (
+                                                            group.rows.map((row) => (
+                                                                <div
+                                                                    key={row.id}
+                                                                    style={{
+                                                                        display: 'grid',
+                                                                        gridTemplateColumns: '120px 120px 160px 1fr 1fr 60px',
+                                                                        gap: 0,
+                                                                        borderBottom: '1px solid #f5f5f5',
+                                                                        alignItems: 'center',
+                                                                        fontSize: 13,
+                                                                    }}
+                                                                >
+                                                                    {/* 业务对象列 — 子行缩进显示 */}
+                                                                    <div style={{ padding: '8px 12px', color: 'rgba(0,0,0,0.45)' }}>
+                                                                        └ {bizLabel}
+                                                                    </div>
+                                                                    {/* 状态 */}
+                                                                    <div style={{ padding: '8px 12px' }}>
+                                                                        <Select
+                                                                            value={row.status}
+                                                                            onChange={(v) => updatePermRow(group.bizObject, row.id, { status: v })}
+                                                                            options={PERM_STATUS_OPTIONS}
+                                                                            size="small"
+                                                                            style={{ width: '100%' }}
+                                                                        />
+                                                                    </div>
+                                                                    {/* 身份组 */}
+                                                                    <div style={{ padding: '8px 12px' }}>
+                                                                        <Select
+                                                                            value={row.identityGroup}
+                                                                            onChange={(v) => updatePermRow(group.bizObject, row.id, { identityGroup: v })}
+                                                                            options={PERM_IDENTITY_OPTIONS}
+                                                                            size="small"
+                                                                            style={{ width: '100%' }}
+                                                                        />
+                                                                    </div>
+                                                                    {/* 详情页流程按钮 — 仅显示 dynamic 类型 */}
+                                                                    <div style={{ padding: '8px 12px' }}>
+                                                                        <Checkbox.Group
+                                                                            value={row.detailButtons}
+                                                                            onChange={(v) => updatePermRow(group.bizObject, row.id, { detailButtons: v as string[] })}
+                                                                            options={btnConfig.dynamic}
+                                                                        />
+                                                                    </div>
+                                                                    {/* 列表操作列按钮 */}
+                                                                    <div style={{ padding: '8px 12px' }}>
+                                                                        <Checkbox.Group
+                                                                            value={row.listButtons}
+                                                                            onChange={(v) => updatePermRow(group.bizObject, row.id, { listButtons: v as string[] })}
+                                                                            options={btnConfig.list}
+                                                                        />
+                                                                    </div>
+                                                                    {/* 操作 */}
+                                                                    <div style={{ padding: '8px 12px' }}>
+                                                                        <Button
+                                                                            type="text"
+                                                                            danger
+                                                                            size="small"
+                                                                            icon={<Trash2 size={14} />}
+                                                                            onClick={() => removePermRow(group.bizObject, row.id)}
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })
+                                )}
+                            </div>
+                        ),
+                    },
+                ]}
+            />
         </Drawer>
     );
 }

@@ -24,6 +24,7 @@ import {
     Col,
     DatePicker,
     Checkbox,
+    Radio,
     message,
     Avatar,
 } from 'antd';
@@ -304,10 +305,45 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
     const [treeSelectedId, setTreeSelectedId] = useState<string | null>(null);
     const [treeExpanded, setTreeExpanded] = useState<string[]>(['1', '2', '3']);
 
+    // 交接人相关状态
+    const [handoverModalOpen, setHandoverModalOpen] = useState(false);
+    const [handoverSelectorOpen, setHandoverSelectorOpen] = useState(false);
+    const [handoverSelectedUser, setHandoverSelectedUser] = useState<string | null>(null);
+    const [handoverAction, setHandoverAction] = useState<(() => void) | null>(null);
+    const [handoverSearch, setHandoverSearch] = useState('');
+    const [handoverExpandedKeys, setHandoverExpandedKeys] = useState<string[]>(['1', '2', '3']);
+
     const treeSelectedName = useMemo(() => {
         if (!treeSelectedId) return null;
         return orgNameMap[treeSelectedId] || null;
     }, [treeSelectedId]);
+
+    /** 对用户进行离职/冻结/删除等操作时，先询问是否指定交接人 */
+    const showHandoverConfirm = (actionLabel: string, onConfirm: () => void) => {
+        setHandoverAction(() => onConfirm);
+        setHandoverModalOpen(true);
+    };
+
+    const handleHandoverYes = () => {
+        setHandoverModalOpen(false);
+        setHandoverSelectorOpen(true);
+    };
+
+    const handleHandoverNo = () => {
+        setHandoverModalOpen(false);
+        handoverAction?.();
+    };
+
+    const handleHandoverSelectConfirm = () => {
+        const target = users.find((u) => u.id === handoverSelectedUser);
+        handoverAction?.();
+        setHandoverSelectorOpen(false);
+        setHandoverSelectedUser(null);
+        setHandoverAction(null);
+        if (target) {
+            message.success(`已将该用户的任务、待办、消息移交至 ${target.name}`);
+        }
+    };
 
     const filtered = users.filter((u) => {
         const text = `${u.name}${u.employeeNo}${u.phone}${u.mainPosition}`.toLowerCase();
@@ -345,6 +381,18 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
             setUsers([...users, newUser]);
             message.success('新增用户成功');
         } else if (form.id) {
+            const original = users.find((u) => u.id === form.id);
+            const newStatus = form.status;
+            // 编辑时状态变更为离职/冻结，需要交接确认
+            if (original && newStatus && original.status !== newStatus && (newStatus === 'leave' || newStatus === 'frozen')) {
+                const label = newStatus === 'leave' ? '离职' : '冻结';
+                showHandoverConfirm(label, () => {
+                    setUsers(users.map((u) => (u.id === form.id ? { ...u, ...form } as UserItem : u)));
+                    message.success(`${label}操作成功`);
+                });
+                setModalOpen(false);
+                return;
+            }
             setUsers(users.map((u) => (u.id === form.id ? { ...u, ...form } as UserItem : u)));
             message.success('编辑用户成功');
         }
@@ -352,18 +400,24 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
     };
 
     const handleFreeze = (id: string) => {
-        setUsers(users.map((u) => (u.id === id ? { ...u, status: u.status === 'frozen' ? 'active' : 'frozen' } as UserItem : u)));
-        message.success('状态更新成功');
+        const target = users.find((u) => u.id === id);
+        if (target?.status === 'frozen') {
+            // 解冻操作无需交接人确认
+            setUsers(users.map((u) => (u.id === id ? { ...u, status: 'active' } as UserItem : u)));
+            message.success('解冻成功');
+        } else {
+            showHandoverConfirm('冻结', () => {
+                setUsers(users.map((u) => (u.id === id ? { ...u, status: 'frozen' } as UserItem : u)));
+                message.success('冻结成功');
+            });
+        }
     };
 
     const batchFreeze = () => {
-        Modal.confirm({
-            title: '确定冻结选中的用户？',
-            onOk: () => {
-                setUsers((prev) => prev.map((u) => (selectedIds.has(u.id) ? { ...u, status: 'frozen' } as UserItem : u)));
-                setSelectedIds(new Set());
-                message.success('批量冻结成功');
-            },
+        showHandoverConfirm('批量冻结', () => {
+            setUsers((prev) => prev.map((u) => (selectedIds.has(u.id) ? { ...u, status: 'frozen' } as UserItem : u)));
+            setSelectedIds(new Set());
+            message.success('批量冻结成功');
         });
     };
 
@@ -379,13 +433,10 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
     };
 
     const batchDelete = () => {
-        Modal.confirm({
-            title: '确定删除选中的用户？',
-            onOk: () => {
-                setUsers((prev) => prev.filter((u) => !selectedIds.has(u.id)));
-                setSelectedIds(new Set());
-                message.success('批量删除成功');
-            },
+        showHandoverConfirm('批量删除', () => {
+            setUsers((prev) => prev.filter((u) => !selectedIds.has(u.id)));
+            setSelectedIds(new Set());
+            message.success('批量删除成功');
         });
     };
 
@@ -480,9 +531,9 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
                     }}>重置密码</Button>
                     <Button type="link" size="small" danger onClick={(e) => {
                         e.stopPropagation();
-                        Modal.confirm({
-                            title: '确定删除？',
-                            onOk: () => setUsers(users.filter((x) => x.id !== u.id)),
+                        showHandoverConfirm('删除', () => {
+                            setUsers(users.filter((x) => x.id !== u.id));
+                            message.success('删除成功');
                         });
                     }}>删除</Button>
                 </Space>
@@ -843,6 +894,131 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
                         )}
                     </Row>
                 )}
+            </Modal>
+
+            {/* 交接人确认对话框 */}
+            <Modal
+                open={handoverModalOpen}
+                title="是否指定交接人？"
+                onCancel={() => { setHandoverModalOpen(false); setHandoverAction(null); }}
+                footer={null}
+                width={480}
+            >
+                <div style={{ marginBottom: 16, fontSize: 14, color: 'rgba(0,0,0,0.65)' }}>
+                    该操作将变更用户状态，其名下的任务、待办事项、消息等需要妥善处理。是否为该用户指定交接人？
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+                    <Button onClick={() => { setHandoverModalOpen(false); setHandoverAction(null); }}>取消</Button>
+                    <Button type="default" onClick={handleHandoverNo}>否，直接执行</Button>
+                    <Button type="primary" onClick={handleHandoverYes}>是，指定交接人</Button>
+                </div>
+            </Modal>
+
+            {/* 交接人选择对话框 */}
+            <Modal
+                open={handoverSelectorOpen}
+                title="选择人员"
+                onCancel={() => { setHandoverSelectorOpen(false); setHandoverSelectedUser(null); setHandoverSearch(''); }}
+                onOk={handleHandoverSelectConfirm}
+                okButtonProps={{ disabled: !handoverSelectedUser }}
+                width={720}
+                bodyStyle={{ padding: 0 }}
+            >
+                <div style={{ display: 'flex', height: 420 }}>
+                    {/* 左侧：组织架构 + 人员树 */}
+                    <div style={{ flex: 1, borderRight: '1px solid #f0f0f0', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ padding: '12px 16px 8px', fontWeight: 500, color: '#1677ff', fontSize: 14 }}>用户列表</div>
+                        <div style={{ padding: '0 12px 8px' }}>
+                            <Input.Search
+                                placeholder="搜索人员或组织..."
+                                value={handoverSearch}
+                                onChange={(e) => setHandoverSearch(e.target.value)}
+                                allowClear
+                            />
+                        </div>
+                        <div style={{ flex: 1, overflow: 'auto', padding: '0 8px 12px' }}>
+                            <Tree
+                                checkable
+                                checkStrictly
+                                checkedKeys={handoverSelectedUser ? [handoverSelectedUser] : []}
+                                onCheck={(checked) => {
+                                    const keys = (checked as { checked: string[] }).checked;
+                                    // 只允许选中人员节点（以 u 开头），且仅单人
+                                    const userKeys = keys.filter((k) => k.startsWith('u'));
+                                    if (userKeys.length > 0) {
+                                        setHandoverSelectedUser(userKeys[userKeys.length - 1]);
+                                    } else {
+                                        setHandoverSelectedUser(null);
+                                    }
+                                }}
+                                expandedKeys={handoverExpandedKeys}
+                                onExpand={(keys) => setHandoverExpandedKeys(keys as string[])}
+                                treeData={((): DataNode[] => {
+                                    const activeUsers = users.filter((u) => u.status === 'active');
+                                    const searchLower = handoverSearch.toLowerCase();
+                                    // 构建带人员的树：组织节点 + 人员叶子节点
+                                    function buildPersonTree(nodes: DataNode[]): DataNode[] {
+                                        return nodes.map((node) => {
+                                            const orgName = String(node.title);
+                                            const childOrgs = node.children ? buildPersonTree(node.children) : [];
+                                            const childUsers = activeUsers
+                                                .filter((u) => u.mainOrg === orgName)
+                                                .filter((u) => !searchLower || u.name.toLowerCase().includes(searchLower) || u.mainOrg.toLowerCase().includes(searchLower))
+                                                .map((u) => ({
+                                                    key: u.id,
+                                                    title: (
+                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                                                            <Avatar size={20} style={{ fontSize: 10, flexShrink: 0 }}>{u.name[0]}</Avatar>
+                                                            <span>{u.name}</span>
+                                                            <span style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)' }}>{u.mainPosition}</span>
+                                                        </span>
+                                                    ),
+                                                    isLeaf: true,
+                                                } as DataNode));
+                                            const allChildren = [...childOrgs, ...childUsers];
+                                            // 搜索时过滤：如果自身匹配则保留全部子节点，否则只保留匹配的子节点
+                                            const selfMatch = !searchLower || orgName.toLowerCase().includes(searchLower);
+                                            if (!selfMatch && allChildren.length === 0) return null as any;
+                                            return {
+                                                key: node.key,
+                                                title: orgName,
+                                                children: allChildren,
+                                            } as DataNode;
+                                        }).filter(Boolean);
+                                    }
+                                    return buildPersonTree(orgTreeData);
+                                })()}
+                            />
+                        </div>
+                    </div>
+                    {/* 右侧：已选人员 */}
+                    <div style={{ width: 240, display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ padding: '12px 16px 8px', fontWeight: 500, fontSize: 14 }}>
+                            已选择（{handoverSelectedUser ? 1 : 0}）
+                        </div>
+                        <div style={{ flex: 1, overflow: 'auto', padding: '0 12px' }}>
+                            {handoverSelectedUser ? (() => {
+                                const u = users.find((x) => x.id === handoverSelectedUser);
+                                if (!u) return null;
+                                return (
+                                    <div style={{
+                                        display: 'flex', alignItems: 'center', gap: 8,
+                                        padding: '8px 10px', borderRadius: 6, border: '1px solid #f0f0f0', marginTop: 4,
+                                    }}>
+                                        <Avatar size={24} style={{ fontSize: 12, flexShrink: 0 }}>{u.name[0]}</Avatar>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{ fontWeight: 500, fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{u.name}</div>
+                                            <div style={{ fontSize: 11, color: 'rgba(0,0,0,0.45)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{u.mainOrg}</div>
+                                        </div>
+                                        <Button type="text" size="small" danger icon={<Trash2 size={12} />} onClick={() => setHandoverSelectedUser(null)} />
+                                    </div>
+                                );
+                            })() : (
+                                <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(0,0,0,0.25)', fontSize: 13 }}>暂未选择</div>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </Modal>
         </div>
     );

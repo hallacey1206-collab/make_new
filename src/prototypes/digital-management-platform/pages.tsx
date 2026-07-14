@@ -95,6 +95,7 @@ import ExpertDatabasePage, { ExpertStoreProvider } from './expert-database';
 import BudgetFillPage, { BudgetStoreProvider } from './budget-fill';
 import FilingWecomMsgPage from './filing-wecom-msg';
 import FilingWecomDetailPage from './filing-wecom-detail';
+import ProjectExecutionPage from './project-execution';
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -2141,6 +2142,8 @@ function AppContent() {
                 return <FilingWecomMsgPage />;
             case 'filing-wecom-detail':
                 return <FilingWecomDetailPage />;
+            case 'project-execution':
+                return <ProjectExecutionPage />;
             default:
                 return <PlaceholderPage pageId={page as MenuPageId} />;
         }

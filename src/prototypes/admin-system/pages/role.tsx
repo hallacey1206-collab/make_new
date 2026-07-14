@@ -11,6 +11,7 @@ import {
     Save,
     Layers,
     UserPlus,
+    Info,
 } from 'lucide-react';
 import {
     Table,
@@ -36,6 +37,7 @@ import {
     Switch,
     Collapse,
     InputNumber,
+    Tooltip,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { DataNode } from 'antd/es/tree';
@@ -447,7 +449,7 @@ function collectExpandedKeys(nodes: DataNode[], keyword: string): string[] {
     return keys;
 }
 
- type MenuNode = { label: string; children?: MenuNode[] };
+ type MenuNode = { label: string; isDynamic?: boolean; note?: string; children?: MenuNode[] };
 
  const webMenuTree: MenuNode[] = [
     {
@@ -466,7 +468,28 @@ function collectExpandedKeys(nodes: DataNode[], keyword: string): string[] {
             { label: '全息管理', children: [
                 { label: '设备台账' }, { label: '二维码下载' },
                 { label: '巡检标准' }, { label: '润滑标准' },
-                { label: '报修记录' }, { label: '维修管理' },
+                { label: '报修记录' },
+                {
+                    label: '维修工单管理',
+                    children: [
+                        { label: '查看列表' },
+                        { label: '创建工单' },
+                        { label: '导出工单' },
+                        {
+                            label: '动态按钮组',
+                            isDynamic: true,
+                            note: '此组按钮的具体显隐由"业务规则-按钮矩阵"控制，此处仅需勾选总开关',
+                            children: [
+                                { label: '提交审批' },
+                                { label: '通过/退回' },
+                                { label: '撤销工单' },
+                                { label: '发起验收' },
+                                { label: '追加物料' },
+                                { label: '上传附件' },
+                            ],
+                        },
+                    ],
+                },
             ]},
             { label: '巡检管理' }, { label: '润滑管理' },
             { label: '缺陷管理' }, { label: '预警中心' },
@@ -569,9 +592,11 @@ interface MenuTreeProps {
     onChange: (keys: string[]) => void;
     level?: number;
     nodes?: MenuNode[];
+    collapsedGroups?: Set<string>;
+    onToggleCollapse?: (label: string) => void;
 }
 
-function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes }: MenuTreeProps) {
+function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes, collapsedGroups, onToggleCollapse }: MenuTreeProps) {
     const currentNodes = nodes || rootNodes;
 
     const handleLeafToggle = (label: string) => {
@@ -611,40 +636,56 @@ function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes }: MenuTr
                 }
 
                 const allChildrenAreLeaves = node.children!.every(isLeafNode);
+                const isDynamic = node.isDynamic === true;
+                const isCollapsed = collapsedGroups?.has(node.label) ?? false;
+
                 return (
                     <div key={node.label}>
-                        <div style={{ marginBottom: allChildrenAreLeaves && level >= 1 ? 8 : 4 }}>
+                        <div style={{ marginBottom: allChildrenAreLeaves && level >= 1 ? 8 : 4, display: 'flex', alignItems: 'center', gap: 4 }}>
                             <Checkbox
                                 indeterminate={isNodeIndeterminate(node, checkedKeys)}
                                 checked={isNodeFullyChecked(node, checkedKeys)}
                                 onChange={() => handleParentToggle(node)}
                             >
-                                <span style={{ fontWeight: level === 0 ? 600 : 500 }}>{node.label}</span>
+                                <span style={{ fontWeight: level === 0 ? 600 : 500 }}>
+                                    {isDynamic ? '🔄 ' : ''}{node.label}
+                                </span>
                             </Checkbox>
+                            {isDynamic && (
+                                <Tooltip title={'此组按钮的具体显隐由"业务规则-按钮矩阵"控制，此处仅需勾选总开关'}>
+                                    <Info size={14} style={{ color: '#1677ff', cursor: 'pointer', verticalAlign: 'middle' }} />
+                                </Tooltip>
+                            )}
                         </div>
-                        {allChildrenAreLeaves ? (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px', paddingLeft: 24 }}>
-                                {node.children!.map((child) => (
-                                    <Checkbox
-                                        key={child.label}
-                                        checked={checkedKeys.includes(child.label)}
-                                        onChange={() => handleLeafToggle(child.label)}
-                                        style={{ whiteSpace: 'nowrap' }}
-                                    >
-                                        {child.label}
-                                    </Checkbox>
-                                ))}
-                            </div>
-                        ) : (
-                            <div style={{ paddingLeft: 24 }}>
-                                <MenuTree
-                                    rootNodes={rootNodes}
-                                    nodes={node.children!}
-                                    checkedKeys={checkedKeys}
-                                    onChange={onChange}
-                                    level={level + 1}
-                                />
-                            </div>
+                        {/* 动态按钮组可折叠 */}
+                        {isDynamic && isCollapsed ? null : (
+                            allChildrenAreLeaves ? (
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px', paddingLeft: 24, alignItems: 'center' }}>
+                                    {node.children!.map((child) => (
+                                        <Checkbox
+                                            key={child.label}
+                                            checked={checkedKeys.includes(child.label)}
+                                            onChange={() => handleLeafToggle(child.label)}
+                                            disabled={isDynamic}
+                                            style={{ whiteSpace: 'nowrap' }}
+                                        >
+                                            {child.label}
+                                        </Checkbox>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div style={{ paddingLeft: 24 }}>
+                                    <MenuTree
+                                        rootNodes={rootNodes}
+                                        nodes={node.children!}
+                                        checkedKeys={checkedKeys}
+                                        onChange={onChange}
+                                        level={level + 1}
+                                        collapsedGroups={collapsedGroups}
+                                        onToggleCollapse={onToggleCollapse}
+                                    />
+                                </div>
+                            )
                         )}
                     </div>
                 );
@@ -679,6 +720,16 @@ function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes }: MenuTr
     const [permMenuType, setPermMenuType] = useState<'web' | 'app'>('web');
     const [webCheckedKeys, setWebCheckedKeys] = useState<string[]>([]);
     const [appCheckedKeys, setAppCheckedKeys] = useState<string[]>([]);
+    const [menuCollapsedGroups, setMenuCollapsedGroups] = useState<Set<string>>(new Set());
+
+    const toggleMenuCollapse = (label: string) => {
+        setMenuCollapsedGroups((prev) => {
+            const next = new Set(prev);
+            if (next.has(label)) next.delete(label);
+            else next.add(label);
+            return next;
+        });
+    };
     const [customScope, setCustomScope] = useState<string[]>([]);
     const [memberPage, setMemberPage] = useState(1);
     const memberPageSize = 10;
@@ -1220,6 +1271,8 @@ function MenuTree({ rootNodes, checkedKeys, onChange, level = 0, nodes }: MenuTr
                                                     if (permMenuType === 'web') setWebCheckedKeys(keys);
                                                     else setAppCheckedKeys(keys);
                                                 }}
+                                                collapsedGroups={menuCollapsedGroups}
+                                                onToggleCollapse={toggleMenuCollapse}
                                             />
                                         </div>
                                     </div>

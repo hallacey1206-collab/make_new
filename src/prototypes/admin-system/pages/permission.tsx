@@ -806,6 +806,18 @@ export default function PermissionPage() {
                                 </Select>
                             </Form.Item>
                         </Col>
+                        <Col span={8}>
+                            <Form.Item noStyle shouldUpdate={(prev, cur) => prev.type !== cur.type}>
+                                {({ getFieldValue }) => getFieldValue('type') === 'button' ? (
+                                    <Form.Item name="buttonType" label="按钮类型" rules={[{ required: true, message: '请选择按钮类型' }]} initialValue="static">
+                                        <Select placeholder="请选择">
+                                            <Select.Option value="static">静态</Select.Option>
+                                            <Select.Option value="dynamic">动态</Select.Option>
+                                        </Select>
+                                    </Form.Item>
+                                ) : null}
+                            </Form.Item>
+                        </Col>
                     </Row>
                     <Row gutter={24}>
                         <Col span={8}>
@@ -860,8 +872,7 @@ export default function PermissionPage() {
                         </Col>
                     </Row>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 8 }}>
-                        <Button type="primary" icon={<Save size={14} />}>保存</Button>
-                        <Button type="primary" icon={<Save size={14} />}>保存并返回</Button>
+                        <Button type="primary" icon={<Save size={14} />} onClick={() => { message.success('保存成功'); setMenuModalOpen(false); }}>保存</Button>
                         <Button type="primary" icon={<Save size={14} />}>保存并新增</Button>
                         <Button onClick={() => setMenuModalOpen(false)}>取消</Button>
                     </div>

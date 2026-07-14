@@ -25,6 +25,7 @@ const route = defineHashPageRoute(
         { id: 'expert-database', title: '专家库' },
         { id: 'filing-wecom-msg', title: '企微审批提醒' },
         { id: 'filing-wecom-detail', title: '企微审批详情' },
+        { id: 'project-execution', title: '项目执行' },
     ],
     { defaultPageId: 'home' },
 );

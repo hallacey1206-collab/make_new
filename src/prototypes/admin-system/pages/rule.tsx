@@ -42,7 +42,7 @@ interface BizRule {
     id: string;
     name: string;
     code: string;
-    bizObject: string;
+    bizObject: string[];
     timing: string[];
     priority: number;
     breakAfter: boolean;
@@ -94,7 +94,7 @@ const initialRules: BizRule[] = [
         id: 'br1',
         name: '熟料热耗超标预警',
         code: 'RULE-THERMAL-001',
-        bizObject: 'production',
+        bizObject: ['production'],
         timing: ['create_after', 'edit_after'],
         priority: 10,
         breakAfter: false,
@@ -126,7 +126,7 @@ const initialRules: BizRule[] = [
         id: 'br2',
         name: '出厂水泥强度锁定',
         code: 'RULE-QUALITY-001',
-        bizObject: 'quality',
+        bizObject: ['quality'],
         timing: ['edit_before'],
         priority: 100,
         breakAfter: true,
@@ -159,7 +159,7 @@ const initialRules: BizRule[] = [
         id: 'br3',
         name: '熟料库位低自动补库',
         code: 'RULE-INVENTORY-001',
-        bizObject: 'inventory',
+        bizObject: ['inventory'],
         timing: ['scheduled', 'status_changed'],
         priority: 50,
         breakAfter: false,
@@ -193,7 +193,7 @@ const initialRules: BizRule[] = [
         id: 'br4',
         name: '重大质量事故跳级审批',
         code: 'RULE-APPROVAL-001',
-        bizObject: 'quality',
+        bizObject: ['quality'],
         timing: ['create_after'],
         priority: 200,
         breakAfter: true,
@@ -224,7 +224,7 @@ const initialRules: BizRule[] = [
         id: 'br5',
         name: '窑头负压异常报警',
         code: 'RULE-MAINTENANCE-001',
-        bizObject: 'maintenance',
+        bizObject: ['maintenance'],
         timing: ['create_after', 'scheduled'],
         priority: 80,
         breakAfter: false,
@@ -258,7 +258,7 @@ const initialRules: BizRule[] = [
         id: 'br6',
         name: '煤耗波动提醒',
         code: 'RULE-PRODUCTION-002',
-        bizObject: 'production',
+        bizObject: ['production'],
         timing: ['edit_after'],
         priority: 40,
         breakAfter: false,
@@ -281,7 +281,7 @@ const initialRules: BizRule[] = [
         id: 'br7',
         name: '混合材掺量超限阻止',
         code: 'RULE-QUALITY-002',
-        bizObject: 'quality',
+        bizObject: ['quality'],
         timing: ['edit_before', 'create_before'],
         priority: 90,
         breakAfter: true,
@@ -345,7 +345,7 @@ export default function RulePage() {
     const filtered = rules.filter((r) => {
         const text = `${r.name}${r.description}${r.code}`.toLowerCase();
         return text.includes(search.toLowerCase())
-            && (bizObjectFilter === 'all' || r.bizObject === bizObjectFilter)
+            && (bizObjectFilter === 'all' || r.bizObject.includes(bizObjectFilter))
             && (statusFilter === 'all' || r.status === statusFilter);
     });
 
@@ -659,8 +659,12 @@ export default function RulePage() {
         {
             title: '业务对象',
             dataIndex: 'bizObject',
-            width: 110,
-            render: (v: string) => <Tag style={{ fontSize: 11 }}>{BIZ_OBJECT_LABELS[v] || v}</Tag>,
+            width: 140,
+            render: (v: string[]) => (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                    {v.map((b) => <Tag key={b} style={{ fontSize: 11, margin: 0 }}>{BIZ_OBJECT_LABELS[b] || b}</Tag>)}
+                </div>
+            ),
         },
         {
             title: '应用时机',
@@ -802,7 +806,9 @@ export default function RulePage() {
                         </Col>
                         <Col span={12}>
                             <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginBottom: 4 }}>业务对象</div>
-                            <Tag style={{ fontSize: 12 }}>{BIZ_OBJECT_LABELS[selected.bizObject]}</Tag>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                                {selected.bizObject.map((b) => <Tag key={b} style={{ fontSize: 12 }}>{BIZ_OBJECT_LABELS[b] || b}</Tag>)}
+                            </div>
                         </Col>
                         <Col span={12}>
                             <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginBottom: 4 }}>优先级</div>
@@ -978,7 +984,7 @@ export default function RulePage() {
                         onChange={(v) => {
                             setTestRuleId(v);
                             const r = rules.find(x => x.id === v);
-                            if (r) setTestBizObject(r.bizObject);
+                            if (r) setTestBizObject(r.bizObject[0] || '');
                             setTestResult(null);
                         }}
                         options={rules.map(r => ({ value: r.id, label: `${r.name}（${r.code}）` }))}
