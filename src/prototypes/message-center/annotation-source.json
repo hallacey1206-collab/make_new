@@ -1,0 +1,186 @@
+{
+  "documentVersion": 1,
+  "format": "axhub-annotation-source",
+  "data": {
+    "version": 2,
+    "prototypeName": "消息中心",
+    "pageId": "message-center",
+    "nodes": [
+      {
+        "id": "mc-title-bar",
+        "index": 1,
+        "title": "顶部标题栏",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-title-bar\"]"
+          ]
+        },
+        "aiPrompt": "说明消息中心顶部标题栏的标题与全部已读按钮的设计意图。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677ff",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1786341560779
+      },
+      {
+        "id": "mc-tabs",
+        "index": 2,
+        "title": "消息性质 Tab 栏",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-tabs\"]"
+          ]
+        },
+        "aiPrompt": "说明消息性质 Tab 分类与未读角标逻辑。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#52c41a",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1786341549030
+      },
+      {
+        "id": "mc-toolbar",
+        "index": 3,
+        "title": "筛选工具条",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-toolbar\"]"
+          ]
+        },
+        "aiPrompt": "说明日期默认当天、专业类型、仅看未读、搜索的筛选设计。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#fa8c16",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1786341541054
+      },
+      {
+        "id": "mc-list",
+        "index": 4,
+        "title": "消息列表区",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-list\"]"
+          ]
+        },
+        "aiPrompt": "说明紧急置顶、未读红点、已读降透明度、卡片右侧按钮的处理逻辑。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#eb2f96",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1786341526212
+      },
+      {
+        "id": "mc-detail-approval",
+        "index": 5,
+        "title": "审批详情抽屉",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-detail-approval\"]"
+          ]
+        },
+        "aiPrompt": "说明审批详情的审批单信息、流程、操作与已处理判定。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#ff4d4f",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1785983002692
+      },
+      {
+        "id": "mc-detail-alarm",
+        "index": 6,
+        "title": "报警详情抽屉",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-detail-alarm\"]"
+          ]
+        },
+        "aiPrompt": "说明报警详情的报警信息与四种处理措施。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#fa541c",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1785982874509
+      },
+      {
+        "id": "mc-detail-notification",
+        "index": 7,
+        "title": "通知 / 系统详情抽屉",
+        "pageId": "message-center",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"mc-detail-notification\"]"
+          ]
+        },
+        "aiPrompt": "说明通知与系统消息详情的正文与附件展示。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#13c2c2",
+        "images": [],
+        "createdAt": 1783305600000,
+        "updatedAt": 1785983053840
+      }
+    ],
+    "updatedAt": 1786341560779
+  },
+  "markdownMap": {
+    "mc-title-bar": "# 顶部标题栏\n\n- **「消息中心」**为页面主标题（H3）。\n- **「全部已读」按钮**：将当前选中日期下的全部未读消息标记为已读（非全局），操作后提示\"已将当天全部消息标记为已读\"。\n- 右侧设置图标当前为占位按钮，无实际功能。\n\n",
+    "mc-tabs": "# 消息性质 Tab 栏\n\n- 按**消息性质**分为五个 Tab：全部 / 通知类 / 审批类 / 报警类 / 系统类。\n- 专业类型（设备 / 生产 / 质量）不在此处作为分类维度，仅作为卡片内标签展示。\n- 当天（selectedDate 为今日）且该 Tab 下存在未读时，Tab 右侧显示红色数字角标（Badge）。\n- 历史日期不显示角标。\n",
+    "mc-toolbar": "# 筛选工具条\n\n- **日期选择器**：默认选中当天；历史消息通过切换日期查看，符合\"进入只展示当天、历史用日期查询\"的需求。\n- **专业类型**：设备 / 生产 / 质量 下拉筛选（含\"全部\"）。\n- **仅看未读**：开关，开启后仅展示未读消息。\n- **关键词搜索**：按标题、摘要、发送方模糊匹配，实时过滤。\n- 以上条件与顶部 Tab 栏**叠加生效**（与关系）。\n",
+    "mc-list": "# 消息列表区\n\n- 列表分为**紧急置顶区**（浅红底 #fff2f0 + 红色\"紧急\"分隔条）与下方普通区。\n- 排序：紧急优先 > 未读优先 > 时间倒序。\n- 未读消息：左侧显示 10px 红色圆点（#ff4d4f），卡片不降透明度。\n- 已读消息：无红点，卡片透明度 0.75、背景 #fafafa。\n- 卡片右侧按钮（仅未处理时显示）：\n  - 审批类 → 「去审批」\n  - 报警类 → 「去处理」\n  - 通知 / 系统类 → 「查看详情」\n- \"标记已读\"文字按钮（未读时显示），点击仅改状态、**不隐藏**右侧操作按钮。\n",
+    "mc-detail-approval": "# 审批详情抽屉\n\n- 展示：工单详情页\n- 操作：退回 / 转交 / 通过；**退回必须填写审批意见**，否则拦截提示。\n- 点击任一操作（通过 / 退回 / 转交）后，将消息 id 加入 handledIds，卡片右侧「去审批」按钮消失。\n- 仅\"标记已读\"不会隐藏按钮，必须完成实际审批操作。\n",
+    "mc-detail-alarm": "# 报警详情抽屉\n\n- 展示报警详情页。\n- 四种处理措施：发起检维修 / 暂不处理 / 已处理完毕 / 无需处理。\n- 点击任一措施后，将消息 id 加入 handledIds，卡片右侧「去处理」按钮消失。\n",
+    "mc-detail-notification": "# 通知 / 系统详情抽屉\n\n- 展示：正文（绿色信息框 #f6ffed）、附件列表（点击回显，模拟下载）。\n- 通知 / 系统类无操作按钮，打开即视为已读。\n\n"
+  },
+  "assetMap": {},
+  "directory": {
+    "nodes": [
+      {
+        "type": "folder",
+        "id": "dir-pages",
+        "title": "页面区域",
+        "defaultExpanded": true,
+        "children": [
+          {
+            "type": "route",
+            "id": "route-message-center",
+            "title": "消息中心",
+            "route": "message-center"
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "dir-design",
+        "title": "设计说明",
+        "defaultExpanded": true,
+        "children": [
+          {
+            "type": "markdown",
+            "id": "doc-interaction",
+            "title": "交互设计要点",
+            "markdown": "# 消息中心交互设计要点\n\n## 整体布局\n- PC 端采用**单栏列表 + 右侧抽屉**模式；复杂筛选放入顶部工具栏，详情通过抽屉查看，符合桌面端操作习惯。\n\n## 默认范围\n- 用户进入默认展示**当天**消息；历史消息通过日期选择器查询。\n\n## 紧急与未读\n- 紧急消息置顶，浅红底色区分；未读消息左侧显示 10px 红色圆点。\n\n## 已处理判定（handledIds）\n- 审批类、报警类消息须**实际完成操作**（通过 / 退回 / 转交，或四种处理措施之一）后，卡片右侧按钮才消失。\n- 仅\"标记已读\"不会隐藏按钮，确保用户不会误以为已处理。\n\n## 移动端差异\n- 移动端遵循 430px 宽、红色主题、底部抽屉、工具栏\"仅看未读\"开关等规范（见移动端原型）。"
+          },
+          {
+            "type": "markdown",
+            "id": "doc-open-questions",
+            "title": "待确认问题汇总",
+            "markdown": "# 待确认问题汇总\n\n| 区域 | 待确认点 |\n|------|----------|\n| 顶部标题栏 | 设置图标是否移除或赋予\"消息设置\"入口 |\n| Tab 栏 | 角标是否区分\"紧急未读\" |\n| 筛选工具条 | 是否需支持\"只看本人待办\" |\n| 消息列表 | 已读后右侧操作按钮是否保留 |\n| 审批详情 | 转交是否视为已处理；通过是否需二次确认 |\n| 报警详情 | \"暂不处理/无需处理\"是否记为已处理；发起检维修是否跳转工单页 |\n| 通知详情 | 系统类是否需附件等特殊字段 |"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -17,6 +17,8 @@ type AnnotationSourceLike = {
   [key: string]: unknown;
 };
 
+const clientSourceRootSegment = 'src';
+
 export type ResolvedAnnotationMarkdownPath =
   | {
     ok: true;
@@ -64,6 +66,9 @@ function safeDecodePath(value: string): string | null {
 function isWindowsAbsolutePath(value: string): boolean {
   return /^[a-z]:[\\/]/iu.test(value);
 }
+
+const annotationImagePlaceholderPattern = /__ANNOTATION_IMAGE_([A-Z0-9]+(?:_[A-Z0-9]+)*)__/gu;
+const annotationImageAssetExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'];
 
 function getPrototypeDirFromAnnotationSourcePath(
   projectRoot: string,
@@ -141,6 +146,56 @@ export function resolveAnnotationMarkdownPath(
   };
 }
 
+function resolveAnnotationImageAssetPath(
+  projectRoot: string,
+  prototypeDir: string,
+  placeholderName: string,
+): { absolutePath: string; publicPath: string } | null {
+  const assetBaseName = String(placeholderName || '').toLowerCase().replace(/_/gu, '-');
+  if (!assetBaseName) {
+    return null;
+  }
+
+  const assetsDir = path.resolve(prototypeDir, 'assets');
+  if (!isPathInside(prototypeDir, assetsDir) || !isPathInside(projectRoot, assetsDir)) {
+    return null;
+  }
+
+  for (const extension of annotationImageAssetExtensions) {
+    const absolutePath = path.join(assetsDir, `${assetBaseName}${extension}`);
+    if (!isPathInside(assetsDir, absolutePath) || !isPathInside(projectRoot, absolutePath)) {
+      continue;
+    }
+    if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
+      continue;
+    }
+    return {
+      absolutePath,
+      publicPath: `/${createProjectRelativePath(projectRoot, absolutePath).replace(new RegExp(`^${clientSourceRootSegment}/`, 'u'), '')}`,
+    };
+  }
+
+  return null;
+}
+
+function resolveAnnotationMarkdownImagePlaceholders(
+  markdown: string,
+  options: {
+    projectRoot: string;
+    prototypeDir: string;
+    watchFiles: Set<string>;
+  },
+): string {
+  return String(markdown || '').replace(annotationImagePlaceholderPattern, (placeholder, placeholderName) => {
+    const resolved = resolveAnnotationImageAssetPath(options.projectRoot, options.prototypeDir, placeholderName);
+    if (!resolved) {
+      return placeholder;
+    }
+    options.watchFiles.add(resolved.absolutePath);
+    return resolved.publicPath;
+  });
+}
+
 function preprocessDirectoryNode(
   node: unknown,
   options: {
@@ -189,7 +244,14 @@ function preprocessDirectoryNode(
 
   options.watchFiles.add(resolved.absolutePath);
   if (fs.existsSync(resolved.absolutePath)) {
-    nextNode.markdown = fs.readFileSync(resolved.absolutePath, 'utf8');
+    nextNode.markdown = resolveAnnotationMarkdownImagePlaceholders(
+      fs.readFileSync(resolved.absolutePath, 'utf8'),
+      {
+        projectRoot: options.projectRoot,
+        prototypeDir: resolved.prototypeDir,
+        watchFiles: options.watchFiles,
+      },
+    );
   } else if (options.mode === 'serve') {
     console.warn(`[annotation-source] Markdown file not found for markdownPath "${record.markdownPath}": ${resolved.projectRelativePath}`);
   }

@@ -1,0 +1,165 @@
+{
+  "documentVersion": 1,
+  "format": "axhub-annotation-source",
+  "data": {
+    "version": 2,
+    "prototypeName": "smart-assistant",
+    "pageId": "main",
+    "updatedAt": 1755475200000,
+    "nodes": [
+      {
+        "id": "sa-float-icon",
+        "index": 1,
+        "title": "浮动图标入口",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-float-icon\"]"],
+          "fingerprint": "div|sa-float-icon",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "点击右下角紫色圆形图标唤起智能助手对话框。图标 hover 时放大并加深阴影。打开对话框后图标自动隐藏，关闭对话框后恢复显示。",
+        "hasMarkdown": false,
+        "color": "#7C3AED",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-dialog",
+        "index": 2,
+        "title": "对话框容器",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-dialog\"]"],
+          "fingerprint": "div|sa-dialog",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#7C3AED",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-title-bar",
+        "index": 3,
+        "title": "标题栏操作区",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-title-bar\"]"],
+          "fingerprint": "div|sa-title-bar",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "左侧：侧边栏折叠/展开按钮 + 关闭按钮 + 标题\"智能助手\"。右侧：全屏/缩小切换按钮。点击关闭后隐藏对话框并恢复浮动图标。",
+        "hasMarkdown": false,
+        "color": "#D97706",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-sidebar-nav",
+        "index": 4,
+        "title": "侧边栏导航区",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-sidebar-nav\"]"],
+          "fingerprint": "div|sa-sidebar-nav",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "\"新建任务\"入口。不包含\"技能\"和\"即时通讯\"。侧边栏默认收起，点击标题栏折叠按钮可展开/收起。",
+        "hasMarkdown": false,
+        "color": "#059669",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-search-task",
+        "index": 5,
+        "title": "搜索任务",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-search-task\"]"],
+          "fingerprint": "div|sa-search-task",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "搜索任务位于任务列表上方，单独占一行，浅灰色背景。用于在历史任务中检索。",
+        "hasMarkdown": false,
+        "color": "#2563EB",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-welcome-msg",
+        "index": 6,
+        "title": "AI 欢迎消息",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-welcome-msg\"]"],
+          "fingerprint": "div|sa-welcome-msg",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "AI 助手头像 + 欢迎语气泡\"您好！我是您的AI助手，请问您想让我做点什么呢？\"",
+        "hasMarkdown": false,
+        "color": "#059669",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-quick-cards",
+        "index": 7,
+        "title": "快捷功能卡片",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-quick-cards\"]"],
+          "fingerprint": "div|sa-quick-cards",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#7C3AED",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      },
+      {
+        "id": "sa-input-bar",
+        "index": 8,
+        "title": "底部输入栏",
+        "pageId": "main",
+        "locator": {
+          "selectors": ["[data-annotation-id=\"sa-input-bar\"]"],
+          "fingerprint": "div|sa-input-bar",
+          "path": []
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#D97706",
+        "images": [],
+        "createdAt": 1755475200000,
+        "updatedAt": 1755475200000
+      }
+    ]
+  },
+  "markdownMap": {
+    "sa-dialog": "# 对话框容器\n\n- **原始尺寸**：宽度 2/3 视口、高度 1/4 视口（最小高度 280px），水平居中，底部弹出\n- **全屏模式**：点击标题栏右侧放大按钮，过渡为 100vw × 100vh\n- **缩小恢复**：全屏状态下点击缩小按钮，回到原始尺寸\n- **关闭**：点击标题栏关闭按钮，对话框关闭并恢复右下角浮动图标\n- **过渡动画**：尺寸切换使用 0.3s ease 过渡",
+    "sa-quick-cards": "# 快捷功能卡片\n\n4 张卡片横向排列，图标与文字在同一行：\n\n| 卡片 | 图标 | 预设文案 |\n| --- | --- | --- |\n| 状态监测 | MonitorOutlined | 帮我分析当前所有设备的报警状态，并且按照报警等级列出需要重点关注的设备清单。 |\n| 故障诊断 | MedicineBoxOutlined | 你是一个资深的设备诊断专家，帮我针对最近7天报警的设备做故障诊断，输出诊断报告。报告中包含：设备基本信息、报警信息、诊断信息以及特征图谱。 |\n| 运行报告 | FileTextOutlined | 帮我使用可视化图表分析当前所有设备的运行状态及运转率。 |\n| 统计报表 | BarChartOutlined | 帮我统计最近一个月的设备异常，从设备类型、报警等级、部件、设备排行四个维度分析，结果使用可视化图表给我。 |\n\n**交互说明**：\n- 点击卡片 → 选中高亮（紫色边框 + 浅紫背景）+ 预设文案填入输入框\n- 再次点击已选中卡片 → 取消选中 + 清空输入框\n- 手动修改输入框内容 → 自动取消卡片选中状态",
+    "sa-input-bar": "# 底部输入栏\n\n从左到右依次为：\n\n1. **输入框**（textarea）：自适应高度，默认一行，内容增多自动撑高，最多显示 3 行，超出后出现滚动条\n2. **附件上传图标**（回形针）：点击弹出文件选择器（多选），或在输入框中粘贴文件也可上传。上传后附件在输入框上方以标签形式回显，支持多个附件，每个可单独删除\n3. **深度思考开关**：点击切换开启/关闭，开启时紫色边框+浅紫背景\n4. **发送按钮**：有输入内容时为紫色实心圆，无内容时为灰色"
+  },
+  "assetMap": {},
+  "directory": {
+    "nodes": []
+  }
+}

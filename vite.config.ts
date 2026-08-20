@@ -15,7 +15,6 @@ import { canvasHotUpdateFilterPlugin } from './vite-plugins/canvasHotUpdateFilte
 import { annotationRuntimeOptimizeDepsPlugin } from './vite-plugins/annotationRuntimeOptimizeDeps';
 import { createAnnotationSourceMarkdownPlugin } from './vite-plugins/annotationSourceMarkdown';
 import {
-  MAKE_CONFIG_RELATIVE_PATH,
   MAKE_ENTRIES_RELATIVE_PATH,
 } from './vite-plugins/utils/makeConstants';
 import {
@@ -26,20 +25,6 @@ import {
 
 const projectRoot = process.cwd();
 const OFFICIAL_CLIENT_DEV_PORT = 51720;
-
-/** Read allowLAN from the shared make config to align with make-server. */
-function readAllowLAN(): boolean {
-  try {
-    const configPath = path.resolve(projectRoot, MAKE_CONFIG_RELATIVE_PATH);
-    if (fs.existsSync(configPath)) {
-      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-      return config?.server?.allowLAN !== false;
-    }
-  } catch {
-    // Fall through to default.
-  }
-  return true;
-}
 
 writeEntriesManifestAtomic(
   projectRoot,
@@ -64,7 +49,7 @@ if (hasSingleEntry) {
 const isIifeBuild = hasSingleEntry;
 const devServerWatchIgnored = [
   '**/.axhub/make/**',
-  '**/canvas-assets/**',
+  '**/*.assets/**',
   '**/.spec/**',
   '**/*.excalidraw',
 ];
@@ -74,7 +59,10 @@ export default defineConfig(({ command }) => {
 
   const config: any = {
     plugins: [
-      tailwindcss(),
+      // Vitest 4 currently runs on Vite 7, while @tailwindcss/vite resolves
+      // against this package's Vite 5. Skip the production-only CSS plugin
+      // during test collection so CSS mocks can load without that mismatch.
+      process.env.VITEST ? null : tailwindcss(),
       isServe ? canvasHotUpdateFilterPlugin() : null,
       isServe ? annotationRuntimeOptimizeDepsPlugin(projectRoot) : null,
       injectStablePageIds(),
@@ -98,10 +86,6 @@ export default defineConfig(({ command }) => {
     optimizeDeps: {
       include: [
         'lucide-react',
-        '@axhub/annotation',
-        'antd',
-        'dayjs',
-        'motion',
       ],
     },
 
@@ -135,7 +119,7 @@ export default defineConfig(({ command }) => {
     server: {
       port: OFFICIAL_CLIENT_DEV_PORT,
       strictPort: false,
-      host: readAllowLAN() ? '0.0.0.0' : 'localhost',
+      host: '0.0.0.0',
       open: false,
       cors: true,
       hmr: { overlay: false },

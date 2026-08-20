@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 3,
+  "kind": "document-edit-comments",
+  "resource": {
+    "id": "7888970992e356eed7e60de80dd1f45adc395875bd98ef8d32d4a21676e84606",
+    "targetPath": "src/prototypes/smart-assistant/.spec/spec.md",
+    "filePath": ".axhub/make/comments/7888970992e356eed7e60de80dd1f45adc395875bd98ef8d32d4a21676e84606.json"
+  },
+  "comments": [],
+  "images": [],
+  "documentPath": "src/prototypes/smart-assistant/.spec/spec.md"
+}

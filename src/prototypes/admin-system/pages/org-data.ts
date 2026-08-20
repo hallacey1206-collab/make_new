@@ -42,13 +42,6 @@ export const baseOrgData: OrgNode[] = [
                         productionLines: ['line1', 'line2'],
                         children: [
                             {
-                                id: '4',
-                                name: '石灰石矿山',
-                                type: 'factory',
-                                code: 'SZCC-IQ-DCC-M01',
-                                active: true,
-                            },
-                            {
                                 id: '5',
                                 name: '烧成车间',
                                 type: 'department',
@@ -74,6 +67,13 @@ export const baseOrgData: OrgNode[] = [
                             },
                             { id: '12', name: '中控室', type: 'department', code: 'SZCC-IQ-DCC-W03', active: true },
                         ],
+                    },
+                    {
+                        id: '4',
+                        name: '石灰石矿山',
+                        type: 'factory',
+                        code: 'SZCC-IQ-DCC-M01',
+                        active: true,
                     },
                     {
                         id: '13',

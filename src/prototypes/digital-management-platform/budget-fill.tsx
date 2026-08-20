@@ -40,7 +40,7 @@ import {
     budgetBusinessDomainOptions,
     budgetCategoryOptions,
     budgetProjectCategoryOptions,
-    currentPlanYear,
+    budgetPlanYear,
     enterpriseTypeOptions,
     fiveMeasuresCategoryOptions,
     fiveTransformationOptions,
@@ -56,6 +56,7 @@ import {
     type BudgetRecord,
     type BudgetStatus,
     type BudgetTabType,
+    type BudgetRound,
 } from './data';
 
 const { TextArea } = Input;
@@ -96,12 +97,15 @@ type BudgetStoreValue = {
     records: BudgetRecord[];
     saveDraft: (record: BudgetRecord) => void;
     deleteDraft: (id: string) => void;
-    submitDrafts: () => void;
+    submitDrafts: (tabType: BudgetTabType, round: BudgetRound) => void;
+    fetchFromPreviousRound: (tabType: BudgetTabType, targetRound: BudgetRound) => void;
+    approveBudgets: (ids: string[], remark?: string) => void;
+    returnBudgets: (ids: string[], remark: string) => void;
 };
 
 const BudgetStoreContext = createContext<BudgetStoreValue | null>(null);
 
-function useBudgetStore() {
+export function useBudgetStore() {
     const store = useContext(BudgetStoreContext);
     if (!store) throw new Error('BudgetStore is missing.');
     return store;
@@ -121,9 +125,9 @@ export function BudgetStoreProvider({ children }: { children: React.ReactNode })
         setRecords((current) => current.filter((item) => item.id !== id));
     };
 
-    const submitDrafts = () => {
+    const submitDrafts = (tabType: BudgetTabType, round: BudgetRound) => {
         setRecords((current) => current.map((item) => {
-            if (item.status === 'draft' || item.status === 'returned') {
+            if ((item.status === 'draft' || item.status === 'returned') && item.tabType === tabType && item.round === round) {
                 return {
                     ...item,
                     status: 'pending-review' as BudgetStatus,
@@ -139,11 +143,79 @@ export function BudgetStoreProvider({ children }: { children: React.ReactNode })
         message.success('预算已批量提交，已进入审核流程。');
     };
 
+    const fetchFromPreviousRound = (tabType: BudgetTabType, targetRound: BudgetRound) => {
+        const prevRound: BudgetRound = targetRound === 'second' ? 'first' : 'second';
+        const now = nowString();
+        setRecords((current) => {
+            const prevRecords = current.filter(
+                (item) => item.tabType === tabType && item.round === prevRound && item.status === 'approved',
+            );
+            if (prevRecords.length === 0) {
+                message.warning(`没有找到${prevRound === 'first' ? '一上' : '二上'}已通过的数据。`);
+                return current;
+            }
+            const newRecords = prevRecords.map((src) => ({
+                ...src,
+                id: `budget-${targetRound}-${Date.now()}-${src.id}`,
+                budgetCode: src.budgetCode,
+                round: targetRound,
+                status: 'draft' as BudgetStatus,
+                version: getNextBudgetVersion(
+                    current.filter((r) => r.round === targetRound).length + 1,
+                ),
+                submitTime: undefined,
+                reviewTime: undefined,
+                reviewRemark: undefined,
+                reviewer: undefined,
+                updatedAt: now,
+            }));
+            message.success(`已获取${prevRound === 'first' ? '一上' : '二上'}数据，共 ${newRecords.length} 条。`);
+            return [...current, ...newRecords];
+        });
+    };
+
+    const approveBudgets = (ids: string[], remark?: string) => {
+        const now = nowString();
+        setRecords((current) => current.map((item) => {
+            if (ids.includes(item.id)) {
+                return {
+                    ...item,
+                    status: 'approved' as BudgetStatus,
+                    reviewer: '审核管理员',
+                    reviewTime: now,
+                    reviewRemark: remark || '',
+                    updatedAt: now,
+                };
+            }
+            return item;
+        }));
+    };
+
+    const returnBudgets = (ids: string[], remark: string) => {
+        const now = nowString();
+        setRecords((current) => current.map((item) => {
+            if (ids.includes(item.id)) {
+                return {
+                    ...item,
+                    status: 'returned' as BudgetStatus,
+                    reviewer: '审核管理员',
+                    reviewTime: now,
+                    reviewRemark: remark,
+                    updatedAt: now,
+                };
+            }
+            return item;
+        }));
+    };
+
     const value = useMemo(() => ({
         records,
         saveDraft,
         deleteDraft,
         submitDrafts,
+        fetchFromPreviousRound,
+        approveBudgets,
+        returnBudgets,
     }), [records]);
 
     return (
@@ -191,10 +263,11 @@ type BudgetFormValues = {
     hardwareFunding: number;
     otherTechFunding: number;
     tabType: BudgetTabType;
+    round: BudgetRound;
     version: string;
 };
 
-function createBlankBudget(sequence: number, tabType: BudgetTabType): BudgetFormValues {
+function createBlankBudget(sequence: number, tabType: BudgetTabType, round: BudgetRound): BudgetFormValues {
     return {
         id: undefined,
         budgetCode: getNextBudgetCode(sequence),
@@ -221,8 +294,8 @@ function createBlankBudget(sequence: number, tabType: BudgetTabType): BudgetForm
         planProgress: '04',
         includedInOtherBudget: '02',
         otherBudgetName: '',
-        startDate: `${currentPlanYear}-01-08`,
-        endDate: `${currentPlanYear}-12-20`,
+        startDate: `${budgetPlanYear}-01-08`,
+        endDate: `${budgetPlanYear}-12-20`,
         totalInvestment: 0,
         selfFunding: 0,
         externalFunding: 0,
@@ -231,6 +304,7 @@ function createBlankBudget(sequence: number, tabType: BudgetTabType): BudgetForm
         hardwareFunding: 0,
         otherTechFunding: 0,
         tabType,
+        round,
         version: 'V1.0',
     };
 }
@@ -272,6 +346,7 @@ function recordToFormValues(record: BudgetRecord): BudgetFormValues {
         hardwareFunding: record.hardwareFunding,
         otherTechFunding: record.otherTechFunding,
         tabType: record.tabType,
+        round: record.round,
         version: record.version,
     };
 }
@@ -314,6 +389,7 @@ function formValuesToRecord(values: BudgetFormValues, existing?: BudgetRecord, n
         hardwareFunding: Number(values.hardwareFunding || 0),
         otherTechFunding: Number(values.otherTechFunding || 0),
         tabType: values.tabType,
+        round: values.round,
         status: existing?.status === 'approved' || existing?.status === 'pending-review' ? existing.status : (existing?.status || 'draft'),
         version: existing?.version || values.version,
         creator: existing?.creator || '预算管理员',
@@ -509,7 +585,7 @@ function BudgetBasicSection({ form, tabType }: { form: any; tabType: BudgetTabTy
                     </Form.Item>
                 </Col>
                 <Col xs={24} md={8}>
-                    <Form.Item name="planProgress" label={`${currentPlanYear}年项目计划进度`} rules={[{ required: true }]}>
+                    <Form.Item name="planProgress" label={`${budgetPlanYear}年项目计划进度`} rules={[{ required: true }]}>
                         <Select options={planProgressOptions} />
                     </Form.Item>
                 </Col>
@@ -668,6 +744,7 @@ function BudgetDrawer({
     existing,
     sequence,
     tabType,
+    round,
 }: {
     open: boolean;
     onClose: () => void;
@@ -675,6 +752,7 @@ function BudgetDrawer({
     existing: BudgetRecord | null;
     sequence: number;
     tabType: BudgetTabType;
+    round: BudgetRound;
 }) {
     const [form] = Form.useForm<BudgetFormValues>();
 
@@ -683,7 +761,7 @@ function BudgetDrawer({
             if (existing) {
                 form.setFieldsValue(recordToFormValues(existing));
             } else {
-                const blank = createBlankBudget(sequence, tabType);
+                const blank = createBlankBudget(sequence, tabType, round);
                 // For outer tab, remove investment plan fields
                 if (tabType === 'outer') {
                     blank.linkedToInvestmentPlan = '02';
@@ -692,7 +770,7 @@ function BudgetDrawer({
                 form.setFieldsValue(blank);
             }
         }
-    }, [existing, form, open, sequence, tabType]);
+    }, [existing, form, open, sequence, tabType, round]);
 
     const currentTabType = existing?.tabType || tabType;
 
@@ -728,15 +806,16 @@ function BudgetDrawer({
 // ============ Budget Fill Page ============
 
 function BudgetFillPage() {
-    const { records, saveDraft, deleteDraft, submitDrafts } = useBudgetStore();
+    const { records, saveDraft, deleteDraft, submitDrafts, fetchFromPreviousRound } = useBudgetStore();
     const [activeTab, setActiveTab] = useState<BudgetTabType>('inner');
+    const [activeRound, setActiveRound] = useState<BudgetRound>('first');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [editingRecord, setEditingRecord] = useState<BudgetRecord | null>(null);
     const [importOpen, setImportOpen] = useState(false);
-    const [filters, setFilters] = useState<{ keyword?: string; year?: string }>({ year: `${currentPlanYear}年` });
+    const [filters, setFilters] = useState<{ keyword?: string; year?: string }>({ year: `${budgetPlanYear}年` });
 
     const draftRecords = records.filter(
-        (record) => (record.status === 'draft' || record.status === 'returned') && record.tabType === activeTab,
+        (record) => (record.status === 'draft' || record.status === 'returned') && record.tabType === activeTab && record.round === activeRound,
     );
 
     const filteredDraftRecords = useMemo(() => {
@@ -761,6 +840,17 @@ function BudgetFillPage() {
             .filter((v) => Number.isFinite(v));
         return (Math.max(...sequences, 0) || 0) + 1;
     }, [records]);
+
+    // 判断上一轮是否已有已提交或已审核的数据
+    const prevRound = activeRound === 'second' ? 'first' : activeRound === 'third' ? 'second' : null;
+    const prevRoundSubmitted = useMemo(() => {
+        if (!prevRound) return false;
+        return records.some(
+            (item) => item.tabType === activeTab && item.round === prevRound && (item.status === 'pending-review' || item.status === 'approved'),
+        );
+    }, [records, activeTab, prevRound]);
+
+    const roundLabels: Record<BudgetRound, string> = { first: '一上', second: '二上', third: '三上' };
 
     const openCreateDrawer = () => {
         setEditingRecord(null);
@@ -793,7 +883,7 @@ function BudgetFillPage() {
 
     const handleDownloadTemplate = () => {
         const header = ['预算编号', '项目名称', '单位名称', '预算分类', '建设模式', '建设类型', '项目简述', '项目启动时间', '项目预计完成时间', '总额(万元)', '版本号'];
-        const sampleRow = ['自动生成', '项目名称', '单位名称', '项目类', '集团统筹', '新建', '项目简述', `${currentPlanYear}-01-01`, `${currentPlanYear}-12-31`, '100.00', 'V1.0'];
+        const sampleRow = ['自动生成', '项目名称', '单位名称', '项目类', '集团统筹', '新建', '项目简述', `${budgetPlanYear}-01-01`, `${budgetPlanYear}-12-31`, '100.00', 'V1.0'];
         const content = [header.join(','), sampleRow.join(',')].join('\n');
         downloadTextFile('预算导入模板.csv', content);
         message.success('已下载导入模板（CSV 演示版）。');
@@ -801,7 +891,7 @@ function BudgetFillPage() {
 
     const handleImportDemo = () => {
         const record = formValuesToRecord({
-            ...createBlankBudget(nextSequence + 1, activeTab),
+            ...createBlankBudget(nextSequence + 1, activeTab, activeRound),
             projectName: '模板导入示例预算项目',
             unitName: '信息化中心',
             projectBrief: '模板导入演示数据，用于验证批量导入功能是否正常工作。',
@@ -857,6 +947,20 @@ function BudgetFillPage() {
             width: 180,
             ellipsis: true,
             fixed: 'left',
+            render: (text: string) => (
+                <Space size={4}>
+                    <Tooltip
+                        title={
+                            <div style={{ whiteSpace: 'pre-line' }}>
+                                {'1、预算项目(XXXXXXXX)未关联投资计划\n2、预算项目(XXXXXXXX)总额超过了关联投资计划金额'}
+                            </div>
+                        }
+                    >
+                        <WarningOutlined style={{ color: '#faad14', fontSize: 14, cursor: 'pointer' }} />
+                    </Tooltip>
+                    <span>{text}</span>
+                </Space>
+            ),
         },
         {
             title: '单位名称',
@@ -939,7 +1043,7 @@ function BudgetFillPage() {
 
     return (
         <div className="dmp-page-stack">
-            <Card className="dmp-query-card" bordered={false}>
+            <Card className="dmp-query-card" bordered={false} data-annotation-id="budget-fill-query">
                 <Tabs
                     activeKey={activeTab}
                     onChange={(key) => setActiveTab(key as BudgetTabType)}
@@ -957,7 +1061,7 @@ function BudgetFillPage() {
                 <Form
                     layout="inline"
                     className="dmp-query-form"
-                    initialValues={{ year: `${currentPlanYear}年` }}
+                    initialValues={{ year: `${budgetPlanYear}年` }}
                     onValuesChange={(_, allValues) => setFilters(allValues)}
                 >
                     <Form.Item name="keyword" label="项目名称">
@@ -969,7 +1073,7 @@ function BudgetFillPage() {
                             placeholder="请选择年度"
                             style={{ width: 140 }}
                             options={Array.from({ length: 5 }, (_, i) => {
-                                const year = currentPlanYear + 1 - i;
+                                const year = budgetPlanYear - i;
                                 return { value: `${year}年`, label: `${year}年` };
                             })}
                         />
@@ -977,29 +1081,36 @@ function BudgetFillPage() {
                     <Form.Item>
                         <Space>
                             <Button type="primary" icon={<SearchOutlined />}>查询</Button>
-                            <Button onClick={() => setFilters({ year: `${currentPlanYear}年` })}>重置</Button>
+                            <Button onClick={() => setFilters({ year: `${budgetPlanYear}年` })}>重置</Button>
                         </Space>
                     </Form.Item>
                 </Form>
             </Card>
 
             <Card
-                title={
-                    <Space size={6}>
-                        {`${activeTab === 'inner' ? '本年预算内' : '本年预算外'}预算填报列表（${filteredDraftRecords.length} 条）`}
-                        <Tooltip
-                            title={
-                                <div style={{ whiteSpace: 'pre-line' }}>
-                                    {'1、预算项目(XXXXXXXX)未关联投资计划\n2、预算项目(XXXXXXXX)总额超过了关联投资计划金额'}
-                                </div>
-                            }
-                        >
-                            <WarningOutlined style={{ color: '#faad14', fontSize: 16, cursor: 'pointer' }} />
-                        </Tooltip>
-                    </Space>
-                }
+                data-annotation-id="budget-fill-table"
+                title={isInnerTab ? (
+                    <Tabs
+                        activeKey={activeRound}
+                        onChange={(key) => setActiveRound(key as BudgetRound)}
+                        size="small"
+                        items={[
+                            { key: 'first', label: '一上' },
+                            { key: 'second', label: '二上' },
+                            { key: 'third', label: '三上' },
+                        ]}
+                    />
+                ) : undefined}
                 extra={
                     <Space wrap>
+                        {activeRound !== 'first' && prevRoundSubmitted && (
+                            <Button
+                                icon={<CloudDownloadOutlined />}
+                                onClick={() => fetchFromPreviousRound(activeTab, activeRound)}
+                            >
+                                {`获取${prevRound === 'first' ? '一上' : '二上'}数据`}
+                            </Button>
+                        )}
                         <Button type="primary" icon={<ArrowUpOutlined />} onClick={() => {
                             Modal.confirm({
                                 title: '风险提示',
@@ -1013,7 +1124,7 @@ function BudgetFillPage() {
                                 ),
                                 okText: '继续提交',
                                 cancelText: '取消',
-                                onOk: submitDrafts,
+                                onOk: () => submitDrafts(activeTab, activeRound),
                             });
                         }} disabled={draftRecords.length === 0}>
                             提交
@@ -1021,9 +1132,11 @@ function BudgetFillPage() {
                         <Button type="primary" icon={<EditOutlined />} onClick={openCreateDrawer}>
                             新增
                         </Button>
-                        <Button icon={<CloudDownloadOutlined />} onClick={handleDownloadTemplate}>
-                            模板下载
-                        </Button>
+                        {isInnerTab && (
+                            <Button icon={<CloudDownloadOutlined />} onClick={handleDownloadTemplate}>
+                                模板下载
+                            </Button>
+                        )}
                         {isInnerTab && (
                             <Button icon={<CloudUploadOutlined />} onClick={() => setImportOpen(true)}>
                                 导入
@@ -1058,6 +1171,7 @@ function BudgetFillPage() {
                 existing={editingRecord}
                 sequence={nextSequence}
                 tabType={activeTab}
+                round={activeRound}
             />
 
             <Modal

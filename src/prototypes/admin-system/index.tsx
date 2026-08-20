@@ -1,6 +1,11 @@
 /**
  * @name 水泥集团系统管理后台
  * @mode axure
+ *
+ * 参考资料：
+ * - rules/axure-export-workflow.md
+ * - rules/prototype-development-guide.md
+ * - rules/axure-api-guide.md
  */
 
 import React, { useMemo, useEffect } from 'react';
@@ -23,7 +28,7 @@ import {
     type AnnotationSourceDocument,
     type AnnotationViewerOptions,
 } from '@axhub/annotation';
-import annotationSource from './annotation-source.json';
+import annotationSourceDocument from './annotation-source.json';
 import OrgPage from './pages/org';
 import PositionPage from './pages/position';
 import UserPage from './pages/user';
@@ -111,39 +116,21 @@ function SafePage({ name, children }: { name: string; children: React.ReactNode 
 export default function Component() {
     const { page, setPage } = useHashPage(route);
 
-    // Auto-stabilize: ensure every annotation node has [data-annotation-id="<id>"] as the first
-    // selector, so the AnnotationViewer always tries the stable selector before fragile ones
-    // (e.g. auto-generated IDs like #rc-tabs-0-tab-field that break on re-render).
-    const stabilizedSource = useMemo(() => {
-        const src = annotationSource as AnnotationSourceDocument;
-        const data = src.data;
-        if (!data?.nodes) return src;
-        const nodes = data.nodes.map(node => {
-            const stableSelector = `[data-annotation-id="${node.id}"]`;
-            const selectors = node.locator.selectors;
-            if (selectors[0] === stableSelector) return node;
-            const cleaned = selectors.filter((s: string) => s !== stableSelector);
-            const fixed = [stableSelector, ...cleaned];
-            return { ...node, locator: { ...node.locator, selectors: fixed } };
-        });
-        return { ...src, data: { ...data, nodes } } as AnnotationSourceDocument;
-    }, []);
-
     // Expose annotation source & refresh helper for child pages
     // (e.g. to rescan markers after a Drawer/Modal opens)
     useEffect(() => {
-        (window as any).__AXHUB_ANNOTATION_SOURCE__ = stabilizedSource;
+        (window as any).__AXHUB_ANNOTATION_SOURCE__ = annotationSourceDocument;
         (window as any).__axhubAnnotationRefresh = () => {
             const runtime = (window as any).__AXHUB_ANNOTATION_RUNTIME__;
             if (runtime?.replaceSource) {
-                runtime.replaceSource(stabilizedSource);
+                runtime.replaceSource(annotationSourceDocument);
             }
         };
         return () => {
             delete (window as any).__AXHUB_ANNOTATION_SOURCE__;
             delete (window as any).__axhubAnnotationRefresh;
         };
-    }, [stabilizedSource]);
+    }, []);
 
     const options = useMemo<AnnotationViewerOptions>(() => ({
         currentPageId: page,
@@ -215,7 +202,7 @@ export default function Component() {
                 {renderPage()}
             </Content>
             <AnnotationViewer
-                source={stabilizedSource}
+                source={annotationSourceDocument as unknown as AnnotationSourceDocument}
                 options={options}
             />
         </Layout>

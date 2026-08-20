@@ -1,0 +1,139 @@
+/* 消息中心 - 移动端样式 */
+
+/* 外层预览容器 - 深色背景居中 */
+.mc-mobile-preview {
+    width: 100%;
+    height: 100vh;
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* 手机壳 - 最大宽度430px */
+.mc-mobile-shell {
+    max-width: 430px;
+    width: 100%;
+    min-height: 100vh;
+    background: #f5f5f5;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 顶部导航栏 */
+.mc-mobile-header {
+    background: linear-gradient(135deg, #e60012 0%, #c70010 100%);
+    padding-top: max(12px, env(safe-area-inset-top));
+    flex-shrink: 0;
+}
+
+.mc-mobile-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+}
+
+/* Tab 栏 - 等宽布局 */
+.mc-mobile-tabs {
+    display: flex;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mc-mobile-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.mc-mobile-tab {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 12px 4px;
+    font-size: 14px;
+    color: #8c8c8c;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: color 0.2s;
+}
+
+.mc-mobile-tab-active {
+    color: #e60012;
+    font-weight: 600;
+}
+
+.mc-mobile-tab-active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 3px;
+    background: #e60012;
+    border-radius: 2px;
+}
+
+/* 筛选工具条 */
+.mc-mobile-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+/* 消息列表滚动区 */
+.mc-mobile-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+}
+
+/* 紧急消息分区头 */
+.mc-mobile-section-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #ff4d4f;
+    font-weight: 600;
+    background: #fff2f0;
+    border-bottom: 1px solid #ffccc7;
+}
+
+/* 抽屉顶部栏 */
+.mc-mobile-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+/* 抽屉内容滚动区 */
+.mc-mobile-drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+}
+
+/* 抽屉底部操作栏 */
+.mc-mobile-drawer-footer {
+    flex-shrink: 0;
+    padding: 0 16px;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+}

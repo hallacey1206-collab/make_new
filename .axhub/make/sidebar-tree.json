@@ -1,7 +1,25 @@
 {
   "version": 1,
-  "updatedAt": "2026-07-08T01:05:02.939Z",
+  "updatedAt": "2026-08-17T02:17:16.238Z",
   "prototypes": [
+    {
+      "id": "item-prototypes-message-center",
+      "kind": "item",
+      "title": "消息中心",
+      "itemKey": "prototypes/message-center"
+    },
+    {
+      "id": "item-prototypes-message-center-mobile",
+      "kind": "item",
+      "title": "消息中心（移动端）",
+      "itemKey": "prototypes/message-center-mobile"
+    },
+    {
+      "id": "item-prototypes-smart-assistant",
+      "kind": "item",
+      "title": "智能助手",
+      "itemKey": "prototypes/smart-assistant"
+    },
     {
       "id": "item:prototypes:digital-management-platform",
       "kind": "item",
@@ -13,24 +31,6 @@
       "kind": "item",
       "title": "水泥集团系统管理后台",
       "itemKey": "prototypes/admin-system"
-    },
-    {
-      "id": "item:prototypes:beginner-guide",
-      "kind": "item",
-      "title": "新手指导",
-      "itemKey": "prototypes/beginner-guide"
-    },
-    {
-      "id": "item:prototypes:touch-and-talk-annotation-demo",
-      "kind": "item",
-      "title": "批注演示",
-      "itemKey": "prototypes/touch-and-talk-annotation-demo"
-    },
-    {
-      "id": "item:prototypes:annotation-demo",
-      "kind": "item",
-      "title": "标注演示",
-      "itemKey": "prototypes/annotation-demo"
     }
   ],
   "docs": [],

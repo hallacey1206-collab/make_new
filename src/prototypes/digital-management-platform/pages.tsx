@@ -59,6 +59,7 @@ import {
     Space,
     Statistic,
     Table,
+    Tabs,
     Tag,
     Timeline,
     Tree,
@@ -93,9 +94,13 @@ import {
 import FilingManagementPage from './filing-management';
 import ExpertDatabasePage, { ExpertStoreProvider } from './expert-database';
 import BudgetFillPage, { BudgetStoreProvider } from './budget-fill';
+import BudgetViewPage from './budget-view';
+import BudgetStatPage from './budget-stat';
+import BudgetReviewPage from './budget-review';
 import FilingWecomMsgPage from './filing-wecom-msg';
 import FilingWecomDetailPage from './filing-wecom-detail';
 import ProjectExecutionPage from './project-execution';
+import OperationManualPage from './operation-manual';
 
 const { Header, Sider, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -1228,6 +1233,7 @@ function ReviewDrawer({
     onApprove,
     onReturn,
     readonly = false,
+    onSubmitComment,
 }: {
     record: PlatformPlanRecord | null;
     open: boolean;
@@ -1235,23 +1241,74 @@ function ReviewDrawer({
     onApprove?: (remark?: string) => void;
     onReturn?: (remark: string) => void;
     readonly?: boolean;
+    onSubmitComment?: (comment: string) => void;
 }) {
     const [readonlyForm] = Form.useForm<PlanFormValues>();
+    const [activeTab, setActiveTab] = useState('detail');
+    const [commentText, setCommentText] = useState('');
+    const [comments, setComments] = useState<Array<{ author: string; time: string; content: string }>>([]);
+    const [returnModalVisible, setReturnModalVisible] = useState(false);
+    const [returnRemark, setReturnRemark] = useState('');
 
     useEffect(() => {
         if (open && record) {
             readonlyForm.resetFields();
             readonlyForm.setFieldsValue(toFormValues(record));
+            setActiveTab('detail');
+            setCommentText('');
+            setReturnRemark('');
+            // 初始化审批记录
+            const initialComments: Array<{ author: string; time: string; content: string }> = [];
+            if (record.status === 'pending-review' && record.submitTime) {
+                initialComments.push({
+                    author: record.unitName || '申报单位',
+                    time: record.submitTime,
+                    content: '提交投资计划，进入审核流程。',
+                });
+            }
+            if (record.status === 'approved' && record.reviewTime && record.reviewer) {
+                initialComments.push({
+                    author: record.reviewer,
+                    time: record.reviewTime,
+                    content: `审核通过。${record.reviewRemark ? '意见：' + record.reviewRemark : ''}`,
+                });
+            }
+            if (record.status === 'returned' && record.reviewTime && record.reviewer) {
+                initialComments.push({
+                    author: record.reviewer,
+                    time: record.reviewTime,
+                    content: `退回。原因：${record.reviewRemark || '无'}`,
+                });
+            }
+            setComments(initialComments);
         }
     }, [readonlyForm, open, record]);
 
+    const handleSubmitComment = () => {
+        if (!commentText.trim()) {
+            message.warning('请输入评论内容。');
+            return;
+        }
+        const newComment = {
+            author: '当前用户',
+            time: nowString(),
+            content: commentText.trim(),
+        };
+        setComments((prev) => [...prev, newComment]);
+        onSubmitComment?.(commentText.trim());
+        setCommentText('');
+        message.success('评论已提交。');
+    };
+
     return (
+        <>
         <Drawer
             title={readonly ? '投资计划详情' : '投资计划审核'}
             width={1120}
             open={open}
             onClose={onClose}
             destroyOnClose
+            styles={{ body: { display: 'flex', flexDirection: 'column', overflow: 'hidden' } }}
             extra={readonly ? (
                 <Button onClick={onClose}>关闭</Button>
             ) : (
@@ -1265,7 +1322,7 @@ function ReviewDrawer({
                     </Button>
                     <Button
                         danger
-                        onClick={() => onReturn?.('请补充材料后重新提交。')}
+                        onClick={() => setReturnModalVisible(true)}
                     >
                         退回
                     </Button>
@@ -1273,22 +1330,111 @@ function ReviewDrawer({
             )}
         >
             {record ? (
-                <Form form={readonlyForm} layout="vertical" disabled>
-                    <BasicFormSection form={readonlyForm} readonly={readonly} />
-                    <Divider />
-                    <TimelineFundingSection form={readonlyForm} />
-                </Form>
+                <Tabs
+                    style={{ flex: 1, overflow: 'auto' }}
+                    activeKey={activeTab}
+                    onChange={setActiveTab}
+                    items={[
+                        {
+                            key: 'detail',
+                            label: '计划详情',
+                            children: (
+                                <Form form={readonlyForm} layout="vertical" disabled>
+                                    <BasicFormSection form={readonlyForm} readonly={readonly} />
+                                    <Divider />
+                                    <TimelineFundingSection form={readonlyForm} />
+                                </Form>
+                            ),
+                        },
+                        {
+                            key: 'approval',
+                            label: '审批记录',
+                            children: (
+                                <div>
+                                    {comments.length > 0 ? (
+                                        <Timeline
+                                            items={comments.map((c, idx) => ({
+                                                key: idx,
+                                                color: idx === comments.length - 1 ? 'blue' : 'gray',
+                                                children: (
+                                                    <div>
+                                                        <div style={{ marginBottom: 4 }}>
+                                                            <Text strong>{c.author}</Text>
+                                                            <Text type="secondary" style={{ marginLeft: 12, fontSize: 12 }}>{c.time}</Text>
+                                                        </div>
+                                                        <div>{c.content}</div>
+                                                    </div>
+                                                ),
+                                            }))}
+                                        />
+                                    ) : (
+                                        <div style={{ color: '#999', textAlign: 'center', padding: '32px 0' }}>暂无审批记录</div>
+                                    )}
+                                </div>
+                            ),
+                        },
+                    ]}
+                />
+            ) : null}
+            {record ? (
+                <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: 16, flexShrink: 0, background: '#fff' }}>
+                    <Text strong style={{ marginBottom: 8, display: 'block' }}>发表意见或建议</Text>
+                    <Input.TextArea
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="请输入您的意见或建议..."
+                        rows={3}
+                        maxLength={500}
+                        showCount
+                        style={{ marginBottom: 8 }}
+                    />
+                    <Button
+                        type="primary"
+                        onClick={handleSubmitComment}
+                        disabled={!commentText.trim()}
+                    >
+                        提交评论
+                    </Button>
+                </div>
             ) : null}
         </Drawer>
-    );
+        <Modal
+            title="退回计划"
+            open={returnModalVisible}
+            onCancel={() => { setReturnModalVisible(false); setReturnRemark(''); }}
+            onOk={() => {
+                if (!returnRemark.trim()) { message.warning('请填写退回原因。'); return; }
+                onReturn?.(returnRemark.trim());
+                setReturnModalVisible(false);
+                setReturnRemark('');
+            }}
+            okText="确认退回"
+            okButtonProps={{ danger: true }}
+        >
+            <Alert type="warning" showIcon message="退回后，申报单位可修改后重新提交。" style={{ marginBottom: 16 }} />
+            <div style={{ marginBottom: 8 }}><Text strong>退回原因：</Text></div>
+            <Input.TextArea
+                value={returnRemark}
+                onChange={(e) => setReturnRemark(e.target.value)}
+                placeholder="请填写退回原因和建议..."
+                rows={4}
+                maxLength={500}
+                showCount
+            />
+        </Modal>
+    </>);
 }
 
 function PlanReviewPage() {
     const { records, approvePlan, returnPlan } = usePlatformStore();
     const pendingRecords = records.filter((record) => record.status === 'pending-review');
     const [selectedOrgKey, setSelectedOrgKey] = useState('15');
+    // 在途计划：审批节点不是当前用户的计划（模拟：orgKey为'07'的计划对当前用户来说是其他审批节点的在途计划）
+    const transitOrgKeys = ['07'];
+    const [listTab, setListTab] = useState<'review' | 'transit'>('review');
     const [currentRecord, setCurrentRecord] = useState<PlatformPlanRecord | null>(pendingRecords[0] || null);
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [drawerReadonly, setDrawerReadonly] = useState(false);
     const [filters, setFilters] = useState<{ keyword?: string; year?: string }>({});
     const [includeChildren, setIncludeChildren] = useState(true);
     const [treeSearch, setTreeSearch] = useState('');
@@ -1345,6 +1491,14 @@ function PlanReviewPage() {
         }
         return records;
     }, [pendingRecords, selectedOrgKey, includeChildren, filters]);
+
+    // 将筛选后的记录分为待审核（当前用户可审批）和在途（审批节点不是当前用户）
+    const reviewRecords = useMemo(() => filteredRecords.filter((r) => !transitOrgKeys.includes(r.orgKey)), [filteredRecords, transitOrgKeys]);
+    const transitRecords = useMemo(() => filteredRecords.filter((r) => transitOrgKeys.includes(r.orgKey)), [filteredRecords, transitOrgKeys]);
+
+    const hasBothTabs = reviewRecords.length > 0 && transitRecords.length > 0;
+    const isInTransitMode = listTab === 'transit' || (!hasBothTabs && transitRecords.length > 0);
+    const displayRecords = isInTransitMode ? transitRecords : reviewRecords;
 
     const filterTreeData = (nodes: TreeDataNode[], keyword: string): TreeDataNode[] => {
         const kw = keyword.trim().toLowerCase();
@@ -1421,13 +1575,14 @@ function PlanReviewPage() {
         setTreeExpandedKeys(keys as string[]);
     };
 
-    const openDrawer = (record: PlatformPlanRecord) => {
+    const openDrawer = (record: PlatformPlanRecord, readonly: boolean) => {
         setCurrentRecord(record);
+        setDrawerReadonly(readonly);
         setDrawerOpen(true);
     };
 
     const handleBatchApprove = () => {
-        filteredRecords.forEach((record) => approvePlan(record.id, '计划符合要求，予以通过。'));
+        reviewRecords.forEach((record) => approvePlan(record.id, '计划符合要求，予以通过。'));
     };
 
     const handleBatchReturnWithRemark = () => {
@@ -1435,7 +1590,7 @@ function PlanReviewPage() {
             message.warning('请填写退回原因。');
             return;
         }
-        filteredRecords.forEach((record) => returnPlan(record.id, returnBatchRemark));
+        reviewRecords.forEach((record) => returnPlan(record.id, returnBatchRemark));
         setReturnModalVisible(false);
         setReturnBatchRemark('');
     };
@@ -1471,14 +1626,14 @@ function PlanReviewPage() {
         {
             title: '状态',
             width: 100,
-            render: () => <Tag color="processing">待审核</Tag>,
+            render: (_, record) => transitOrgKeys.includes(record.orgKey) ? <Tag color="cyan">在途</Tag> : <Tag color="processing">待审核</Tag>,
         },
         {
             title: '操作',
             width: 100,
             fixed: 'right',
             render: (_, record) => (
-                <Button type="link" size="small" onClick={() => openDrawer(record)}>详情</Button>
+                <Button type="link" size="small" onClick={() => openDrawer(record, transitOrgKeys.includes(record.orgKey))}>详情</Button>
             ),
         },
     ];
@@ -1586,33 +1741,72 @@ function PlanReviewPage() {
 
                     <Card
                         data-annotation-id="plan-review-table"
-                        title={`待审核计划（${filteredRecords.length} 条）`}
+                        title={hasBothTabs ? null : (isInTransitMode ? `在途计划（${displayRecords.length} 条）` : `待审核计划（${displayRecords.length} 条）`)}
                         style={{ marginTop: 12 }}
-                        extra={filteredRecords.length > 0 ? (
+                        extra={displayRecords.length > 0 ? (
                             <Space>
                                 <Button icon={<CloudDownloadOutlined />} onClick={exportReviewRows}>导出</Button>
-                                <Button
-                                    style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: '#fff' }}
-                                    onClick={handleBatchApprove}
-                                >
-                                    通过
-                                </Button>
-                                <Button
-                                    danger
-                                    onClick={() => setReturnModalVisible(true)}
-                                >
-                                    退回
-                                </Button>
+                                {!isInTransitMode && (
+                                    <>
+                                        <Button
+                                            style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: '#fff' }}
+                                            onClick={handleBatchApprove}
+                                        >
+                                            通过
+                                        </Button>
+                                        <Button
+                                            danger
+                                            onClick={() => setReturnModalVisible(true)}
+                                        >
+                                            退回
+                                        </Button>
+                                    </>
+                                )}
                             </Space>
                         ) : null}
                     >
-                        <Table
-                            rowKey="id"
-                            columns={columns}
-                            dataSource={filteredRecords}
-                            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
-                            scroll={{ x: 1200 }}
-                        />
+                        {hasBothTabs ? (
+                            <Tabs
+                                activeKey={listTab}
+                                onChange={(key) => setListTab(key as 'review' | 'transit')}
+                                items={[
+                                    {
+                                        key: 'review',
+                                        label: `待审核（${reviewRecords.length}）`,
+                                        children: (
+                                            <Table
+                                                rowKey="id"
+                                                columns={columns}
+                                                dataSource={reviewRecords}
+                                                pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                                scroll={{ x: 1200 }}
+                                            />
+                                        ),
+                                    },
+                                    {
+                                        key: 'transit',
+                                        label: `在途（${transitRecords.length}）`,
+                                        children: (
+                                            <Table
+                                                rowKey="id"
+                                                columns={columns}
+                                                dataSource={transitRecords}
+                                                pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                                scroll={{ x: 1200 }}
+                                            />
+                                        ),
+                                    },
+                                ]}
+                            />
+                        ) : (
+                            <Table
+                                rowKey="id"
+                                columns={columns}
+                                dataSource={displayRecords}
+                                pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                scroll={{ x: 1200 }}
+                            />
+                        )}
                     </Card>
                 </div>
             </div>
@@ -1621,17 +1815,22 @@ function PlanReviewPage() {
                 record={currentRecord}
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
-                onApprove={(remark) => {
+                readonly={drawerReadonly}
+                onApprove={drawerReadonly ? undefined : (remark) => {
                     if (currentRecord) {
                         approvePlan(currentRecord.id, remark);
                     }
                     setDrawerOpen(false);
                 }}
-                onReturn={(remark) => {
+                onReturn={drawerReadonly ? undefined : (remark) => {
                     if (currentRecord) {
                         returnPlan(currentRecord.id, remark);
                     }
                     setDrawerOpen(false);
+                }}
+                onSubmitComment={(comment) => {
+                    // 在途模式下提交评论，评论已记录在审批记录中
+                    console.log('在途计划评论:', currentRecord?.id, comment);
                 }}
             />
 
@@ -1937,7 +2136,7 @@ function PlanViewPage() {
 
 
 function PlaceholderPage({ pageId }: { pageId: MenuPageId }) {
-    const meta = pageMeta[pageId];
+    const meta = pageMeta[pageId] || pageMeta['home'];
     const group = menuGroups.find((item) => item.title === meta.group);
     const children = group?.children || [];
 
@@ -2003,7 +2202,14 @@ function HomePage() {
 
 function AppContent() {
     const { page, setPage } = useHashPage(route);
-    const meta = pageMeta[page as MenuPageId];
+    const meta = pageMeta[page as MenuPageId] || pageMeta['home'];
+
+    // Redirect unknown page IDs to home
+    useEffect(() => {
+        if (!pageMeta[page as MenuPageId] && page !== 'home') {
+            setPage('home');
+        }
+    }, [page, setPage]);
     const [collapsed, setCollapsed] = useState(false);
     const [isBroken, setIsBroken] = useState(false);
     const [openKeys, setOpenKeys] = useState<string[]>(['plan']);
@@ -2086,7 +2292,7 @@ function AppContent() {
     const selectedKeys = [page];
 
     const menuItems: MenuProps['items'] = [
-        ...menuGroups.map((group) => ({
+        ...menuGroups.filter((group) => group.key !== 'manual').map((group) => ({
             key: group.key,
             icon: menuIconMap[group.icon] || <AppstoreOutlined />,
             label: group.title,
@@ -2134,6 +2340,12 @@ function AppContent() {
                 return <PlanViewPage />;
             case 'budget-fill':
                 return <BudgetFillPage />;
+            case 'budget-view':
+                return <BudgetViewPage />;
+            case 'budget-stat':
+                return <BudgetStatPage />;
+            case 'budget-review':
+                return <BudgetReviewPage />;
             case 'filing-management':
                 return <FilingManagementPage />;
             case 'expert-database':
@@ -2144,6 +2356,8 @@ function AppContent() {
                 return <FilingWecomDetailPage />;
             case 'project-execution':
                 return <ProjectExecutionPage />;
+            case 'operation-manual':
+                return <OperationManualPage />;
             default:
                 return <PlaceholderPage pageId={page as MenuPageId} />;
         }
@@ -2266,6 +2480,13 @@ function AppContent() {
                         </div>
                         <div className="dmp-header-right">
                             <span className="dmp-greeting">你好，管理员</span>
+                            <Button
+                                type="text"
+                                className="dmp-icon-btn"
+                                icon={<BookOutlined />}
+                                onClick={() => setPage('operation-manual')}
+                                title="操作手册"
+                            />
                             <Badge count={0} size="small">
                                 <Button
                                     type="text"

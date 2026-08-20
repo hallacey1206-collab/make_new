@@ -74,6 +74,46 @@ describe('annotation source markdown preprocessing', () => {
     expect(result.watchFiles).toEqual([mdPath]);
   });
 
+  it('resolves annotation image placeholders in inlined directory markdown to prototype asset URLs', () => {
+    const projectRoot = createProjectRoot();
+    const mdPath = path.join(projectRoot, 'src/prototypes/order-review/docs/prd-05-handoff.md');
+    const assetPath = path.join(projectRoot, 'src/prototypes/order-review/assets/document-edit.png');
+    fs.mkdirSync(path.dirname(assetPath), { recursive: true });
+    fs.writeFileSync(mdPath, '# 交付\n\n![文档编辑](__ANNOTATION_IMAGE_DOCUMENT_EDIT__)', 'utf8');
+    fs.writeFileSync(assetPath, 'png-bytes\n', 'utf8');
+    const sourcePath = writeSource(projectRoot, {
+      documentVersion: 1,
+      format: 'axhub-annotation-source',
+      data: { version: 2, prototypeName: 'order-review', pageId: 'order-review', nodes: [], updatedAt: 1 },
+      markdownMap: {},
+      assetMap: {},
+      directory: {
+        nodes: [
+          {
+            type: 'markdown',
+            id: 'prd-handoff',
+            title: 'PRD 05 | 交付',
+            markdownPath: 'docs/prd-05-handoff.md',
+          },
+        ],
+      },
+    });
+
+    const result = preprocessAnnotationSourceMarkdown({
+      projectRoot,
+      sourceFilePath: sourcePath,
+      source: JSON.parse(fs.readFileSync(sourcePath, 'utf8')),
+      mode: 'serve',
+    });
+
+    const node = result.source.directory.nodes[0];
+    expect(node.markdown).toContain(
+      '![文档编辑](/prototypes/order-review/assets/document-edit.png)',
+    );
+    expect(node.markdown).not.toContain('__ANNOTATION_IMAGE_DOCUMENT_EDIT__');
+    expect(result.watchFiles).toEqual([mdPath, assetPath]);
+  });
+
   it('does not expose edit URLs when preprocessing for export builds', () => {
     const projectRoot = createProjectRoot();
     fs.writeFileSync(path.join(projectRoot, 'src/prototypes/order-review/docs/prd.md'), '# Exported PRD', 'utf8');

@@ -1,5 +1,8 @@
 export const currentPlanYear = new Date().getFullYear();
 
+// 预算填报年度：今年填报下一年度预算
+export const budgetPlanYear = currentPlanYear + 1;
+
 export const planYearOptions = [
     { value: String(currentPlanYear), label: `${currentPlanYear}年` },
     { value: String(currentPlanYear + 1), label: `${currentPlanYear + 1}年` },
@@ -30,7 +33,8 @@ export type MenuPageId =
     | 'expert-database'
     | 'resource-sharing'
     | 'filing-wecom-msg'
-    | 'filing-wecom-detail';
+    | 'filing-wecom-detail'
+    | 'operation-manual';
 
 export type PlanStatus = 'draft' | 'pending-review' | 'approved' | 'returned';
 
@@ -227,6 +231,14 @@ export const menuGroups: MenuGroup[] = [
             { id: 'filing-wecom-detail', title: '企微审批详情', summary: '企微端备案审批详情H5页面。' },
         ],
     },
+    {
+        key: 'manual',
+        title: '操作手册',
+        icon: 'overview',
+        children: [
+            { id: 'operation-manual', title: '操作手册', summary: '平台功能操作指南与使用说明。' },
+        ],
+    },
 ];
 
 export const pageOrder: MenuPageId[] = [
@@ -255,6 +267,7 @@ export const pageOrder: MenuPageId[] = [
     'resource-sharing',
     'filing-wecom-msg',
     'filing-wecom-detail',
+    'operation-manual',
 ];
 
 export const pageMeta: Record<MenuPageId, {
@@ -386,6 +399,11 @@ export const pageMeta: Record<MenuPageId, {
         title: '企微审批详情',
         group: '项目管理',
         summary: '企微端备案审批详情H5页面。',
+    },
+    'operation-manual': {
+        title: '操作手册',
+        group: '总览',
+        summary: '平台功能操作指南与使用说明。',
     },
 };
 
@@ -870,6 +888,8 @@ export type BudgetStatus = 'draft' | 'pending-review' | 'approved' | 'returned';
 
 export type BudgetTabType = 'inner' | 'outer';
 
+export type BudgetRound = 'first' | 'second' | 'third';
+
 export type BudgetRecord = {
     id: string;
     budgetCode: string;
@@ -906,6 +926,7 @@ export type BudgetRecord = {
     hardwareFunding: number;
     otherTechFunding: number;
     tabType: BudgetTabType;
+    round: BudgetRound;
     status: BudgetStatus;
     version: string;
     creator: string;
@@ -1234,6 +1255,7 @@ function buildBaseBudgetRecord(overrides: Partial<BudgetRecord> & Pick<BudgetRec
         hardwareFunding: 100,
         otherTechFunding: 70,
         tabType,
+        round: 'first',
         status,
         version: 'V1.0',
         creator: '预算管理员',
@@ -1245,7 +1267,7 @@ function buildBaseBudgetRecord(overrides: Partial<BudgetRecord> & Pick<BudgetRec
 export const initialBudgetRecords: BudgetRecord[] = [
     buildBaseBudgetRecord({
         id: 'budget-001',
-        budgetCode: `YS-ZCGJ-${currentPlanYear}-0001`,
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0001`,
         projectName: '中材南京年度预算一体化平台建设',
         unitName: '信息化管理部',
         tabType: 'inner',
@@ -1253,7 +1275,7 @@ export const initialBudgetRecords: BudgetRecord[] = [
     }),
     buildBaseBudgetRecord({
         id: 'budget-002',
-        budgetCode: `YS-ZCGJ-${currentPlanYear}-0002`,
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0002`,
         projectName: '中国建材装备集团协同能力预算优化',
         unitName: '数字化中心',
         tabType: 'inner',
@@ -1264,7 +1286,7 @@ export const initialBudgetRecords: BudgetRecord[] = [
     }),
     buildBaseBudgetRecord({
         id: 'budget-003',
-        budgetCode: `YS-ZCGJ-${currentPlanYear}-0003`,
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0003`,
         projectName: '合肥装备科技智能制造数据看板预算',
         unitName: '运营管理部',
         tabType: 'inner',
@@ -1273,7 +1295,7 @@ export const initialBudgetRecords: BudgetRecord[] = [
     }),
     buildBaseBudgetRecord({
         id: 'budget-004',
-        budgetCode: `YS-ZCGJ-${currentPlanYear}-0004`,
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0004`,
         projectName: '凯盛科技共享资源沉淀平台预算外项目',
         unitName: '数字化管理部',
         tabType: 'outer',
@@ -1284,17 +1306,101 @@ export const initialBudgetRecords: BudgetRecord[] = [
     }),
     buildBaseBudgetRecord({
         id: 'budget-005',
-        budgetCode: `YS-ZCGJ-${currentPlanYear}-0005`,
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0005`,
         projectName: '财务公司年度预算收口管理项目',
         unitName: '计划财务部',
         tabType: 'inner',
         status: 'pending-review',
         submitTime: `${currentPlanYear}-06-20 10:08`,
     }),
+    buildBaseBudgetRecord({
+        id: 'budget-006',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0006`,
+        projectName: '水泥智能工厂生产执行系统（MES）建设项目',
+        unitName: '中材国际智能科技有限公司',
+        tabType: 'inner',
+        enterpriseType: '04',
+        fiveMeasuresCategory: '0404',
+        measureSubItem: '040402',
+        businessDomain: '13',
+        fiveTransformation: 'SC',
+        buildMode: '04',
+        buildType: '01',
+        accountingSubject: '01',
+        managedDept: '生产管理部',
+        responsiblePerson: '刘建峰',
+        projectCategory: '2',
+        projectBrief: '面向水泥工厂建设智能生产执行系统，覆盖生产排程、工艺参数优化、设备运行监测与质量追溯，提升产线数字化运营水平。',
+        goalContent: '实现生产线数字化管控，降低能耗提升效率',
+        selfFunding: 260,
+        externalFunding: 120,
+        otherFunding: 40,
+        softwareFunding: 220,
+        hardwareFunding: 120,
+        otherTechFunding: 80,
+        totalInvestment: 420,
+        status: 'draft',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-007',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0007`,
+        projectName: '集团统一数据中台与指标体系建设',
+        unitName: '数字化管理部',
+        tabType: 'inner',
+        enterpriseType: '01',
+        fiveMeasuresCategory: '0107',
+        measureSubItem: '0107',
+        businessDomain: '19',
+        fiveTransformation: 'JY',
+        buildMode: '01',
+        buildType: '01',
+        accountingSubject: '01',
+        managedDept: '数字化管理部',
+        responsiblePerson: '赵婉清',
+        projectCategory: '1',
+        projectBrief: '建设集团级统一数据中台，沉淀主数据、指标数据与主题分析模型，为经营驾驶舱和预算管理提供数据服务，实现数据资产统一管控。',
+        goalContent: '打通集团数据孤岛，构建统一指标体系',
+        selfFunding: 500,
+        externalFunding: 200,
+        otherFunding: 0,
+        softwareFunding: 480,
+        hardwareFunding: 150,
+        otherTechFunding: 70,
+        totalInvestment: 700,
+        status: 'draft',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-008',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0008`,
+        projectName: '供应链协同平台（采购一体化）建设',
+        unitName: '采购与供应链管理部',
+        tabType: 'inner',
+        enterpriseType: '01',
+        fiveMeasuresCategory: '0105',
+        measureSubItem: '010501',
+        businessDomain: '18',
+        fiveTransformation: 'CY',
+        buildMode: '02',
+        buildType: '02',
+        accountingSubject: '02',
+        managedDept: '采购与供应链管理部',
+        responsiblePerson: '周海涛',
+        projectCategory: '2',
+        projectBrief: '建设集团供应链协同平台，覆盖供应商管理、招采协同、合同履约与物流跟踪全流程，推动采购数字化与产业生态协同。',
+        goalContent: '提升采购效率，强化供应链协同能力',
+        selfFunding: 180,
+        externalFunding: 80,
+        otherFunding: 20,
+        softwareFunding: 160,
+        hardwareFunding: 60,
+        otherTechFunding: 60,
+        totalInvestment: 280,
+        status: 'draft',
+    }),
 ];
 
 export function getNextBudgetCode(sequence: number) {
-    return `YS-ZCGJ-${currentPlanYear}-${String(sequence).padStart(4, '0')}`;
+    return `YS-ZCGJ-${budgetPlanYear}-${String(sequence).padStart(4, '0')}`;
 }
 
 export function getNextBudgetVersion(sequence: number) {

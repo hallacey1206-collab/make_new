@@ -2,6 +2,27 @@
   "version": 1,
   "conversations": [
     {
+      "threadId": "direct-47061d82-b2d3-476b-8135-50488d9cc1ea",
+      "title": "Return AXHUB_AGENT_TEST_OK only",
+      "createdAt": "2026-07-29T06:24:53.776Z",
+      "updatedAt": "2026-07-29T06:25:16.365Z",
+      "archivedAt": null,
+      "deletedAt": null,
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "provider": "codebuddy",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "permissionMode": "bypassPermissions",
+      "status": "active",
+      "builtinToolSettings": null,
+      "providerSessionId": "3b3ac5b9-4349-4799-851a-30f5965e8254",
+      "sourcePath": null,
+      "sourceKind": null,
+      "lastSeenMtime": null,
+      "lastActiveAt": "2026-07-29T06:25:16.365Z"
+    },
+    {
       "threadId": "direct-cc6a6ce2-462c-4d66-b7d0-d9b989f6be98",
       "title": "请只返回 AXHUB_AGENT_TEST_OK，不要返回其他文字。",
       "createdAt": "2026-06-30T02:41:58.552Z",
@@ -312,6 +333,18 @@
       "thoughtLevel": null,
       "createdAt": "2026-06-30T02:42:08.676Z",
       "lastActivityAt": "2026-06-30T02:44:03.901Z",
+      "closedAt": null
+    },
+    {
+      "threadId": "direct-47061d82-b2d3-476b-8135-50488d9cc1ea",
+      "acpSessionId": "3b3ac5b9-4349-4799-851a-30f5965e8254",
+      "provider": "codebuddy",
+      "workspacePath": "D:\\Project\\IPOM(Make)\\ipom",
+      "model": null,
+      "modeId": null,
+      "thoughtLevel": null,
+      "createdAt": "2026-07-29T06:25:05.229Z",
+      "lastActivityAt": "2026-07-29T06:25:16.365Z",
       "closedAt": null
     }
   ],
@@ -722,6 +755,10 @@
         }
       ],
       "headId": "assistant-mr01jmp6-p9svwt6j0wn"
+    },
+    "direct-47061d82-b2d3-476b-8135-50488d9cc1ea": {
+      "storage": "thread-file",
+      "version": 1
     }
   }
 }

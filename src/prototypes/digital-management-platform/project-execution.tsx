@@ -23,15 +23,19 @@ import {
     Tabs,
     Tag,
     Timeline,
+    TreeSelect,
     Typography,
     Upload,
     message,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { TabsProps } from 'antd';
+import type { TreeDataNode } from 'antd';
 import {
     CaretDownOutlined,
     CaretRightOutlined,
+    CheckCircleOutlined,
+    ClockCircleOutlined,
     CloseOutlined,
     DeleteOutlined,
     DownloadOutlined,
@@ -42,7 +46,12 @@ import {
     SearchOutlined,
     ReloadOutlined,
     UploadOutlined,
+    WarningOutlined,
 } from '@ant-design/icons';
+import { orgTreeData } from './data';
+import iconCompleted from './assets/icon-completed.png';
+import iconBehind from './assets/icon-behind.png';
+import iconProgress from './assets/icon-progress.png';
 
 const { Text, Title } = Typography;
 
@@ -168,16 +177,40 @@ const NODE_TEMPLATES: Record<string, string[]> = {
     '最终验收': ['最终验收报告模板'],
 };
 
-const PERSON_OPTIONS = [
-    { value: '张工', label: '张工' },
-    { value: '李工', label: '李工' },
-    { value: '王工', label: '王工' },
-    { value: '赵工', label: '赵工' },
-    { value: '陈工', label: '陈工' },
-    { value: '刘工', label: '刘工' },
-    { value: '周工', label: '周工' },
-    { value: '吴工', label: '吴工' },
-];
+// 组织树仅叶子节点下挂模拟人员（含联系电话），与备案管理保持一致
+const businessTreeData: TreeDataNode[] = (() => {
+    let personId = 0;
+    const mockNames = ['张明', '李华', '王芳', '赵强', '陈静', '刘洋', '周磊', '吴敏', '郑伟', '孙悦'];
+    const mockPhones = ['13800138001', '13900139002', '13700137003', '13600136004', '13500135005', '13400134006', '13300133007', '13200132008', '13100131009', '13000130010'];
+    const addPersonnel = (nodes: TreeDataNode[]): TreeDataNode[] =>
+        nodes.map((node) => {
+            const hasChildren = node.children && node.children.length > 0;
+            if (hasChildren) {
+                return {
+                    ...node,
+                    checkable: false,
+                    children: addPersonnel(node.children as TreeDataNode[]),
+                };
+            }
+            const count = 2 + (personId % 2);
+            const personnel: TreeDataNode[] = Array.from({ length: count }, () => {
+                const name = mockNames[personId % mockNames.length];
+                const phone = mockPhones[personId % mockPhones.length];
+                const p: TreeDataNode = {
+                    title: `${name} · ${phone}`,
+                    key: `${node.key}-person-${personId}`,
+                };
+                personId++;
+                return p;
+            });
+            return {
+                ...node,
+                checkable: false,
+                children: personnel,
+            };
+        });
+    return addPersonnel(orgTreeData as TreeDataNode[]);
+})();
 
 // ============ 模拟数据 ============
 
@@ -194,7 +227,7 @@ const MOCK_PROJECTS: ProjectRecord[] = [
         endDate: '2027-06-30',
         currentStage: '项目启动',
         plannedStage: '周报',
-        progress: 0,
+        progress: 10,
         totalPayment: 0,
         paymentRatio: 0,
         nodeStatus: '进行中',
@@ -246,7 +279,7 @@ const MOCK_PROJECTS: ProjectRecord[] = [
         progress: 0,
         totalPayment: 0,
         paymentRatio: 0,
-        nodeStatus: '进行中',
+        nodeStatus: '节点资料待上传',
         code: `${currentYear}_2071139461050580994`,
         filingDate: `${currentYear}-06-28`,
         applicant: '李工',
@@ -280,6 +313,106 @@ const MOCK_PROJECTS: ProjectRecord[] = [
         ],
         operationLogs: [
             { id: 'op-101', node: '开始', department: '系统', operator: '系统自动执行', time: `${currentYear}-07-10 10:56:01`, result: '开始', opinion: '流程开始' },
+        ],
+    },
+    // 第三条：正常进行中（进度 60%，当前阶段不滞后）
+    {
+        id: 'pe-003',
+        name: '2026预算填报测试071003',
+        company: '中建材投资',
+        projectLevel: 'key',
+        manager: '',
+        startDate: '2026-01-15',
+        endDate: '2027-01-14',
+        currentStage: '方案设计',
+        plannedStage: '方案设计',
+        progress: 60,
+        totalPayment: 120,
+        paymentRatio: 30,
+        nodeStatus: '进行中',
+        code: `${currentYear}_2071139461050580995`,
+        filingDate: `${currentYear}-01-10`,
+        applicant: '王工',
+        contactPhone: '13700137003',
+        isIndependent: '是',
+        budgetPlan: '年度计划内',
+        budgetCode: '632904-9DLYNZ',
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '中建材投资数字化平台建设，覆盖投资管理、风控合规及数据分析。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '否',
+        totalInvestment: 500,
+        yearBudget: 300,
+        totalProjectInvestment: 600,
+        selfFunding: 300,
+        externalFunding: 150,
+        otherFunding: 50,
+        brief: '中建材投资综合数字化平台建设项目。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        contracts: [],
+        executionNodes: [
+            { id: 'en-201', name: '项目启动', order: 1, templates: STARTUP_TEMPLATES, attachments: [], remark: '立项启动需上传合同和项目组织证明材料(见模板);单个附件不超过50M' },
+            { id: 'en-202', name: '周报', order: 2, templates: ['项目周报模板'], attachments: [], remark: '项目启动后每周上传项目周报' },
+            { id: 'en-203', name: '需求确认', order: 3, templates: ['需求确认书模板'], attachments: [], remark: '需求确认阶段需上传需求确认书' },
+            { id: 'en-204', name: '方案设计', order: 4, templates: ['方案设计文档模板'], attachments: [], remark: '方案设计阶段需上传方案设计文档' },
+            { id: 'en-205', name: '测试', order: 5, templates: ['测试报告模板'], attachments: [], remark: '测试阶段需上传测试报告' },
+            { id: 'en-206', name: '预验收', order: 6, templates: ['预验收报告模板'], attachments: [], remark: '预验收阶段需上传预验收报告' },
+            { id: 'en-207', name: '最终验收', order: 7, templates: ['最终验收报告模板'], attachments: [], remark: '最终验收阶段需上传最终验收报告' },
+        ],
+        operationLogs: [
+            { id: 'op-201', node: '开始', department: '系统', operator: '系统自动执行', time: `${currentYear}-01-15 09:00:00`, result: '开始', opinion: '流程开始' },
+        ],
+    },
+    // 第四条：已完成（进度 100%）
+    {
+        id: 'pe-004',
+        name: '2026预算填报测试071004',
+        company: '凯盛科技',
+        projectLevel: 'normal',
+        manager: '',
+        startDate: '2025-06-01',
+        endDate: '2026-05-31',
+        currentStage: '最终验收',
+        plannedStage: '最终验收',
+        progress: 100,
+        totalPayment: 280,
+        paymentRatio: 100,
+        nodeStatus: '已完成',
+        code: `${currentYear-1}_2071139461050580996`,
+        filingDate: `${currentYear-1}-05-28`,
+        applicant: '赵工',
+        contactPhone: '13600136004',
+        isIndependent: '否',
+        budgetPlan: '年度计划内',
+        budgetCode: '632904-10ELYOA',
+        buildLocation: '国内',
+        projectType: '运维服务类',
+        coverageScope: '凯盛科技运维项目，保障集团系统稳定运行。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '否',
+        totalInvestment: 280,
+        yearBudget: 280,
+        totalProjectInvestment: 280,
+        selfFunding: 280,
+        externalFunding: 0,
+        otherFunding: 0,
+        brief: '凯盛科技年度运维服务项目。',
+        buildMode: '外包',
+        buildType: '优化',
+        contracts: [],
+        executionNodes: [
+            { id: 'en-301', name: '项目启动', order: 1, templates: STARTUP_TEMPLATES, attachments: [], remark: '立项启动需上传合同和项目组织证明材料(见模板);单个附件不超过50M' },
+            { id: 'en-302', name: '周报', order: 2, templates: ['项目周报模板'], attachments: [], remark: '项目启动后每周上传项目周报' },
+            { id: 'en-303', name: '需求确认', order: 3, templates: ['需求确认书模板'], attachments: [], remark: '需求确认阶段需上传需求确认书' },
+            { id: 'en-304', name: '方案设计', order: 4, templates: ['方案设计文档模板'], attachments: [], remark: '方案设计阶段需上传方案设计文档' },
+            { id: 'en-305', name: '测试', order: 5, templates: ['测试报告模板'], attachments: [], remark: '测试阶段需上传测试报告' },
+            { id: 'en-306', name: '预验收', order: 6, templates: ['预验收报告模板'], attachments: [], remark: '预验收阶段需上传预验收报告' },
+            { id: 'en-307', name: '最终验收', order: 7, templates: ['最终验收报告模板'], attachments: [], remark: '最终验收阶段需上传最终验收报告' },
+        ],
+        operationLogs: [
+            { id: 'op-301', node: '开始', department: '系统', operator: '系统自动执行', time: `${currentYear-1}-06-01 09:00:00`, result: '开始', opinion: '流程开始' },
         ],
     },
 ];
@@ -344,11 +477,11 @@ export default function ProjectExecutionPage() {
 
     const columns: ColumnsType<ProjectRecord> = [
         {
-            title: '序号', width: 60, align: 'center',
+            title: '序号', width: 60, align: 'center', fixed: 'left',
             render: (_, __, index) => index + 1 + (currentPage - 1) * pageSize,
         },
-        { title: '项目名称', dataIndex: 'name', width: 220, ellipsis: true },
-        { title: '公司', dataIndex: 'company', width: 160, ellipsis: true },
+        { title: '项目名称', dataIndex: 'name', width: 220, ellipsis: true, fixed: 'left' },
+        { title: '公司', dataIndex: 'company', width: 160, ellipsis: true, fixed: 'left' },
         {
             title: '项目级别', dataIndex: 'projectLevel', width: 90, align: 'center',
             render: (v: ProjectLevel) => <Tag color={v === 'key' ? 'red' : 'default'}>{v === 'key' ? '重点项目' : '普通项目'}</Tag>,
@@ -359,10 +492,17 @@ export default function ProjectExecutionPage() {
         { title: '当前阶段', dataIndex: 'currentStage', width: 100, render: (v: string) => v || <Text type="secondary">-</Text> },
         { title: '计划阶段', dataIndex: 'plannedStage', width: 100, render: (v: string) => v || <Text type="secondary">-</Text> },
         {
-            title: '项目进度', dataIndex: 'progress', width: 100, align: 'center',
+            title: '项目进度', dataIndex: 'progress', width: 120, align: 'center',
             render: (v: number, record: ProjectRecord) => {
                 const behind = isStageBehind(record.currentStage, record.plannedStage);
-                return <span style={behind ? { color: '#e60012', fontWeight: 'bold' } : undefined}>{v}%</span>;
+                const completed = v === 100;
+                if (behind) {
+                    return <span style={{ color: '#e60012', fontWeight: 'bold' }}><img src={iconBehind} style={{ width: 16, height: 16, marginRight: 4, verticalAlign: 'middle', marginTop: -2 }} />{v}%</span>;
+                }
+                if (completed) {
+                    return <span style={{ color: '#52c41a', fontWeight: 'bold' }}><img src={iconCompleted} style={{ width: 16, height: 16, verticalAlign: 'middle', marginTop: -2 }} /></span>;
+                }
+                return <span style={{ color: '#1677ff' }}><img src={iconProgress} style={{ width: 16, height: 16, marginRight: 4, verticalAlign: 'middle', marginTop: -2 }} />{v}%</span>;
             },
         },
         { title: '累计付款金额', dataIndex: 'totalPayment', width: 120, align: 'right', render: (v: number) => v },
@@ -457,7 +597,7 @@ export default function ProjectExecutionPage() {
 // ============ 项目详情组件 ============
 
 function ProjectDetail({ project, onClose, onProgressChange }: { project: ProjectRecord; onClose: () => void; onProgressChange: (progress: number) => void }) {
-    const [activeTab, setActiveTab] = useState('basic');
+    const [activeTab, setActiveTab] = useState('execution');
     const [contracts, setContracts] = useState<ContractRecord[]>(project.contracts);
     const [selectedContractKeys, setSelectedContractKeys] = useState<string[]>([]);
     const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set([project.executionNodes[0]?.id]));
@@ -803,9 +943,9 @@ function StartupNodeContent({ node }: { node: ExecutionNodeRecord }) {
                         <Row gutter={16}>
                             <Col span={12}><Form.Item label="项目出资人"><Input placeholder="请输入" /></Form.Item></Col>
                             <Col span={12}><Form.Item label="项目负责人"><Input placeholder="请输入" /></Form.Item></Col>
-                            <Col span={12}><Form.Item label="甲方项目经理"><Select showSearch placeholder="请选择人员" options={PERSON_OPTIONS} optionFilterProp="label" /></Form.Item></Col>
-                            <Col span={12}><Form.Item label="甲方技术经理"><Select showSearch placeholder="请选择人员" options={PERSON_OPTIONS} optionFilterProp="label" /></Form.Item></Col>
-                            <Col span={12}><Form.Item label="甲方业务经理"><Select showSearch placeholder="请选择人员" options={PERSON_OPTIONS} optionFilterProp="label" /></Form.Item></Col>
+                            <Col span={12}><Form.Item label="甲方项目经理"><TreeSelect treeData={businessTreeData} placeholder="请选择人员" style={{ width: '100%' }} fieldNames={{ value: 'key', label: 'title', children: 'children' }} showSearch treeNodeFilterProp="title" treeDefaultExpandAll /></Form.Item></Col>
+                            <Col span={12}><Form.Item label="甲方技术经理"><TreeSelect treeData={businessTreeData} placeholder="请选择人员" style={{ width: '100%' }} fieldNames={{ value: 'key', label: 'title', children: 'children' }} showSearch treeNodeFilterProp="title" treeDefaultExpandAll /></Form.Item></Col>
+                            <Col span={12}><Form.Item label="甲方业务经理"><TreeSelect treeData={businessTreeData} placeholder="请选择人员" style={{ width: '100%' }} fieldNames={{ value: 'key', label: 'title', children: 'children' }} showSearch treeNodeFilterProp="title" treeDefaultExpandAll /></Form.Item></Col>
                             <Col span={12}>
                                 <Form.Item label="乙方项目经理">
                                     <div style={{ display: 'flex', gap: 8 }}>
