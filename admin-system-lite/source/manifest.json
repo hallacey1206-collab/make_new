@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "format": "axhub-published-source",
+  "sourceRoot": "source",
+  "entry": "index.tsx",
+  "files": [
+    {
+      "path": "annotation-source.json",
+      "kind": "source"
+    },
+    {
+      "path": "canvas.excalidraw",
+      "kind": "source"
+    },
+    {
+      "path": "index.tsx",
+      "kind": "entry"
+    },
+    {
+      "path": "pages/org-data.ts",
+      "kind": "source"
+    },
+    {
+      "path": "pages/permission.tsx",
+      "kind": "source"
+    },
+    {
+      "path": "pages/position.tsx",
+      "kind": "source"
+    },
+    {
+      "path": "pages/role.tsx",
+      "kind": "source"
+    },
+    {
+      "path": "pages/user.tsx",
+      "kind": "source"
+    },
+    {
+      "path": "style.css",
+      "kind": "source"
+    }
+  ]
+}
