@@ -36,7 +36,7 @@ export type MenuPageId =
     | 'filing-wecom-detail'
     | 'operation-manual';
 
-export type PlanStatus = 'draft' | 'pending-review' | 'approved' | 'returned';
+export type PlanStatus = 'draft' | 'pending-review' | 'approved' | 'completed' | 'returned';
 
 export type PlatformPlanRecord = {
     id: string;
@@ -778,7 +778,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
         companyLevelTwo: '06 | 中材国际',
         companyLevelThree: '中材国际股份有限公司',
         unitName: '项目管理部',
-        status: 'approved',
+        status: 'completed',
         submitTime: `${currentPlanYear}-06-10 08:45`,
         reviewTime: `${currentPlanYear}-06-12 14:30`,
         reviewer: '李审核',
@@ -806,7 +806,7 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
         companyLevelTwo: '15 | 中国巨石',
         companyLevelThree: '中国巨石',
         unitName: '计划财务部',
-        status: 'approved',
+        status: 'completed',
         submitTime: `${currentPlanYear}-06-08 13:12`,
         reviewTime: `${currentPlanYear}-06-10 17:20`,
         reviewer: '李审核',
@@ -880,11 +880,92 @@ export const initialPlanRecords: PlatformPlanRecord[] = [
         status: 'pending-review',
         submitTime: `${currentPlanYear}-06-23 09:00`,
     }),
+    buildBaseRecord({
+        id: 'plan-015',
+        code: `JH-ZCGJ-${currentPlanYear}-0015`,
+        name: '中国建材总院新材料研发数据平台计划',
+        orgKey: '09',
+        companyLevelTwo: '09 | 中国建材总院',
+        companyLevelThree: '中国建材总院',
+        unitName: '科技发展部',
+        category: `${currentPlanYear}年新增的项目`,
+        status: 'approved',
+        submitTime: `${currentPlanYear}-06-05 10:20`,
+        reviewTime: `${currentPlanYear}-06-08 15:10`,
+        reviewer: '李审核',
+        reviewRemark: '已通过，建议细化数据接口清单。',
+    }),
+    buildBaseRecord({
+        id: 'plan-016',
+        code: `JH-ZCGJ-${currentPlanYear}-0016`,
+        name: '中国巨石玻纤产线智能制造升级计划',
+        orgKey: '15',
+        companyLevelTwo: '15 | 中国巨石',
+        companyLevelThree: '中国巨石',
+        unitName: '智能制造部',
+        category: `${currentPlanYear}年预算内开工的，${currentPlanYear}年续建的项目`,
+        status: 'approved',
+        submitTime: `${currentPlanYear}-06-06 09:35`,
+        reviewTime: `${currentPlanYear}-06-09 14:40`,
+        reviewer: '李审核',
+        reviewRemark: '同意通过，按季度跟踪执行进度。',
+    }),
+    buildBaseRecord({
+        id: 'plan-017',
+        code: `JH-ZCGJ-${currentPlanYear}-0017`,
+        name: '中国巨石海外仓储物流协同计划',
+        orgKey: '15',
+        companyLevelTwo: '15 | 中国巨石',
+        companyLevelThree: '中国巨石',
+        unitName: '海外事业部',
+        category: `${currentPlanYear}年新增的项目`,
+        status: 'approved',
+        submitTime: `${currentPlanYear}-06-07 11:05`,
+        reviewTime: `${currentPlanYear}-06-10 16:25`,
+        reviewer: '李审核',
+        reviewRemark: '通过，注意境外数据合规要求。',
+    }),
+    buildBaseRecord({
+        id: 'plan-018',
+        code: `JH-ZCGJ-${currentPlanYear}-0018`,
+        name: '中建材投资境外资产运营管理计划',
+        orgKey: '07',
+        companyLevelTwo: '07 | 中建材投资',
+        companyLevelThree: '中建材投资',
+        unitName: '资产管理部',
+        category: `${currentPlanYear}年新增的项目`,
+        status: 'pending-review',
+        submitTime: `${currentPlanYear}-06-24 09:10`,
+    }),
+    buildBaseRecord({
+        id: 'plan-019',
+        code: `JH-ZCGJ-${currentPlanYear}-0019`,
+        name: '中国巨石供应链金融协同计划',
+        orgKey: '15',
+        companyLevelTwo: '15 | 中国巨石',
+        companyLevelThree: '中国巨石',
+        unitName: '财务部',
+        category: `${currentPlanYear}年预算内开工的，${currentPlanYear}年续建的项目`,
+        status: 'pending-review',
+        submitTime: `${currentPlanYear}-06-24 14:30`,
+    }),
+    buildBaseRecord({
+        id: 'plan-020',
+        code: `JH-ZCGJ-${currentPlanYear}-0020`,
+        name: '中国巨石风险管理数字化计划',
+        orgKey: '15',
+        companyLevelTwo: '15 | 中国巨石',
+        companyLevelThree: '中国巨石',
+        unitName: '风险管理部',
+        category: `${currentPlanYear}年新增的项目`,
+        status: 'pending-review',
+        submitTime: `${currentPlanYear}-06-25 10:45`,
+    }),
 ];
 
 // ============ 预算填报相关类型与数据 ============
 
-export type BudgetStatus = 'draft' | 'pending-review' | 'approved' | 'returned';
+export type BudgetStatus = 'draft' | 'pending-review' | 'approved' | 'completed' | 'returned';
 
 export type BudgetTabType = 'inner' | 'outer';
 
@@ -1204,7 +1285,8 @@ export const budgetProjectCategoryOptions = [
 const budgetStatusMeta: Record<BudgetStatus, { label: string; color: string }> = {
     draft: { label: '草稿', color: 'default' },
     'pending-review': { label: '待审核', color: 'processing' },
-    approved: { label: '通过', color: 'success' },
+    approved: { label: '已审核', color: 'success' },
+    completed: { label: '已完结', color: 'success' },
     returned: { label: '退回', color: 'error' },
 };
 
@@ -1396,6 +1478,72 @@ export const initialBudgetRecords: BudgetRecord[] = [
         otherTechFunding: 60,
         totalInvestment: 280,
         status: 'draft',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-009',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0009`,
+        projectName: '中国巨石玻纤产线能耗优化预算',
+        unitName: '智能制造部',
+        tabType: 'inner',
+        status: 'approved',
+        submitTime: `${currentPlanYear}-06-06 09:35`,
+        reviewTime: `${currentPlanYear}-06-09 14:40`,
+        reviewer: '审核管理员',
+        reviewRemark: '同意通过，按季度跟踪执行进度。',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-010',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0010`,
+        projectName: '凯盛科技光伏玻璃数智化预算',
+        unitName: '数字化管理部',
+        tabType: 'inner',
+        status: 'approved',
+        submitTime: `${currentPlanYear}-06-07 11:05`,
+        reviewTime: `${currentPlanYear}-06-10 16:25`,
+        reviewer: '审核管理员',
+        reviewRemark: '通过，注意境外数据合规要求。',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-011',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0011`,
+        projectName: '中材国际工地协同执行预算',
+        unitName: '项目管理部',
+        tabType: 'inner',
+        status: 'completed',
+        submitTime: `${currentPlanYear}-06-10 08:45`,
+        reviewTime: `${currentPlanYear}-06-12 14:30`,
+        reviewer: '审核管理员',
+        reviewRemark: '同意执行，注意按季度跟踪预算。',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-012',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0012`,
+        projectName: '中国建材总院科研数字化预算',
+        unitName: '科技发展部',
+        tabType: 'inner',
+        status: 'completed',
+        submitTime: `${currentPlanYear}-06-08 13:12`,
+        reviewTime: `${currentPlanYear}-06-10 17:20`,
+        reviewer: '审核管理员',
+        reviewRemark: '通过，建议后续按月更新执行数据。',
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-013',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0013`,
+        projectName: '中建材投资境外资产运营预算',
+        unitName: '资产管理部',
+        tabType: 'inner',
+        status: 'pending-review',
+        submitTime: `${currentPlanYear}-06-24 09:10`,
+    }),
+    buildBaseBudgetRecord({
+        id: 'budget-014',
+        budgetCode: `YS-ZCGJ-${budgetPlanYear}-0014`,
+        projectName: '中建材投资风险管理数字化预算',
+        unitName: '风险管理部',
+        tabType: 'inner',
+        status: 'pending-review',
+        submitTime: `${currentPlanYear}-06-25 10:45`,
     }),
 ];
 

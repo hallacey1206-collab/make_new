@@ -15,7 +15,6 @@ import {
     MoreOutlined,
     EditOutlined,
     PushpinOutlined,
-    InboxOutlined,
     DeleteOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -105,7 +104,6 @@ const STATUS_MAP: Record<TaskStatus, { label: string; color: string }> = {
 const MORE_MENU_ITEMS = [
     { key: 'rename', icon: <EditOutlined />, label: '重命名' },
     { key: 'pin', icon: <PushpinOutlined />, label: '置顶' },
-    { key: 'archive', icon: <InboxOutlined />, label: '归档' },
     { key: 'delete', icon: <DeleteOutlined />, label: '删除' },
 ];
 

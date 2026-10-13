@@ -4,6 +4,8 @@ import {
     CheckCircleOutlined,
     CloudDownloadOutlined,
     ExclamationCircleOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
     SearchOutlined,
     WarningOutlined,
 } from '@ant-design/icons';
@@ -236,17 +238,26 @@ function BudgetReviewDrawer({
 
 // ============ Budget Review Page ============
 
+// 在途预算：审批节点不在当前用户的预算（模拟：以下 id 处于其他审批节点）
+const transitBudgetIds = ['budget-013', 'budget-014'];
+
+function isTransitBudget(record: BudgetRecord) {
+    return transitBudgetIds.includes(record.id);
+}
+
 function BudgetReviewPage() {
     const { records, approveBudgets, returnBudgets } = useBudgetStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [detailRecord, setDetailRecord] = useState<BudgetRecord | null>(null);
     const [activeTab, setActiveTab] = useState<BudgetTabType>('inner');
+    const [listTab, setListTab] = useState<'review' | 'approved' | 'completed' | 'transit'>('review');
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [filters, setFilters] = useState<{ keyword?: string; year?: string }>({ year: `${budgetPlanYear}年` });
     const [selectedOrgKey, setSelectedOrgKey] = useState('group');
     const [includeChildren, setIncludeChildren] = useState(true);
     const [treeSearch, setTreeSearch] = useState('');
     const [treeExpandedKeys, setTreeExpandedKeys] = useState<string[]>(['group']);
+    const [treeCollapsed, setTreeCollapsed] = useState(false);
 
     // ============ Tree helpers ============
 
@@ -317,29 +328,46 @@ function BudgetReviewPage() {
 
     // ============ Data filtering ============
 
-    const pendingRecords = useMemo(() => {
+    // 审核页展示待我审核、我已审核、已完结、在途四类预算（不含草稿与退回）
+    const baseRecords = useMemo(() => {
         return records.filter(
-            (record) => record.status === 'pending-review' && record.tabType === activeTab,
+            (record) =>
+                record.tabType === activeTab &&
+                (record.status === 'pending-review' || record.status === 'approved' || record.status === 'completed'),
         );
     }, [records, activeTab]);
 
-    const filteredRecords = useMemo(() => {
-        const keyword = String(filters.keyword || '').trim().toLowerCase();
-        const year = String(filters.year || '').replace('年', '').trim();
+    const applyFilters = useMemo(() => {
+        return (list: BudgetRecord[]) => {
+            const keyword = String(filters.keyword || '').trim().toLowerCase();
+            const year = String(filters.year || '').replace('年', '').trim();
+            const roundOrder: Record<BudgetRound, number> = { first: 3, second: 2, third: 1 };
 
-        const roundOrder: Record<BudgetRound, number> = { first: 3, second: 2, third: 1 };
+            return list.filter((record) => {
+                if (keyword) {
+                    const combined = [record.projectName, record.budgetCode, record.unitName]
+                        .join(' ')
+                        .toLowerCase();
+                    if (!combined.includes(keyword)) return false;
+                }
+                if (year && !record.budgetCode.includes(year)) return false;
+                return true;
+            }).sort((a, b) => roundOrder[a.round] - roundOrder[b.round]);
+        };
+    }, [filters]);
 
-        return pendingRecords.filter((record) => {
-            if (keyword) {
-                const combined = [record.projectName, record.budgetCode, record.unitName]
-                    .join(' ')
-                    .toLowerCase();
-                if (!combined.includes(keyword)) return false;
-            }
-            if (year && !record.budgetCode.includes(year)) return false;
-            return true;
-        }).sort((a, b) => roundOrder[a.round] - roundOrder[b.round]);
-    }, [pendingRecords, filters]);
+    const reviewRecords = useMemo(() => applyFilters(baseRecords.filter((r) => r.status === 'pending-review' && !isTransitBudget(r))), [baseRecords, applyFilters]);
+    const approvedRecords = useMemo(() => applyFilters(baseRecords.filter((r) => r.status === 'approved')), [baseRecords, applyFilters]);
+    const completedRecords = useMemo(() => applyFilters(baseRecords.filter((r) => r.status === 'completed')), [baseRecords, applyFilters]);
+    const transitRecords = useMemo(() => applyFilters(baseRecords.filter((r) => r.status === 'pending-review' && isTransitBudget(r))), [baseRecords, applyFilters]);
+
+    const displayRecords = listTab === 'approved'
+        ? approvedRecords
+        : listTab === 'completed'
+            ? completedRecords
+            : listTab === 'transit'
+                ? transitRecords
+                : reviewRecords;
 
     // ============ Actions ============
 
@@ -419,7 +447,7 @@ function BudgetReviewPage() {
 
     const handleExport = () => {
         const header = ['预算编号', '项目名称', '单位名称', '预算分类', '建设模式', '建设类型', '项目简述', '启动时间', '预计完成时间', '总额(万元)', '版本号', '审核状态'];
-        const rows = filteredRecords.map((record) => [
+        const rows = displayRecords.map((record) => [
             record.budgetCode,
             record.projectName,
             record.unitName,
@@ -511,18 +539,22 @@ function BudgetReviewPage() {
             render: formatDate,
         },
         {
+            title: '状态',
+            width: 100,
+            render: (_, record) => {
+                if (record.status === 'completed') return <Tag color="success">已完结</Tag>;
+                if (record.status === 'approved') return <Tag color="processing">待审批</Tag>;
+                return isTransitBudget(record) ? <Tag color="cyan">在途</Tag> : <Tag color="processing">待审核</Tag>;
+            },
+        },
+        {
             title: '操作',
             width: 120,
             fixed: 'right',
             render: (_, record) => (
-                <Space size={4}>
-                    <Button size="small" type="link" onClick={() => openDetail(record)}>
-                        查看
-                    </Button>
-                    <Button size="small" type="link" danger onClick={() => openDetail(record)}>
-                        审核
-                    </Button>
-                </Space>
+                <Button size="small" type="link" onClick={() => openDetail(record)}>
+                    查看
+                </Button>
             ),
         },
     ];
@@ -542,13 +574,15 @@ function BudgetReviewPage() {
                         setSelectedRowKeys([]);
                     }}
                     tabBarExtraContent={
-                        <Space>
-                            <Button icon={<CloudDownloadOutlined />} onClick={handleExport}>导出</Button>
-                            <Button onClick={handleBatchReturn} disabled={filteredRecords.length === 0}>退回</Button>
-                            <Button type="primary" danger onClick={handleBatchApprove} disabled={filteredRecords.length === 0}>
-                                通过
-                            </Button>
-                        </Space>
+                        listTab === 'review' ? (
+                            <Space>
+                                <Button icon={<CloudDownloadOutlined />} onClick={handleExport}>导出</Button>
+                                <Button onClick={handleBatchReturn} disabled={reviewRecords.length === 0}>退回</Button>
+                                <Button type="primary" danger onClick={handleBatchApprove} disabled={reviewRecords.length === 0}>
+                                    通过
+                                </Button>
+                            </Space>
+                        ) : null
                     }
                     items={[
                         { key: 'inner', label: tabLabels.inner },
@@ -558,16 +592,54 @@ function BudgetReviewPage() {
             </Card>
 
             <Row gutter={16}>
+                {treeCollapsed ? (
+                    <Col flex="32px">
+                        <div style={{ position: 'relative', height: '100%' }}>
+                            <Button
+                                type="text"
+                                icon={<MenuUnfoldOutlined />}
+                                title="展开组织树"
+                                onClick={() => setTreeCollapsed(false)}
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 12,
+                                    width: 32,
+                                    height: 48,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: '1px solid #d9d9d9',
+                                    borderLeft: 'none',
+                                    borderTopRightRadius: 6,
+                                    borderBottomRightRadius: 6,
+                                    background: '#fff',
+                                    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                                    zIndex: 10,
+                                }}
+                            />
+                        </div>
+                    </Col>
+                ) : (
                 <Col xs={24} lg={5}>
                     <Card className="dmp-card-fill" data-annotation-id="budget-review-tree">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                             <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
-                            <Checkbox
-                                checked={includeChildren}
-                                onChange={(e) => setIncludeChildren(e.target.checked)}
-                            >
-                                包含下级
-                            </Checkbox>
+                            <Space size={4}>
+                                <Checkbox
+                                    checked={includeChildren}
+                                    onChange={(e) => setIncludeChildren(e.target.checked)}
+                                >
+                                    包含下级
+                                </Checkbox>
+                                <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<MenuFoldOutlined />}
+                                    title="收起组织树"
+                                    onClick={() => setTreeCollapsed(true)}
+                                />
+                            </Space>
                         </div>
                         <Input
                             allowClear
@@ -585,23 +657,32 @@ function BudgetReviewPage() {
                         />
                     </Card>
                 </Col>
+                )}
                 <Col xs={24} lg={19}>
                     <Card bordered={false} data-annotation-id="budget-review-table">
                         <Tabs
+                            activeKey={listTab}
+                            onChange={(key) => {
+                                setListTab(key as 'review' | 'approved' | 'completed' | 'transit');
+                                setSelectedRowKeys([]);
+                            }}
                             items={[
-                                { key: 'pending', label: `待审核 (${filteredRecords.length})` },
+                                { key: 'review', label: `待我审核 (${reviewRecords.length})` },
+                                { key: 'approved', label: `我已审核 (${approvedRecords.length})` },
+                                { key: 'completed', label: `已完结 (${completedRecords.length})` },
+                                { key: 'transit', label: `在途 (${transitRecords.length})` },
                             ]}
                         />
                         <Table
                             rowKey="id"
-                            dataSource={filteredRecords}
+                            dataSource={displayRecords}
                             columns={columns}
                             pagination={{
                                 showSizeChanger: true,
                                 showTotal: (total) => `共 ${total} 条`,
                                 defaultPageSize: 10,
                             }}
-                            scroll={{ x: 1700 }}
+                            scroll={{ x: 1800 }}
                         />
                     </Card>
                 </Col>

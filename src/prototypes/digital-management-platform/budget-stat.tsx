@@ -3,6 +3,8 @@ import type { TabsProps } from 'antd';
 import type { TreeDataNode } from 'antd';
 import {
     CloudDownloadOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
     SearchOutlined,
 } from '@ant-design/icons';
 import {
@@ -205,6 +207,7 @@ function BudgetStatPage() {
     const [includeChildren, setIncludeChildren] = useState(true);
     const [treeSearch, setTreeSearch] = useState('');
     const [treeExpandedKeys, setTreeExpandedKeys] = useState<string[]>(['group']);
+    const [treeCollapsed, setTreeCollapsed] = useState(false);
 
     // ============ Tree helpers ============
 
@@ -441,16 +444,54 @@ function BudgetStatPage() {
     return (
         <div className="dmp-page-stack">
             <Row gutter={16}>
+                {treeCollapsed ? (
+                    <Col flex="32px">
+                        <div style={{ position: 'relative', height: '100%' }}>
+                            <Button
+                                type="text"
+                                icon={<MenuUnfoldOutlined />}
+                                title="展开组织树"
+                                onClick={() => setTreeCollapsed(false)}
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 12,
+                                    width: 32,
+                                    height: 48,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: '1px solid #d9d9d9',
+                                    borderLeft: 'none',
+                                    borderTopRightRadius: 6,
+                                    borderBottomRightRadius: 6,
+                                    background: '#fff',
+                                    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                                    zIndex: 10,
+                                }}
+                            />
+                        </div>
+                    </Col>
+                ) : (
                 <Col xs={24} lg={5}>
                     <Card className="dmp-card-fill" data-annotation-id="budget-stat-tree">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                             <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
-                            <Checkbox
-                                checked={includeChildren}
-                                onChange={(e) => setIncludeChildren(e.target.checked)}
-                            >
-                                包含下级
-                            </Checkbox>
+                            <Space size={4}>
+                                <Checkbox
+                                    checked={includeChildren}
+                                    onChange={(e) => setIncludeChildren(e.target.checked)}
+                                >
+                                    包含下级
+                                </Checkbox>
+                                <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<MenuFoldOutlined />}
+                                    title="收起组织树"
+                                    onClick={() => setTreeCollapsed(true)}
+                                />
+                            </Space>
                         </div>
                         <Input
                             allowClear
@@ -468,6 +509,7 @@ function BudgetStatPage() {
                         />
                     </Card>
                 </Col>
+                )}
                 <Col xs={24} lg={19}>
                     <Card className="dmp-query-card" bordered={false} data-annotation-id="budget-stat-query">
                         <Form

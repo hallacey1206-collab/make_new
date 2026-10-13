@@ -53,6 +53,7 @@ type MessageItem = {
     title: string;
     summary: string;
     sender: string;
+    source: string;
     time: string;
     date: string;
     approvalCode?: string;
@@ -93,7 +94,7 @@ const SPECIALTY_MAP: Record<SpecialtyType, { label: string; color: string }> = {
 const TYPE_MAP: Record<MessageType, { label: string; color: string; icon: React.ReactNode }> = {
     notification: { label: '通知', color: 'blue', icon: <MailOutlined /> },
     approval: { label: '审批', color: 'orange', icon: <FileTextOutlined /> },
-    alarm: { label: '报警', color: 'red', icon: <BellOutlined /> },
+    alarm: { label: '待办', color: 'red', icon: <BellOutlined /> },
     system: { label: '系统', color: 'default', icon: <SettingOutlined /> },
 };
 
@@ -101,7 +102,7 @@ const TAB_LIST: Array<{ key: TabKey; label: string }> = [
     { key: 'all', label: '全部' },
     { key: 'notification', label: '通知' },
     { key: 'approval', label: '审批' },
-    { key: 'alarm', label: '报警' },
+    { key: 'alarm', label: '待办' },
     { key: 'system', label: '系统' },
 ];
 
@@ -117,6 +118,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '3号锅炉停机告警通知',
         summary: '设备运维系统推送的紧急停机告警，请及时确认处理',
         sender: '设备运维系统',
+        source: '报警中心',
         time: '10:30',
         date: dayjs().format('YYYY-MM-DD'),
         content: '3号锅炉于今日10:28发生异常停机，故障代码E-3021，初步判断为轴承温度过高触发保护停机。请相关运维人员立即到场检查，确认设备状态后方可重启。\n\n停机前运行参数：\n- 蒸汽压力：3.2 MPa\n- 排烟温度：168°C\n- 轴承温度：92°C（报警阈值85°C）',
@@ -131,6 +133,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '维修工单待审批 - WO20260728001',
         summary: '张明提交的设备维修工单等待您审批',
         sender: '张明',
+        source: '维修工单',
         time: '09:15',
         date: dayjs().format('YYYY-MM-DD'),
         approvalCode: 'WO20260728001',
@@ -156,6 +159,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '本月设备维保计划已发布',
         summary: '设备管理部门发布的月度维保计划',
         sender: '设备管理部',
+        source: '设备管理',
         time: '08:30',
         date: dayjs().format('YYYY-MM-DD'),
         content: '2026年7月设备维保计划已发布，请各位设备负责人按计划执行维保任务。\n\n本月重点维保项目：\n1. 3号锅炉定期检修（7月15日-7月18日）\n2. 生产线输送带更换（7月20日-7月22日）\n3. 空压机系统保养（7月25日-7月26日）',
@@ -169,6 +173,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '生产排产周报',
         summary: '本周生产排产完成情况汇总',
         sender: '生产管理部',
+        source: '生产调度',
         time: '昨天',
         date: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
         content: '本周生产排产完成情况良好，整体达成率96.5%。',
@@ -182,6 +187,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '质量检验不合格品处置单待审批',
         summary: '张三提交的质量不合格品处置申请',
         sender: '张三',
+        source: '质量管理',
         time: '11:00',
         date: dayjs().format('YYYY-MM-DD'),
         approvalCode: 'QNC20260728002',
@@ -206,6 +212,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '系统维护通知',
         summary: '平台将于今晚22:00进行例行维护',
         sender: '系统管理员',
+        source: '系统管理',
         time: '昨天',
         date: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
         content: '平台将于今晚22:00-23:00进行例行系统维护，期间部分功能可能不可用，请提前保存工作。',
@@ -219,6 +226,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '3号锅炉轴承温度超标报警',
         summary: '设备运维系统推送的实时报警，轴承温度超过安全阈值',
         sender: '设备运维系统',
+        source: '报警中心',
         time: '10:28',
         date: dayjs().format('YYYY-MM-DD'),
         content: '3号锅炉给水泵轴承温度实时监测值超过设定阈值，请立即确认并处理。\n\n报警详情：\n- 监测点位：3号锅炉给水泵驱动端轴承\n- 报警类型：温度超标\n- 建议措施：立即停机检查轴承润滑及冷却系统',
@@ -240,6 +248,7 @@ const MOCK_MESSAGES: MessageItem[] = [
         title: '熟料生产线电流异常报警',
         summary: '生产线主电机电流波动超出正常范围',
         sender: '生产监控系统',
+        source: '报警中心',
         time: '09:45',
         date: dayjs().format('YYYY-MM-DD'),
         content: '熟料生产线主电机电流监测到异常波动，需安排人员现场确认。',
@@ -283,7 +292,6 @@ export default function MessageCenterMobile() {
     const [selectedMessage, setSelectedMessage] = useState<MessageItem | null>(null);
     const [approvalOpinion, setApprovalOpinion] = useState('');
     const [filterPopupOpen, setFilterPopupOpen] = useState(false);
-    const [searchBarOpen, setSearchBarOpen] = useState(false);
     const [handledIds, setHandledIds] = useState<Set<string>>(new Set());
 
     const todayStr = dayjs().format('YYYY-MM-DD');
@@ -495,7 +503,7 @@ export default function MessageCenterMobile() {
                             color={typeInfo.color}
                             style={{ fontSize: 11, lineHeight: '18px', padding: '0 4px', margin: 0 }}
                         >
-                            {typeInfo.label}
+                            {msg.source}
                         </Tag>
                         {isUrgent && (
                             <Tag color="red" style={{ fontSize: 11, lineHeight: '18px', padding: '0 4px', margin: 0 }}>
@@ -892,24 +900,6 @@ export default function MessageCenterMobile() {
                     </div>
                 </div>
 
-                {/* 搜索栏（可展开） */}
-                {searchBarOpen && (
-                    <div style={{ padding: '8px 16px', background: '#fff', borderBottom: `1px solid ${THEME.border}` }}>
-                        <Input
-                            placeholder="搜索消息标题、内容"
-                            prefix={<SearchOutlined style={{ color: THEME.textSecondary }} />}
-                            value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                            allowClear
-                            autoFocus
-                            style={{ borderRadius: 8, fontSize: 14 }}
-                            onBlur={() => {
-                                if (!searchKeyword.trim()) setSearchBarOpen(false);
-                            }}
-                        />
-                    </div>
-                )}
-
                 {/* Tab 栏 */}
                 <div className="mc-mobile-tabs">
                     {TAB_LIST.map((tab) => {
@@ -997,9 +987,9 @@ export default function MessageCenterMobile() {
                                 gap: 4,
                                 padding: '4px 10px',
                                 borderRadius: 16,
-                                border: `1px solid ${specialtyFilter !== 'all' ? THEME.primary : THEME.border}`,
-                                background: specialtyFilter !== 'all' ? THEME.primaryLight : '#fff',
-                                color: specialtyFilter !== 'all' ? THEME.primary : THEME.textSecondary,
+                                border: `1px solid ${specialtyFilter !== 'all' || searchKeyword ? THEME.primary : THEME.border}`,
+                                background: specialtyFilter !== 'all' || searchKeyword ? THEME.primaryLight : '#fff',
+                                color: specialtyFilter !== 'all' || searchKeyword ? THEME.primary : THEME.textSecondary,
                                 fontSize: 13,
                                 cursor: 'pointer',
                                 whiteSpace: 'nowrap',
@@ -1007,15 +997,9 @@ export default function MessageCenterMobile() {
                             }}
                         >
                             <FilterOutlined />
-                            <span>筛选{specialtyFilter !== 'all' ? `(1)` : ''}</span>
+                            <span>筛选{(specialtyFilter !== 'all' ? 1 : 0) + (searchKeyword ? 1 : 0) > 0 ? `(${(specialtyFilter !== 'all' ? 1 : 0) + (searchKeyword ? 1 : 0)})` : ''}</span>
                         </div>
                     </div>
-                    <Button
-                        type="text"
-                        size="small"
-                        icon={<SearchOutlined style={{ fontSize: 16 }} />}
-                        onClick={() => setSearchBarOpen(true)}
-                    />
                 </div>
 
                 {/* 消息列表 */}
@@ -1106,6 +1090,20 @@ export default function MessageCenterMobile() {
 
                     <div style={{ marginBottom: 20 }}>
                         <Text style={{ display: 'block', marginBottom: 10, fontSize: 14, color: THEME.textSecondary }}>
+                            搜索
+                        </Text>
+                        <Input
+                            placeholder="搜索消息标题、内容"
+                            prefix={<SearchOutlined style={{ color: THEME.textSecondary }} />}
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            allowClear
+                            style={{ borderRadius: 8, fontSize: 14 }}
+                        />
+                    </div>
+
+                    <div style={{ marginBottom: 20 }}>
+                        <Text style={{ display: 'block', marginBottom: 10, fontSize: 14, color: THEME.textSecondary }}>
                             专业类型
                         </Text>
                         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -1139,6 +1137,7 @@ export default function MessageCenterMobile() {
                             block
                             onClick={() => {
                                 setSpecialtyFilter('all');
+                                setSearchKeyword('');
                             }}
                             style={{ height: 44, borderRadius: 8, fontSize: 15 }}
                         >

@@ -601,6 +601,201 @@
     }
 }
 
+/* ===== 工作台 ===== */
+.dmp-workbench {
+    padding: 8px 4px;
+}
+
+.dmp-workbench-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.dmp-workbench-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 4px;
+}
+
+.dmp-workbench-subtitle {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.dmp-workbench-date {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.dmp-workbench-stats {
+    margin-bottom: 20px;
+}
+
+.dmp-stat-card {
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    height: 100%;
+}
+
+.dmp-stat-card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.dmp-stat-card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 18px;
+}
+
+.dmp-stat-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.dmp-stat-card-total {
+    font-size: 32px;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.1;
+    margin-bottom: 12px;
+}
+
+.dmp-stat-card-unit {
+    font-size: 14px;
+    font-weight: 400;
+    color: #9ca3af;
+    margin-left: 4px;
+}
+
+.dmp-stat-card-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    margin-bottom: 14px;
+}
+
+.dmp-stat-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.dmp-stat-item b {
+    color: #111827;
+    font-weight: 600;
+}
+
+.dmp-stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dmp-stat-card-foot {
+    font-size: 13px;
+    color: #6b7280;
+    padding-top: 12px;
+    border-top: 1px solid #f0f2f5;
+}
+
+.dmp-stat-card-foot b {
+    color: #cf1322;
+    font-weight: 600;
+}
+
+.dmp-todo-card {
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.dmp-todo-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.dmp-todo-total {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+.dmp-todo-group {
+    margin-bottom: 18px;
+}
+
+.dmp-todo-group:last-child {
+    margin-bottom: 0;
+}
+
+.dmp-todo-group-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8c9198;
+    margin-bottom: 10px;
+    padding-left: 2px;
+    border-left: 3px solid #1677ff;
+    padding-left: 8px;
+}
+
+.dmp-todo-item {
+    background: #fafbfd;
+    border: 1px solid #eef1f6;
+    border-radius: 8px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    height: 100%;
+}
+
+.dmp-todo-item:hover {
+    border-color: #1677ff;
+    box-shadow: 0 2px 8px rgba(22, 119, 255, 0.12);
+    background: #fff;
+}
+
+.dmp-todo-item-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.dmp-todo-item-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.dmp-todo-item-desc {
+    font-size: 12px;
+    color: #9ca3af;
+    line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+    .dmp-workbench-title {
+        font-size: 20px;
+    }
+}
+
 /* ============================================
    企微端 H5 页面样式
    ============================================ */

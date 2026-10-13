@@ -1,0 +1,238 @@
+/* ============ 10-1 算法管理 样式 ============ */
+
+.algo-shell {
+    min-height: 100vh;
+    background: #f5f7fa;
+    padding: 16px 20px 24px;
+    box-sizing: border-box;
+}
+
+/* 面包屑 */
+.algo-breadcrumb {
+    padding: 12px 4px;
+    margin-bottom: 4px;
+}
+.algo-crumb-home {
+    color: #666;
+    font-size: 14px;
+}
+.algo-breadcrumb .ant-breadcrumb-link {
+    color: #666;
+}
+.algo-breadcrumb .ant-breadcrumb-separator {
+    color: #bbb;
+}
+
+/* 筛选区 */
+.algo-filter-card {
+    margin-bottom: 16px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.algo-filter-card .ant-card-body {
+    padding: 20px 24px 8px;
+}
+.algo-filter-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.algo-filter-left {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.algo-filter-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.algo-filter-label {
+    color: #333;
+    font-size: 14px;
+    white-space: nowrap;
+}
+.algo-input {
+    width: 260px;
+    border-radius: 4px;
+}
+.algo-select {
+    width: 260px;
+}
+.algo-range {
+    width: 340px;
+}
+.algo-filter-right {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.algo-btn-reset {
+    border-radius: 4px;
+}
+
+/* 表格区 */
+.algo-table-card {
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+.algo-table-card .ant-card-body {
+    padding: 16px 24px 8px;
+}
+.algo-table-header {
+    margin-bottom: 16px;
+}
+
+.algo-table .ant-table {
+    font-size: 14px;
+}
+.algo-table .ant-table-thead > tr > th {
+    background: #f5f5f5;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #e5e5e5;
+}
+.algo-table .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 12px 16px;
+}
+
+/* 标签 */
+.algo-tag {
+    background: #f5f5f5;
+    border: none;
+    border-radius: 2px;
+    color: #333;
+    padding: 1px 6px;
+    font-size: 12px;
+    line-height: 18px;
+}
+
+/* 操作列 */
+.algo-op-sep {
+    color: #e0e0e0;
+    margin: 0 2px;
+    font-size: 12px;
+}
+.algo-link {
+    padding: 0;
+    color: #1677ff;
+    font-size: 14px;
+}
+.algo-link-danger {
+    padding: 0;
+    color: #ff4d4f;
+    font-size: 14px;
+}
+.algo-more {
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: color 0.2s;
+}
+.algo-more:hover {
+    color: #1677ff;
+}
+
+/* 弹窗表单 */
+.algo-modal-form .ant-form-item {
+    margin-bottom: 16px;
+}
+.algo-modal-form .ant-form-item-label > label {
+    color: #333;
+}
+
+/* ============ 10-2 算法配置 样式 ============ */
+
+/* 表格 header 按钮组间距 */
+.algo-table-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 左右布局 */
+.algo-config-layout {
+    display: flex;
+    gap: 16px;
+    min-height: calc(100vh - 60px);
+}
+
+/* 左侧节点配置区 */
+.algo-config-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.algo-config-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+}
+.algo-config-sidebar-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+.algo-config-add-btn {
+    color: #1677ff;
+}
+.algo-config-search {
+    padding: 12px 12px 8px;
+}
+.algo-config-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 8px 12px;
+}
+.algo-config-tree .ant-tree {
+    font-size: 14px;
+}
+.algo-config-tree .ant-tree .ant-tree-node-content-selected {
+    background: #e6f7ff;
+}
+
+/* 右侧主体 */
+.algo-config-main {
+    flex: 1;
+    min-width: 0;
+}
+.algo-config-main .ant-tabs {
+    background: transparent;
+}
+
+/* 节点信息 - 描述列表布局 */
+.algo-config-node-info {
+    padding: 16px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+.algo-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 120px;
+}
+.algo-info-label {
+    color: #999;
+    font-size: 13px;
+    line-height: 20px;
+}
+.algo-info-value {
+    color: #333;
+    font-size: 14px;
+    line-height: 22px;
+}

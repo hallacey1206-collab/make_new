@@ -51,7 +51,7 @@ const { Text, Title, Paragraph } = Typography;
 
 // ============ 类型定义 ============
 
-type FilingStatus = 'pending-review' | 'expert-reviewing' | 'returned' | 'approved-level1' | 'approved';
+type FilingStatus = 'pending-review' | 'expert-reviewing' | 'returned' | 'approved-level1' | 'approved' | 'filed';
 type ProjectLevel = 'normal' | 'key';
 type ExpertType = 'expert' | 'business-domain';
 
@@ -70,7 +70,7 @@ interface ApprovalHistory {
     id: string;
     reviewer: string;
     reviewerOrg: string;
-    action: 'submit' | 'expert-assign' | 'approve' | 'return';
+    action: 'submit' | 'expert-assign' | 'approve' | 'return' | 'file';
     remark?: string;
     time: string;
     level: number;
@@ -271,6 +271,7 @@ const statusMeta: Record<FilingStatus, { label: string; color: string; antdColor
     'returned': { label: '已退回', color: '#ff4d4f', antdColor: 'red' },
     'approved-level1': { label: '业务域评审中', color: '#13c2c2', antdColor: 'cyan' },
     'approved': { label: '已通过', color: '#52c41a', antdColor: 'green' },
+    'filed': { label: '审核通过', color: '#52c41a', antdColor: 'green' },
 };
 
 const PROJECT_LEVEL_OPTIONS = [
@@ -283,6 +284,7 @@ const actionLabel: Record<string, string> = {
     'expert-assign': '转专家',
     approve: '通过',
     return: '退回',
+    file: '已备案',
 };
 
 const genId = () => '_' + Math.random().toString(36).slice(2, 9);
@@ -500,6 +502,12 @@ export default function FilingWecomDetailPage() {
         const newHistory: ApprovalHistory = { id: genId(), reviewer: '管理员', reviewerOrg: '集团总部', action: 'approve', time: nowString(), level: record.reviewLevel };
         setRecord({ ...record, status: nextStatus, reviewLevel: record.reviewLevel + 1, approvalHistory: [...record.approvalHistory, newHistory], nodes: [...nodes], projectLevel });
         message.success('审批通过');
+    };
+
+    const handleFile = () => {
+        const newHistory: ApprovalHistory = { id: genId(), reviewer: '管理员', reviewerOrg: '集团总部', action: 'file', remark: '备案完成，流程结束。', time: nowString(), level: record.reviewLevel };
+        setRecord({ ...record, status: 'filed', reviewLevel: record.reviewLevel + 1, approvalHistory: [...record.approvalHistory, newHistory], nodes: [...nodes], projectLevel });
+        message.success('已备案，流程结束');
     };
 
     const handleReturnConfirm = () => {
@@ -865,7 +873,7 @@ export default function FilingWecomDetailPage() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                                             <Text strong style={{ fontSize: 14 }}>{h.reviewer}</Text>
                                             <Text type="secondary" style={{ fontSize: 12 }}>{h.reviewerOrg}</Text>
-                                            <Tag color={h.action === 'approve' ? 'success' : h.action === 'return' ? 'error' : h.action === 'expert-assign' ? 'warning' : 'default'} style={{ fontSize: 11 }}>
+                                            <Tag color={h.action === 'approve' ? 'success' : h.action === 'return' ? 'error' : h.action === 'expert-assign' ? 'warning' : h.action === 'file' ? 'success' : 'default'} style={{ fontSize: 11 }}>
                                                 {actionLabel[h.action]}
                                             </Tag>
                                         </div>
@@ -940,6 +948,8 @@ export default function FilingWecomDetailPage() {
                                 <Button className="wecom-footer-btn" danger icon={<RollbackOutlined />} onClick={() => setReturnModalOpen(true)}>退回</Button>
                                 <Button type="primary" className="wecom-footer-btn" icon={<CheckCircleOutlined />} onClick={handleApprove}
                                     style={{ background: '#e60012', borderColor: '#e60012' }}>通过</Button>
+                                <Button type="primary" className="wecom-footer-btn" icon={<CheckCircleFilled />} onClick={handleFile}
+                                    style={{ background: '#52c41a', borderColor: '#52c41a' }}>已备案</Button>
                             </>
                         )}
                     </div>

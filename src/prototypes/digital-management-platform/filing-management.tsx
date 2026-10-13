@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
     AppstoreOutlined,
     ArrowLeftOutlined,
+    CheckCircleFilled,
     CheckCircleOutlined,
     CloseCircleOutlined,
     CloudDownloadOutlined,
@@ -13,6 +14,8 @@ import {
     ExclamationCircleOutlined,
     EyeOutlined,
     InboxOutlined,
+    MenuFoldOutlined,
+    MenuUnfoldOutlined,
     PaperClipOutlined,
     PlusOutlined,
     ReloadOutlined,
@@ -67,7 +70,7 @@ const { Dragger } = Upload;
 
 // ============ 类型定义 ============
 
-type FilingStatus = 'pending-review' | 'expert-reviewing' | 'returned' | 'approved-level1' | 'approved';
+type FilingStatus = 'pending-review' | 'expert-reviewing' | 'returned' | 'approved-level1' | 'approved' | 'filed';
 type ProjectLevel = 'normal' | 'key';
 type ExpertType = 'expert' | 'business-domain';
 
@@ -96,7 +99,7 @@ interface ApprovalHistory {
     id: string;
     reviewer: string;
     reviewerOrg: string;
-    action: 'submit' | 'expert-assign' | 'approve' | 'return';
+    action: 'submit' | 'expert-assign' | 'approve' | 'return' | 'file';
     remark?: string;
     time: string;
     level: number;
@@ -230,7 +233,14 @@ const statusMeta: Record<FilingStatus, { label: string; color: string }> = {
     'returned': { label: '已退回', color: 'error' },
     'approved-level1': { label: '业务域评审中', color: 'cyan' },
     'approved': { label: '已通过', color: 'success' },
+    'filed': { label: '审核通过', color: 'success' },
 };
+
+// 在途备案：审批节点不在当前用户（模拟：按记录 id 标识）
+const transitFilingIds = ['filing-010', 'filing-011', 'filing-014', 'filing-015'];
+function isTransitFiling(record: FilingRecord) {
+    return transitFilingIds.includes(record.id);
+}
 
 function nowString() {
     const now = new Date();
@@ -723,6 +733,550 @@ const initialFilingRecords: FilingRecord[] = [
         hasExpertReviewDoc: false,
         reviewLevel: 2,
     },
+    {
+        id: 'filing-008',
+        code: `BA-${currentYear}-008`,
+        filingDate: `${currentYear}-05-10`,
+        projectName: '中材国际财务共享服务中心建设项目',
+        orgName: '中材国际股份有限公司',
+        orgKey: '06',
+        applicant: '陈工',
+        contactPhone: '13800138008',
+        projectLevel: 'key',
+        category: `${currentYear}年新增项目`,
+        domain: '财务管理',
+        isIndependent: '是',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖中材国际全级次财务核算、预算、报销、资金结算业务。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '是',
+        policyDirection: '集团指导',
+        policyName: '集团财务共享服务中心建设方案',
+        totalInvestment: 380,
+        yearBudget: 220,
+        totalProjectInvestment: 460,
+        selfFunding: 220,
+        externalFunding: 90,
+        otherFunding: 70,
+        softwareFunding: 150,
+        hardwareFunding: 100,
+        otherTechFunding: 130,
+        brief: '建设财务共享服务中心，实现核算标准化、报销电子化、资金集中管控。',
+        goal: '财务核算效率提升40%，报销周期缩短50%，资金可视可控。',
+        buildMode: '集团/股份二级企业统建',
+        buildType: '新建',
+        startDate: `${currentYear}-02-01`,
+        endDate: `${currentYear}-11-30`,
+        submitTime: `${currentYear}-05-10 09:20`,
+        submitter: '陈工',
+        status: 'filed',
+        nodes: [...NODE_TEMPLATES.key],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-010',
+                reviewer: '陈工',
+                reviewerOrg: '中材国际股份有限公司',
+                action: 'submit',
+                remark: '财务共享服务中心项目备案申请。',
+                time: `${currentYear}-05-10 09:20`,
+                level: 1,
+            },
+            {
+                id: 'ah-011',
+                reviewer: '王审核',
+                reviewerOrg: '中材国际（二级审批）',
+                action: 'approve',
+                remark: '方案可行，同意通过，转集团终审。',
+                time: `${currentYear}-05-15 14:00`,
+                level: 1,
+            },
+            {
+                id: 'ah-012',
+                reviewer: '集团总部',
+                reviewerOrg: '集团总部（终审）',
+                action: 'file',
+                remark: '备案完成，流程结束。',
+                time: `${currentYear}-05-20 10:30`,
+                level: 2,
+            },
+        ],
+        attachments: [
+            { id: 'att-012', name: '财务共享中心建设方案.pdf', size: '6.4 MB', uploadTime: `${currentYear}-05-10 09:15`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 2,
+    },
+    {
+        id: 'filing-009',
+        code: `BA-${currentYear}-009`,
+        filingDate: `${currentYear}-04-25`,
+        projectName: '中国巨石智能制造数据中台项目',
+        orgName: '中国巨石',
+        orgKey: '15',
+        applicant: '刘工',
+        contactPhone: '13800138009',
+        projectLevel: 'key',
+        category: `${currentYear}年新增项目`,
+        domain: '数字化',
+        isIndependent: '是',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖中国巨石玻纤产线数据采集、治理、分析与可视化全链路。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '是',
+        policyDirection: '集团指导',
+        policyName: '集团数据中台建设指导意见',
+        totalInvestment: 520,
+        yearBudget: 300,
+        totalProjectInvestment: 620,
+        selfFunding: 300,
+        externalFunding: 120,
+        otherFunding: 100,
+        softwareFunding: 200,
+        hardwareFunding: 160,
+        otherTechFunding: 160,
+        brief: '建设智能制造数据中台，统一数据采集与治理，支撑产线智能决策。',
+        goal: '数据采集覆盖率100%，分析效率提升45%，能耗降低12%。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        startDate: `${currentYear}-03-01`,
+        endDate: `${currentYear}-12-31`,
+        submitTime: `${currentYear}-04-25 11:10`,
+        submitter: '刘工',
+        status: 'filed',
+        nodes: [...NODE_TEMPLATES.key],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-013',
+                reviewer: '刘工',
+                reviewerOrg: '中国巨石',
+                action: 'submit',
+                remark: '智能制造数据中台项目备案申请。',
+                time: `${currentYear}-04-25 11:10`,
+                level: 1,
+            },
+            {
+                id: 'ah-014',
+                reviewer: '王审核',
+                reviewerOrg: '中国巨石（二级审批）',
+                action: 'approve',
+                remark: '同意通过，转集团终审。',
+                time: `${currentYear}-04-30 09:40`,
+                level: 1,
+            },
+            {
+                id: 'ah-015',
+                reviewer: '集团总部',
+                reviewerOrg: '集团总部（终审）',
+                action: 'file',
+                remark: '备案完成，流程结束。',
+                time: `${currentYear}-05-06 15:20`,
+                level: 2,
+            },
+        ],
+        attachments: [
+            { id: 'att-013', name: '数据中台建设方案.pdf', size: '9.1 MB', uploadTime: `${currentYear}-04-25 11:05`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 2,
+    },
+    {
+        id: 'filing-010',
+        code: `BA-${currentYear}-010`,
+        filingDate: `${currentYear}-06-25`,
+        projectName: '凯盛科技光伏玻璃质量追溯系统',
+        orgName: '凯盛科技股份有限公司',
+        orgKey: '11',
+        applicant: '赵工',
+        contactPhone: '13800138010',
+        projectLevel: 'normal',
+        category: `${currentYear}年新增项目`,
+        domain: '智能制造',
+        isIndependent: '否',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖光伏玻璃产线质量检测、追溯与批次管理。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '否',
+        policyDirection: '集团指导',
+        policyName: '集团智能制造质量提升计划',
+        totalInvestment: 260,
+        yearBudget: 160,
+        totalProjectInvestment: 310,
+        selfFunding: 160,
+        externalFunding: 60,
+        otherFunding: 40,
+        softwareFunding: 110,
+        hardwareFunding: 90,
+        otherTechFunding: 60,
+        brief: '建设光伏玻璃质量追溯系统，实现产品质量全生命周期可追溯。',
+        goal: '质量追溯覆盖率100%，不良率下降20%。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        startDate: `${currentYear}-05-15`,
+        endDate: `${currentYear}-11-30`,
+        submitTime: `${currentYear}-06-25 14:20`,
+        submitter: '赵工',
+        status: 'pending-review',
+        nodes: [...NODE_TEMPLATES.normal],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-016',
+                reviewer: '赵工',
+                reviewerOrg: '凯盛科技股份有限公司',
+                action: 'submit',
+                remark: '光伏玻璃质量追溯系统备案申请。',
+                time: `${currentYear}-06-25 14:20`,
+                level: 1,
+            },
+        ],
+        attachments: [
+            { id: 'att-014', name: '质量追溯系统建设方案.pdf', size: '4.8 MB', uploadTime: `${currentYear}-06-25 14:15`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 1,
+    },
+    {
+        id: 'filing-011',
+        code: `BA-${currentYear}-011`,
+        filingDate: `${currentYear}-06-26`,
+        projectName: '中国建材总院绿色建材研发管理系统',
+        orgName: '中国建材总院',
+        orgKey: '09',
+        applicant: '孙工',
+        contactPhone: '13800138011',
+        projectLevel: 'normal',
+        category: `${currentYear}年新增项目`,
+        domain: '研发管理',
+        isIndependent: '否',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖绿色建材研发项目立项、进度、成果与知识产权管理。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '否',
+        policyDirection: '集团指导',
+        policyName: '集团科技创新管理规范',
+        totalInvestment: 210,
+        yearBudget: 130,
+        totalProjectInvestment: 250,
+        selfFunding: 130,
+        externalFunding: 50,
+        otherFunding: 30,
+        softwareFunding: 90,
+        hardwareFunding: 70,
+        otherTechFunding: 50,
+        brief: '建设绿色建材研发管理系统，实现研发项目全生命周期管理。',
+        goal: '研发项目按期完成率提升30%，成果转化率提升20%。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        startDate: `${currentYear}-06-01`,
+        endDate: `${currentYear}-12-31`,
+        submitTime: `${currentYear}-06-26 10:45`,
+        submitter: '孙工',
+        status: 'pending-review',
+        nodes: [...NODE_TEMPLATES.normal],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-017',
+                reviewer: '孙工',
+                reviewerOrg: '中国建材总院',
+                action: 'submit',
+                remark: '绿色建材研发管理系统备案申请。',
+                time: `${currentYear}-06-26 10:45`,
+                level: 1,
+            },
+        ],
+        attachments: [
+            { id: 'att-015', name: '研发管理系统建设方案.pdf', size: '5.6 MB', uploadTime: `${currentYear}-06-26 10:40`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 1,
+    },
+    {
+        id: 'filing-012',
+        code: `BA-${currentYear}-012`,
+        filingDate: `${currentYear}-03-15`,
+        projectName: '中材国际智慧供应链管理平台',
+        orgName: '中材国际股份有限公司',
+        orgKey: '06',
+        applicant: '钱工',
+        contactPhone: '13800138012',
+        projectLevel: 'key',
+        category: `${currentYear}年新增项目`,
+        domain: '供应链',
+        isIndependent: '是',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖中材国际供应商管理、采购协同、库存与物流全流程。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '是',
+        policyDirection: '集团指导',
+        policyName: '集团供应链数字化建设规划',
+        totalInvestment: 460,
+        yearBudget: 280,
+        totalProjectInvestment: 550,
+        selfFunding: 280,
+        externalFunding: 110,
+        otherFunding: 70,
+        softwareFunding: 180,
+        hardwareFunding: 130,
+        otherTechFunding: 150,
+        brief: '建设智慧供应链管理平台，实现供应商全生命周期管理与采购协同。',
+        goal: '采购周期缩短30%，库存周转率提升25%，供应链成本下降12%。',
+        buildMode: '集团/股份二级企业统建',
+        buildType: '新建',
+        startDate: `${currentYear}-01-15`,
+        endDate: `${currentYear}-10-31`,
+        submitTime: `${currentYear}-03-15 10:00`,
+        submitter: '钱工',
+        status: 'filed',
+        nodes: [...NODE_TEMPLATES.key],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-018',
+                reviewer: '钱工',
+                reviewerOrg: '中材国际股份有限公司',
+                action: 'submit',
+                remark: '智慧供应链管理平台项目备案申请。',
+                time: `${currentYear}-03-15 10:00`,
+                level: 1,
+            },
+            {
+                id: 'ah-019',
+                reviewer: '王审核',
+                reviewerOrg: '中材国际（二级审批）',
+                action: 'approve',
+                remark: '方案合理，同意通过，转集团终审。',
+                time: `${currentYear}-03-20 16:00`,
+                level: 1,
+            },
+            {
+                id: 'ah-020',
+                reviewer: '集团总部',
+                reviewerOrg: '集团总部（终审）',
+                action: 'file',
+                remark: '备案完成，流程结束。',
+                time: `${currentYear}-03-28 09:30`,
+                level: 2,
+            },
+        ],
+        attachments: [
+            { id: 'att-016', name: '供应链平台建设方案.pdf', size: '7.8 MB', uploadTime: `${currentYear}-03-15 09:55`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 2,
+    },
+    {
+        id: 'filing-013',
+        code: `BA-${currentYear}-013`,
+        filingDate: `${currentYear}-02-20`,
+        projectName: '凯盛科技新能源材料研发数据中心',
+        orgName: '凯盛科技股份有限公司',
+        orgKey: '11',
+        applicant: '郑工',
+        contactPhone: '13800138013',
+        projectLevel: 'key',
+        category: `${currentYear}年新增项目`,
+        domain: '研发管理',
+        isIndependent: '是',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖新能源材料研发实验数据采集、存储、分析与共享。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '是',
+        policyDirection: '国家指导',
+        policyName: '新材料产业高质量发展指导意见',
+        totalInvestment: 590,
+        yearBudget: 360,
+        totalProjectInvestment: 700,
+        selfFunding: 360,
+        externalFunding: 140,
+        otherFunding: 90,
+        softwareFunding: 230,
+        hardwareFunding: 180,
+        otherTechFunding: 180,
+        brief: '建设新能源材料研发数据中心，实现研发数据集中管理与智能分析。',
+        goal: '研发数据利用率提升50%，研发周期缩短25%。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        startDate: `${currentYear}-01-01`,
+        endDate: `${currentYear}-12-31`,
+        submitTime: `${currentYear}-02-20 14:30`,
+        submitter: '郑工',
+        status: 'filed',
+        nodes: [...NODE_TEMPLATES.key],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-021',
+                reviewer: '郑工',
+                reviewerOrg: '凯盛科技股份有限公司',
+                action: 'submit',
+                remark: '新能源材料研发数据中心项目备案申请。',
+                time: `${currentYear}-02-20 14:30`,
+                level: 1,
+            },
+            {
+                id: 'ah-022',
+                reviewer: '王审核',
+                reviewerOrg: '凯盛科技（二级审批）',
+                action: 'approve',
+                remark: '同意通过，转集团终审。',
+                time: `${currentYear}-02-25 10:20`,
+                level: 1,
+            },
+            {
+                id: 'ah-023',
+                reviewer: '集团总部',
+                reviewerOrg: '集团总部（终审）',
+                action: 'file',
+                remark: '备案完成，流程结束。',
+                time: `${currentYear}-03-02 11:00`,
+                level: 2,
+            },
+        ],
+        attachments: [
+            { id: 'att-017', name: '研发数据中心建设方案.pdf', size: '10.2 MB', uploadTime: `${currentYear}-02-20 14:25`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 2,
+    },
+    {
+        id: 'filing-014',
+        code: `BA-${currentYear}-014`,
+        filingDate: `${currentYear}-06-27`,
+        projectName: '中材矿山矿用设备物联网监控平台',
+        orgName: '中材矿山建设有限公司',
+        orgKey: '06-06',
+        applicant: '吴工',
+        contactPhone: '13800138014',
+        projectLevel: 'normal',
+        category: `${currentYear}年新增项目`,
+        domain: '物联网',
+        isIndependent: '否',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖矿山设备运行状态监测、故障预警与运维调度。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '否',
+        policyDirection: '集团指导',
+        policyName: '集团智能矿山建设规划',
+        totalInvestment: 330,
+        yearBudget: 200,
+        totalProjectInvestment: 390,
+        selfFunding: 200,
+        externalFunding: 80,
+        otherFunding: 50,
+        softwareFunding: 130,
+        hardwareFunding: 120,
+        otherTechFunding: 80,
+        brief: '建设矿用设备物联网监控平台，实现设备状态实时监测与预测性维护。',
+        goal: '设备故障率下降20%，非计划停机减少30%。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        startDate: `${currentYear}-06-01`,
+        endDate: `${currentYear}-12-31`,
+        submitTime: `${currentYear}-06-27 09:30`,
+        submitter: '吴工',
+        status: 'pending-review',
+        nodes: [...NODE_TEMPLATES.normal],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-024',
+                reviewer: '吴工',
+                reviewerOrg: '中材矿山建设有限公司',
+                action: 'submit',
+                remark: '矿用设备物联网监控平台备案申请。',
+                time: `${currentYear}-06-27 09:30`,
+                level: 1,
+            },
+        ],
+        attachments: [
+            { id: 'att-018', name: '物联网监控平台建设方案.pdf', size: '6.1 MB', uploadTime: `${currentYear}-06-27 09:25`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 1,
+    },
+    {
+        id: 'filing-015',
+        code: `BA-${currentYear}-015`,
+        filingDate: `${currentYear}-06-24`,
+        projectName: '中国建材总院建筑材料检测认证系统',
+        orgName: '中国建材总院',
+        orgKey: '09',
+        applicant: '何工',
+        contactPhone: '13800138015',
+        projectLevel: 'normal',
+        category: `${currentYear}年新增项目`,
+        domain: '检测认证',
+        isIndependent: '否',
+        budgetPlan: '年度计划内',
+        budgetCode: `632904-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+        buildLocation: '国内',
+        projectType: '系统建设类',
+        coverageScope: '覆盖建筑材料检测业务流程、报告管理与认证审核。',
+        hasCrossDomainData: '否',
+        isHeadquartersInterface: '否',
+        policyDirection: '集团指导',
+        policyName: '集团质量检测管理规范',
+        totalInvestment: 240,
+        yearBudget: 150,
+        totalProjectInvestment: 290,
+        selfFunding: 150,
+        externalFunding: 60,
+        otherFunding: 30,
+        softwareFunding: 100,
+        hardwareFunding: 80,
+        otherTechFunding: 60,
+        brief: '建设建筑材料检测认证系统，实现检测业务流程化、报告电子化。',
+        goal: '检测报告出具周期缩短40%，认证审核效率提升30%。',
+        buildMode: '单位自建',
+        buildType: '新建',
+        startDate: `${currentYear}-05-20`,
+        endDate: `${currentYear}-12-20`,
+        submitTime: `${currentYear}-06-24 15:40`,
+        submitter: '何工',
+        status: 'pending-review',
+        nodes: [...NODE_TEMPLATES.normal],
+        experts: [],
+        approvalHistory: [
+            {
+                id: 'ah-025',
+                reviewer: '何工',
+                reviewerOrg: '中国建材总院',
+                action: 'submit',
+                remark: '建筑材料检测认证系统备案申请。',
+                time: `${currentYear}-06-24 15:40`,
+                level: 1,
+            },
+        ],
+        attachments: [
+            { id: 'att-019', name: '检测认证系统建设方案.pdf', size: '5.3 MB', uploadTime: `${currentYear}-06-24 15:35`, category: 'filing-doc' },
+        ],
+        hasExpertReviewDoc: false,
+        reviewLevel: 1,
+    },
 ];
 
 // ============ Expert Selector Modal ============
@@ -1074,6 +1628,7 @@ function FilingDetailDrawer({
     onAssignExperts,
     onApprove,
     onReturn,
+    onFile,
 }: {
     record: FilingRecord | null;
     open: boolean;
@@ -1082,6 +1637,7 @@ function FilingDetailDrawer({
     onAssignExperts: (id: string, experts: { name: string; type: ExpertType; org: string }[]) => void;
     onApprove: (id: string, remark?: string) => void;
     onReturn: (id: string, remark: string) => void;
+    onFile: (id: string) => void;
 }) {
     const [activeTab, setActiveTab] = useState('basic');
     const [nodes, setNodes] = useState<ExecutionNode[]>([]);
@@ -1673,11 +2229,11 @@ function FilingDetailDrawer({
                                     id: h.id,
                                     reviewer: h.reviewer,
                                     org: h.reviewerOrg,
-                                    tagLabel: h.action === 'submit' ? '提交' : h.action === 'approve' ? '通过' : h.action === 'return' ? '退回' : '转专家',
-                                    tagColor: h.action === 'approve' ? 'success' : h.action === 'return' ? 'error' : h.action === 'expert-assign' ? 'processing' : 'default',
+                                    tagLabel: h.action === 'submit' ? '提交' : h.action === 'approve' ? '通过' : h.action === 'return' ? '退回' : h.action === 'file' ? '已备案' : '转专家',
+                                    tagColor: h.action === 'approve' ? 'success' : h.action === 'return' ? 'error' : h.action === 'expert-assign' ? 'processing' : h.action === 'file' ? 'success' : 'default',
                                     remark: h.remark,
                                     time: h.time,
-                                    dotColor: h.action === 'return' ? 'red' : h.action === 'approve' ? 'green' : 'blue',
+                                    dotColor: h.action === 'return' ? 'red' : h.action === 'approve' || h.action === 'file' ? 'green' : 'blue',
                                 })),
                                 ...record.experts.filter((e) => e.status === 'submitted').map((exp) => ({
                                     id: exp.id,
@@ -1855,6 +2411,13 @@ function FilingDetailDrawer({
                                     >
                                         通过
                                     </Button>
+                                    <Button
+                                        style={{ background: '#52c41a', borderColor: '#52c41a', color: '#fff' }}
+                                        icon={<CheckCircleFilled />}
+                                        onClick={() => onFile(record.id)}
+                                    >
+                                        已备案
+                                    </Button>
                                 </Space>
                             )}
                         </div>
@@ -1940,10 +2503,12 @@ function FilingManagementList({
         projectLevel?: string;
         status?: string;
     }>({});
+    const [listTab, setListTab] = useState<'review' | 'approved' | 'completed' | 'transit'>('review');
     const [selectedOrgKey, setSelectedOrgKey] = useState('06');
     const [treeSearch, setTreeSearch] = useState('');
     const [includeChildren, setIncludeChildren] = useState(true);
     const [userExpandedKeys, setUserExpandedKeys] = useState<string[]>(['group']);
+    const [treeCollapsed, setTreeCollapsed] = useState(false);
 
     function normalizeSelectedKeys(value: string | string[] | undefined) {
         if (typeof value === 'string') return [value];
@@ -2038,28 +2603,53 @@ function FilingManagementList({
         message.success('已导出当前列表数据（CSV）。');
     };
 
-    const filteredRecords = useMemo(() => {
-        return records.filter((r) => {
-            const keyword = String(filters.keyword || '').trim().toLowerCase();
-            const projectLevel = String(filters.projectLevel || '').trim();
-            const status = String(filters.status || '').trim();
+    const applyFilters = useMemo(() => {
+        const keyword = String(filters.keyword || '').trim().toLowerCase();
+        const projectLevel = String(filters.projectLevel || '').trim();
+        const status = String(filters.status || '').trim();
 
-            if (selectedOrgKey !== 'group') {
-                if (includeChildren) {
-                    if (r.orgKey !== selectedOrgKey && !r.orgKey.startsWith(selectedOrgKey + '-')) return false;
-                } else {
-                    if (r.orgKey !== selectedOrgKey) return false;
+        return (list: FilingRecord[]) =>
+            list.filter((r) => {
+                if (selectedOrgKey !== 'group') {
+                    if (includeChildren) {
+                        if (r.orgKey !== selectedOrgKey && !r.orgKey.startsWith(selectedOrgKey + '-')) return false;
+                    } else {
+                        if (r.orgKey !== selectedOrgKey) return false;
+                    }
                 }
-            }
-            if (keyword) {
-                const combined = [r.code, r.projectName, r.orgName].join(' ').toLowerCase();
-                if (!combined.includes(keyword)) return false;
-            }
-            if (projectLevel && r.projectLevel !== projectLevel) return false;
-            if (status && r.status !== status) return false;
-            return true;
-        });
-    }, [records, filters, selectedOrgKey, includeChildren]);
+                if (keyword) {
+                    const combined = [r.code, r.projectName, r.orgName].join(' ').toLowerCase();
+                    if (!combined.includes(keyword)) return false;
+                }
+                if (projectLevel && r.projectLevel !== projectLevel) return false;
+                if (status && r.status !== status) return false;
+                return true;
+            });
+    }, [filters, selectedOrgKey, includeChildren]);
+
+    const reviewRecords = useMemo(
+        () => applyFilters(records.filter((r) => r.status === 'pending-review' && !isTransitFiling(r))),
+        [applyFilters, records],
+    );
+    const approvedRecords = useMemo(
+        () => applyFilters(records.filter((r) => r.status === 'expert-reviewing' || r.status === 'approved-level1')),
+        [applyFilters, records],
+    );
+    const completedRecords = useMemo(
+        () => applyFilters(records.filter((r) => r.status === 'filed')),
+        [applyFilters, records],
+    );
+    const transitRecords = useMemo(
+        () => applyFilters(records.filter((r) => r.status === 'pending-review' && isTransitFiling(r))),
+        [applyFilters, records],
+    );
+
+    const filteredRecords = useMemo(() => {
+        if (listTab === 'approved') return approvedRecords;
+        if (listTab === 'completed') return completedRecords;
+        if (listTab === 'transit') return transitRecords;
+        return reviewRecords;
+    }, [listTab, reviewRecords, approvedRecords, completedRecords, transitRecords]);
 
     const columns: ColumnsType<FilingRecord> = [
         {
@@ -2118,9 +2708,14 @@ function FilingManagementList({
             title: '状态',
             width: 110,
             fixed: 'right',
-            render: (_, r) => (
-                <Tag color={statusMeta[r.status].color}>{statusMeta[r.status].label}</Tag>
-            ),
+            render: (_, r) => {
+                if (r.status === 'filed') return <Tag color="success">已完结</Tag>;
+                if (isTransitFiling(r)) return <Tag color="cyan">在途</Tag>;
+                if (r.status === 'expert-reviewing' || r.status === 'approved-level1') {
+                    return <Tag color="processing">待审批</Tag>;
+                }
+                return <Tag color={statusMeta[r.status].color}>{statusMeta[r.status].label}</Tag>;
+            },
         },
         {
             title: '操作',
@@ -2144,16 +2739,54 @@ function FilingManagementList({
     return (
         <div className="dmp-page-stack">
             <Row gutter={16}>
+                {treeCollapsed ? (
+                    <Col flex="32px">
+                        <div style={{ position: 'relative', height: '100%' }}>
+                            <Button
+                                type="text"
+                                icon={<MenuUnfoldOutlined />}
+                                title="展开组织树"
+                                onClick={() => setTreeCollapsed(false)}
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 12,
+                                    width: 32,
+                                    height: 48,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: '1px solid #d9d9d9',
+                                    borderLeft: 'none',
+                                    borderTopRightRadius: 6,
+                                    borderBottomRightRadius: 6,
+                                    background: '#fff',
+                                    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                                    zIndex: 10,
+                                }}
+                            />
+                        </div>
+                    </Col>
+                ) : (
                 <Col xs={24} lg={6}>
                     <Card data-annotation-id="filing-tree" className="dmp-card-fill">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                             <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
-                            <Checkbox
-                                checked={includeChildren}
-                                onChange={(e) => setIncludeChildren(e.target.checked)}
-                            >
-                                包含下级
-                            </Checkbox>
+                            <Space size={4}>
+                                <Checkbox
+                                    checked={includeChildren}
+                                    onChange={(e) => setIncludeChildren(e.target.checked)}
+                                >
+                                    包含下级
+                                </Checkbox>
+                                <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<MenuFoldOutlined />}
+                                    title="收起组织树"
+                                    onClick={() => setTreeCollapsed(true)}
+                                />
+                            </Space>
                         </div>
                         <Input
                             allowClear
@@ -2174,6 +2807,7 @@ function FilingManagementList({
                         />
                     </Card>
                 </Col>
+                )}
                 <Col xs={24} lg={18}>
                     {/* 查询条件 */}
                     <Card data-annotation-id="filing-query" className="dmp-query-card" bordered={false}>
@@ -2218,21 +2852,90 @@ function FilingManagementList({
                     <Card
                         data-annotation-id="filing-table"
                         style={{ marginTop: 12 }}
-                        title={`备案列表（${filteredRecords.length} 条）`}
+                        title="备案列表"
                         extra={<Button icon={<CloudDownloadOutlined />} onClick={handleExport}>导出</Button>}
                     >
-                        <Table
-                            rowKey="id"
-                            dataSource={filteredRecords}
-                            columns={columns}
-                            pagination={{
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `共 ${total} 条`,
-                                defaultPageSize: 10,
-                                pageSizeOptions: ['10', '20', '50'],
-                            }}
-                            scroll={{ x: 1400 }}
+                        <Tabs
+                            activeKey={listTab}
+                            onChange={(key) => setListTab(key as 'review' | 'approved' | 'completed' | 'transit')}
+                            items={[
+                                {
+                                    key: 'review',
+                                    label: `待我审批（${reviewRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            dataSource={reviewRecords}
+                                            columns={columns}
+                                            pagination={{
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                showTotal: (total) => `共 ${total} 条`,
+                                                defaultPageSize: 10,
+                                                pageSizeOptions: ['10', '20', '50'],
+                                            }}
+                                            scroll={{ x: 1400 }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: 'approved',
+                                    label: `我已审批（${approvedRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            dataSource={approvedRecords}
+                                            columns={columns}
+                                            pagination={{
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                showTotal: (total) => `共 ${total} 条`,
+                                                defaultPageSize: 10,
+                                                pageSizeOptions: ['10', '20', '50'],
+                                            }}
+                                            scroll={{ x: 1400 }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: 'completed',
+                                    label: `已完结（${completedRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            dataSource={completedRecords}
+                                            columns={columns}
+                                            pagination={{
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                showTotal: (total) => `共 ${total} 条`,
+                                                defaultPageSize: 10,
+                                                pageSizeOptions: ['10', '20', '50'],
+                                            }}
+                                            scroll={{ x: 1400 }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: 'transit',
+                                    label: `在途（${transitRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            dataSource={transitRecords}
+                                            columns={columns}
+                                            pagination={{
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                showTotal: (total) => `共 ${total} 条`,
+                                                defaultPageSize: 10,
+                                                pageSizeOptions: ['10', '20', '50'],
+                                            }}
+                                            scroll={{ x: 1400 }}
+                                        />
+                                    ),
+                                },
+                            ]}
                         />
                     </Card>
                 </Col>
@@ -2378,6 +3081,34 @@ export default function FilingManagementPage() {
         closeDrawer();
     };
 
+    const handleFile = (id: string) => {
+        const now = nowString();
+        setRecords((prev) =>
+            prev.map((r) => {
+                if (r.id !== id) return r;
+                return {
+                    ...r,
+                    status: 'filed' as FilingStatus,
+                    reviewLevel: r.reviewLevel + 1,
+                    approvalHistory: [
+                        ...r.approvalHistory,
+                        {
+                            id: genId(),
+                            reviewer: '王审核',
+                            reviewerOrg: '集团总部（终审）',
+                            action: 'file' as const,
+                            remark: '备案完成，流程结束。',
+                            time: now,
+                            level: r.reviewLevel,
+                        },
+                    ],
+                };
+            })
+        );
+        message.success('已备案，流程结束。');
+        closeDrawer();
+    };
+
     return (
         <>
             <FilingManagementList
@@ -2397,6 +3128,7 @@ export default function FilingManagementPage() {
                 onAssignExperts={handleAssignExperts}
                 onApprove={handleApprove}
                 onReturn={handleReturn}
+                onFile={handleFile}
             />
         </>
     );

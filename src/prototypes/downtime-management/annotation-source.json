@@ -1,0 +1,697 @@
+{
+  "documentVersion": 1,
+  "format": "axhub-annotation-source",
+  "data": {
+    "version": 2,
+    "prototypeName": "停机管理",
+    "pageId": "reason-maintenance",
+    "nodes": [
+      {
+        "id": "rm-query",
+        "index": 1,
+        "title": "查询筛选区",
+        "pageId": "reason-maintenance",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"rm-query\"]"
+          ]
+        },
+        "aiPrompt": "说明停机原因维护页的查询筛选设计。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677ff",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788340127039
+      },
+      {
+        "id": "rm-table",
+        "index": 2,
+        "title": "映射维护表格",
+        "pageId": "reason-maintenance",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"rm-table\"]"
+          ]
+        },
+        "aiPrompt": "说明DCS表面原因与停机类型映射维护的表格操作。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#52c41a",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788340207019
+      },
+      {
+        "id": "ce-tree",
+        "index": 3,
+        "title": "设备树导航",
+        "pageId": "cause-entry",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ce-tree\"]"
+          ]
+        },
+        "aiPrompt": "说明停机记录页设备树的定位作用。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#fa8c16",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788340654514
+      },
+      {
+        "id": "ce-date-query",
+        "index": 4,
+        "title": "停机开始时间查询",
+        "pageId": "cause-entry",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ce-date-query\"]"
+          ]
+        },
+        "aiPrompt": "说明按停机开始时间范围过滤停机记录。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#13c2c2",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788848853319
+      },
+      {
+        "id": "ce-record-table",
+        "index": 5,
+        "title": "停机记录明细表",
+        "pageId": "cause-entry",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ce-record-table\"]"
+          ]
+        },
+        "aiPrompt": "说明停机记录行内编辑、根本原因附件、填报人选择的设计。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#eb2f96",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1790056229732
+      },
+      {
+        "id": "da-tree",
+        "index": 6,
+        "title": "分析维度设备树",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-tree\"]"
+          ]
+        },
+        "aiPrompt": "说明停机分析页设备树作为分析对象选择器。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#722ed1",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788849055259
+      },
+      {
+        "id": "da-statistics-header",
+        "index": 7,
+        "title": "停机统计 Tab 概要区",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-statistics-header\"]"
+          ]
+        },
+        "aiPrompt": "说明工序/设备信息展示与导出功能。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677ff",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788850339043
+      },
+      {
+        "id": "da-summary-table",
+        "index": 8,
+        "title": "按停机类型汇总表",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-summary-table\"]"
+          ]
+        },
+        "aiPrompt": "说明按机械/电气/工艺/计划停机/其它汇总时间与次数。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#ff4d4f",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788849296713
+      },
+      {
+        "id": "da-detail-table",
+        "index": 9,
+        "title": "停机记录明细表",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-detail-table\"]"
+          ]
+        },
+        "aiPrompt": "说明停机分析页明细表的列构成与只读定位。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#fa541c",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788849365419
+      },
+      {
+        "id": "da-reliability",
+        "index": 10,
+        "title": "可靠性报告",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-reliability\"]"
+          ]
+        },
+        "aiPrompt": "说明八项可靠性指标卡片与计算公式。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#13c2c2",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1786348800000
+      },
+      {
+        "id": "da-pareto",
+        "index": 11,
+        "title": "帕累托分析",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-pareto\"]"
+          ]
+        },
+        "aiPrompt": "说明帕累托图的维度切换、重要原因影响比例与ABC分类。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#faad14",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1786348800000
+      },
+      {
+        "id": "da-cause-summary",
+        "index": 12,
+        "title": "表面原因汇总表",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-cause-summary\"]"
+          ]
+        },
+        "aiPrompt": "说明表面原因汇总表的汇总口径、合计行与占比计算规则。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#2f54eb",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788403500000
+      },
+      {
+        "id": "da-time-range",
+        "index": 19,
+        "title": "时间范围选择栏",
+        "pageId": "downtime-analysis",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"da-time-range\"]"
+          ]
+        },
+        "aiPrompt": "说明时间范围单选与日期范围回显的交互规则。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#722ed1",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788407600000
+      },
+      {
+        "id": "ssc-tree",
+        "index": 13,
+        "title": "工序设备树",
+        "pageId": "start-stop-config",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ssc-tree\"]"
+          ]
+        },
+        "aiPrompt": "说明工序设备树的维护与工序运行设备星标。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677ff",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788838892590
+      },
+      {
+        "id": "ssc-config-header",
+        "index": 14,
+        "title": "配置对象标题栏",
+        "pageId": "start-stop-config",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ssc-config-header\"]"
+          ]
+        },
+        "aiPrompt": "说明工序/设备切换标题与工序运行设备设置。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#52c41a",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788839047780
+      },
+      {
+        "id": "ssc-stop-reason",
+        "index": 15,
+        "title": "停机原因点位",
+        "pageId": "start-stop-config",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ssc-stop-reason\"]"
+          ]
+        },
+        "aiPrompt": "说明停机原因点位变量的选择与设备详细停机原因代号文档的对应关系。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#ff4d4f",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788339310139
+      },
+      {
+        "id": "ssc-start-conditions",
+        "index": 16,
+        "title": "开机条件",
+        "pageId": "start-stop-config",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ssc-start-conditions\"]"
+          ]
+        },
+        "aiPrompt": "说明开机条件表格、AND/OR 逻辑与行内编辑。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#13c2c2",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788339370335
+      },
+      {
+        "id": "ssc-stop-conditions",
+        "index": 17,
+        "title": "停机条件",
+        "pageId": "start-stop-config",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ssc-stop-conditions\"]"
+          ]
+        },
+        "aiPrompt": "说明停机条件表格与自定义编码列。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#fa8c16",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788339393201
+      },
+      {
+        "id": "ssc-push-policies",
+        "index": 18,
+        "title": "消息推送策略",
+        "pageId": "start-stop-config",
+        "locator": {
+          "selectors": [
+            "[data-annotation-id=\"ssc-push-policies\"]"
+          ]
+        },
+        "aiPrompt": "说明消息推送策略的接收人与模板配置。",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#eb2f96",
+        "images": [],
+        "createdAt": 1786348800000,
+        "updatedAt": 1788939988263
+      },
+      {
+        "id": "annotation-21",
+        "index": 21,
+        "locator": {
+          "selectors": [
+            "div > div > div > main > div > div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div > div > div > div:nth-of-type(2) > button"
+          ],
+          "fingerprint": "button",
+          "path": [
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "main",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "button",
+              "index": 0
+            }
+          ]
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677FF",
+        "images": [],
+        "pageId": "cause-entry",
+        "createdAt": 1788848712780,
+        "updatedAt": 1788848712780
+      },
+      {
+        "id": "annotation-23",
+        "index": 23,
+        "locator": {
+          "selectors": [
+            "div > div > div > main > div > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div > div:nth-of-type(1) > span > svg"
+          ],
+          "fingerprint": "svg",
+          "path": [
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "main",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "span",
+              "index": 0
+            },
+            {
+              "tag": "svg",
+              "index": 0
+            }
+          ]
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677FF",
+        "images": [],
+        "pageId": "start-stop-config",
+        "createdAt": 1790046163926,
+        "updatedAt": 1790046224785
+      },
+      {
+        "id": "annotation-22",
+        "index": 24,
+        "locator": {
+          "selectors": [
+            "div > div > div > main > div > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2) > div > div > div:nth-of-type(1) > span > svg"
+          ],
+          "fingerprint": "svg",
+          "path": [
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "main",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 1
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "div",
+              "index": 0
+            },
+            {
+              "tag": "span",
+              "index": 0
+            },
+            {
+              "tag": "svg",
+              "index": 0
+            }
+          ]
+        },
+        "aiPrompt": "",
+        "annotationText": "",
+        "hasMarkdown": true,
+        "color": "#1677FF",
+        "images": [],
+        "pageId": "start-stop-config",
+        "createdAt": 1790230772300,
+        "updatedAt": 1790230772300
+      }
+    ],
+    "updatedAt": 1790230772300
+  },
+  "markdownMap": {
+    "rm-query": "# 查询筛选区\n\n- **原因码/描述**：按 DCS 表面原因码或描述关键词模糊匹配。\n- **故障分类**：下拉选择工艺连锁停机 / 安全连锁停机 / 正常停机 / 其他。\n- 输入后点击「查询」过滤；「重置」清空全部条件。\n\n> 需求要点：维护人员在原因数量较多时，可通过筛选快速定位待映射的 DCS 原因。",
+    "rm-table": "# 映射维护表格\n\n## 数据来源\n- 表格中的 **DCS 故障分类 / DCS 表面原因码 / DCS 表面原因描述** 均来自 DCS 系统下发的《设备详细停机原因代号》定义（见外部文件）。\n- **停机类型**由管理人员手工映射，选项固定为：机械故障 / 工艺故障 / 电气故障 / 计划停机 / 其他 / 不计入。\n\n## 操作\n- **新增**：手工补录 DCS 原因并直接指定停机类型。\n- **导入**：通过导入方式批量新增停机原因和停机类型的映射。\n- **编辑**：修改停机类型映射（DCS 侧字段只读维护）。\n- **删除 / 批量删除**：移除无效映射，带二次确认。\n- 停机类型允许为空，表示该 DCS 原因暂未映射。\n\n> 需求要点：DCS 原因码必须与 DCS 系统实际配置一致，映射结果供停机统计与停机分析按类型汇总使用。",
+    "ce-tree": "# 设备树导航\n\n- 左侧为工序 → 设备两级树，从开停机设置的工序设备树种获取。选中节点后右侧表格只展示该节点关联的停机记录。工序运行设备节点前方以五角星标记。\n- 选中工序节点时展示该工序下全部设备的停机记录。\n\n",
+    "ce-date-query": "# 停机开始时间查询\n\n- 按停机开始时间区间过滤记录，支持到时分秒。默认选择前一天的0:0:0到23:59:59\n- 「查询」应用所选区间；「重置」清空区间恢复全部。\n\n> 需求要点：停机记录按停机开始时间倒序积累。",
+    "ce-record-table": "# 停机记录明细表\n## 表格字段\n- **产线工序**：根据左侧已选树节点带出\n- **设备**：根据左侧已选树节点带出，展示为【编码】名称，按此字段分组\n  - **工序节点选中时**：加载工序和该工序下所有设备的停机记录，工序记录在前，设备记录在后，并按设备编码排序。设备字段为可搜索树形下拉框（选项为所有设备，按工序-设备的层级加载），可选择记录引起停机的设备。当工序开停机配置继承自主机设备时，则设备字段选中主机设备并禁用。\n  - **设备节点选中时**：设备字段为只读文本（【编码】名称）。\n- **停机开始时间**：格式yyyy-MM-dd HH:mm。在设备分组后默认按此字段倒序排列，可点击切换排序，设备分组一直保持。\n- **停机结束时间**：格式yyyy-MM-dd HH:mm。可点击切换排序，设备分组一直保持。\n- **停机时长**：自动计算，停机结束时间-停机开始时间，结果保留一位小数，单位小时。\n- **故障分类**：从DCS停机原因点位中获取，若未配置停机原因点位则置空。选中工序节点时该列隐藏。\n- **表面原因**：从DCS停机原因点位中获取，若未配置停机原因点位则置空。若有则按“原因码-原因描述”展示。选中工序节点时该列隐藏。\n\n\n## 行内实时编辑（保存到表格数据，无需点保存按钮）\n- **停机类型**：下拉单选，选项与停机原因维护页一致（机械故障 / 工艺故障 / 电气故障 / 计划停机 / 其他 / 不计入）。若设备绑定了停机原因点位，则根据停机原因点位传回的信息找到表面原因后，根据表面原因与停机类型关系映射表，自动填充停机类型。\n- **根本原因**：文本输入，最多500字符。支持基于历史输入的自动联想匹配。\n- **根本原因附件**：每条记录可上传 1 个佐证附件（分析报告、照片等），支持格式word、excel、ppt、pdf、image、video等，最大不超过100M。可删除、可在编辑抽屉中替换。\n- **填报人**：只读输入框，点击弹出**人员选择弹窗**：左侧为组织树（人员为叶子节点，带复选框），右侧为最近常选标签与已选人员，单选确认。\n\n## 新增 / 编辑\n- 「新增停机记录」与行内「编辑」均打开抽屉表单，根据所选树节点类型加载不同的表单（工序停机表单、设备停机表单），且预填充工序（或工序、设备）字段。设备停机的故障分类与表面原因根据停机原因表中的数据联动查询。停机时长由起止时间自动计算（保留一位小数），不可手填。\n\n> 需求要点：表面原因来自 DCS 自动采集（只读），人工只补充停机类型、根本原因、附件和填报人四项内容。",
+    "da-tree": "# 分析维度设备树\n\n- 与停机记录页同源的工序 → 设备两级树。\n- 选中节点决定右侧全部 Tab 的统计范围；选中工序时统计该工序的停机记录；选中设备时统计被选中设备的停机记录。\n\n> 需求要点：所有分析维度（统计 / 汇总 / 可靠性 / 帕累托）均跟随左树选择联动。",
+    "da-statistics-header": "# 停机统计 Tab 概要区\n\n- 右侧展示当前选中**产线工序**或**设备**（跟随左树选择带出）。若是从工序节点下钻至设备节点，则Tab标签右侧还有返回按钮，可以返回到工艺节点。\n- 右侧「导出」按钮：点击后进入加载态并提示\"正在导出\"，系统处理完成后提示\"导出成功\"并下载文件。导出模板见原型说明文档。仅导出当前展示的停机统计表格。\n\n> 需求要点：汇总与明细一并导出，供线下汇报使用。",
+    "da-summary-table": "# 按停机类型汇总表\n\n- 行固定两行：**时间汇总(h)**（保留一位小数）与**次数汇总**（整数）。\n- 列加载停机类型（不计入除外）：机械 / 电气 / 工艺 / 计划停机 / 其它。\n- 所有数值以红色显示，0 值也显示数字（如 3.0），按停机类型统计次数和时长。\n- 点击停机类型列可以对下方明细表格进行筛选，再次点击取消筛选或点击其他类型可以切换筛选条件。\n",
+    "da-detail-table": "# 停机记录明细表\n\n## 列构成（随所选节点类型联动）\n- **工序节点**：停机开始时间 / 停机结束时间 / 停机时长(小时) / **设备**（蓝色可点击链接，格式【设备编码】设备名称，点击跳转至对应设备节点）/ 停机类型 / 根本原因 / 填报人。\n- **设备节点**：停机开始时间 / 停机结束时间 / 停机时长(小时) / 故障分类 / 表面原因 / 停机类型 / 根本原因 / 填报人。\n- 设备节点时保留**故障分类与表面原因**（按“原因码-原因描述”展示）。\n- 根本原因附件支持预览与下载操作。\n- 本表为只读展示，录入与修改在「停机记录」页完成。\n",
+    "da-reliability": "# 可靠性报告\n\n八项指标卡片，每张卡片含名称、当前值与计算公式：\n\n| 指标 | 公式 |\n|------|------|\n| 运转率 UF | 运行小时数 ÷ 所选时间段内小时数 |\n| 可靠性系数 RF | 运行小时数 ÷ 理论小时数（运转+故障停机） |\n| 机电可靠性系数 RF | 运行小时数 ÷ 理论小时数（运转+设备故障+电气故障停机） |\n| 无停机连续运转日 NCOD | 时间段内无任何停机且连续运转的最长天数 |\n| 故障停机次数 NSFI | 时间段内总故障停机次数 |\n| 平均故障间隔时间 MTBF | 运转小时数 ÷ 故障停机次数 |\n| 故障停机累计时间 CHSI | 停机类型为故障停机的累计小时数 |\n| 故障停机日平均时间 DHSI | 可靠性系数 RF × 24 |\n\n> 需求要点：指标随左侧设备树选择与时间范围联动计算。",
+    "da-pareto": "# 帕累托分析\n\n- **维度切换**：按停机时长 / 按停机频次两种排序口径。\n- **重要原因影响比例**：输入框默认 80%，范围 1~100%，实时控制：累计占比标记线位置与文字、柱状图颜色分界、表格累计占比高亮以及 ABC 分类阈值。\n- **ABC 分类**：累计占比 ≤ 阈值为 A 类（红）、≤95% 为 B 类（黄）、其余为 C 类（绿）。\n- 左侧柱状图 + 右侧折线（累计占比），标记线文字位于图表内侧，避免与右轴重叠。\n\n> 需求要点：识别\"最重要的少数\"停机原因，为检修与技改优先级提供依据。",
+    "da-cause-summary": "# 表面原因汇总表\n\n## 汇总口径\n- 按所选工序/设备下停机记录的 **DCS 表面原因描述** 聚合，按**停机总时长**降序排列。\n- 列：DCS故障分类 / DCS表面原因码 / DCS表面原因描述 / 停机次数 / 停机总时长(小时) / 占比。\n\n## 占比与合计行\n- **占比** = 单条原因停机总时长 ÷ 合计停机总时长，保留一位小数。\n- 表格末行为**合计行**：汇总停机次数、停机总时长（保留一位小数），占比合计为 100.0%，并显示表面原因类别总数。\n\n> 需求要点：表面原因来自 DCS 自动采集（只读），本表用于定位高频/长时停机的表面原因；结合「帕累托分析」Tab 可进一步识别重点原因。",
+    "da-time-range": "# 时间范围选择栏\n\n## 布局与组成\n- 位于停机分析页右上角，由**时间范围单选按钮组**（昨日 / 近1周 / 近1月 / 近3月 / 近1年 / 自定义）与**日期范围选择器**（RangePicker）两部分组成，始终同时显示。\n\n## 交互规则\n- **非自定义选项**：单选选中后，日期范围选择器自动回显该选项对应的日期区间，选择器为**禁用**状态（置灰、不可操作），仅作回显。\n- **自定义**：选择器切换为**可选**状态，用户可自由选择起止日期。\n- 已选的自定义范围在切换其他选项后再切回自定义时仍然保留。\n\n## 日期区间计算规则（回显口径）\n- 统一以**昨日为截止日**，不包含今天：\n\n| 选项 | 区间 | 示例（今天 2026-09-03） |\n|------|------|------|\n| 昨日 | 昨天 ~ 昨天 | 2026-09-02 ~ 2026-09-02 |\n| 近1周 | 昨天往前推 6 天（共 7 天） | 2026-08-27 ~ 2026-09-02 |\n| 近1月 | 昨天往前推 1 个月 | 2026-08-02 ~ 2026-09-02 |\n| 近3月 | 昨天往前推 3 个月 | 2026-06-02 ~ 2026-09-02 |\n| 近1年 | 昨天往前推 1 年 | 2025-09-02 ~ 2026-09-02 |\n\n> 需求要点：时间范围作为右侧全部 Tab（统计 / 表面原因汇总 / 可靠性报告 / 帕累托）的统一筛选条件，切换选项后各 Tab 数据同步刷新。",
+    "ssc-tree": "# 工序设备树\n\n- 树节点分为**工序**（父节点）与**设备**（叶子节点）两级。\n- 「新增」打开选择工序设备弹窗：从全量设备树勾选添加，勾选设备自动带出所属工序，已添加内容自动去重。支持单独勾选添加工序节点。支持对工序及设备的模糊搜索。\n- 每个节点悬浮出现删除按钮，删除工序级联删除其下设备，均有二次确认。\n- 被设为**工序运行设备**的设备节点带金色星号标识。\n\n> 需求要点：配置对象可按项目实际设备清单自由裁剪，不与主数据强绑定。",
+    "ssc-config-header": "# 配置对象标题栏\n\n- 标题显示当前选中节点。选中工序节点，显示工序名称和标签。选中设备节点，显示设备编码、名称、标签\n\n> 需求要点：工序级开停机判定依赖唯一运行设备，避免多设备状态冲突。",
+    "ssc-stop-reason": "# 停机原因点位\n\n- 只读输入框，点击弹出**变量选择弹窗**（支持按测点名称/编码搜索，单选确认）。\n- 选定后回显测点名称及自定义编码。\n\n> 需求要点：该点位读取 DCS 的设备详细停机原因代号，代号编码规则详见外部文件《设备详细停机原因代号.xlsx》：\n> - 正常停机(00)：001 正常停机、002 设备运行中\n> - 工艺联锁停机(01)：001~099（下游/其他设备停机联锁等）\n> - 安全联锁停机(02)：工艺参数 001~099、电气故障 101~199、机械故障 201~299\n> - 设备通讯(901~999)：停机原因传至 DCS 则按各厂实际定义，未传至 DCS 归类为设备综合故障或 PLC 故障",
+    "ssc-start-conditions": "# 开机条件\n\n- 条件表格列：自定义编码 / 参数变量（必填） / 运算符（必填） / 阈值（必填） / 操作。\n- **自定义编码**为只读列，通过变量选择弹窗选定变量后自动带出。\n- 逻辑组合：满足所有条件（AND）/ 满足任一条件（OR），仅有条件时显示切换。\n- 行内编辑：新增条件在表格首行展开，保存/取消即时生效；条件可删除。\n\n> 需求要点：开机判定支持多条件组合，条件阈值按设备特性逐台配置。",
+    "ssc-stop-conditions": "# 停机条件\n\n- 表格结构与开机条件一致：自定义编码 / 参数变量（必填） / 运算符（必填） / 阈值（必填） / 操作。\n- 同样支持 AND/OR 逻辑切换与行内新增/编辑/删除。\n\n> 需求要点：停机条件与开机条件独立配置，共同构成设备开停机判定规则；条件触发后按「消息推送」策略通知相关人员。",
+    "ssc-push-policies": "# 消息推送策略\n\n- 策略表格列：推送事件（开机/停机/故障停机）（必填）/ 接收人（必填） / 消息模板（必填） / 操作。\n- **推送事件**下拉含开机、停机、故障停机三项；保存后按类型以不同颜色 Tag 展示（开机=绿、停机=红、故障停机=橙）。\n  - 开机：满足开机条件时\n  - 停机：满足停机条件时\n  - 故障停机：满足停机条件，且故障点位为1时\n- 接收人来自人员清单；消息模板引用消息中心已配置模板（设备开机通知、停机通知、故障停机等）。\n- 行内编辑维护，删除需二次确认。\n\n> 需求要点：开停机及故障停机事件发生后，系统按策略将消息推送到消息中心并通知指定接收人，形成\"停机 → 推送 → 处理\"闭环。停机和故障停机是两个互斥的事件，先判断是否故障停机，若是则按故障停机事件推送，后续就不再推送停机事件，若不是故障停机，只是正常停机则推送停机事件。",
+    "annotation-21": "点击此按钮打开变量趋势窗口，展示当前节点在开停机配置中已选择的变量趋势。时间范围与外部时间范围保持一致。",
+    "annotation-23": "# 是否继承主机设备配置\n\n用以标识工序的开停机配置项是单独配置还是按照某个主机设备的配置执行。\n    - **否（工序单独配置）**：选择后展示开停机配置面板，可配置故障点位、开机条件、停机条件和消息推送。\n    - **是（继承主机设备配置）**：选择后展示选择主机设备下拉框，加载已添加到工序设备树中的该工序下的设备列表。",
+    "annotation-22": "# 故障点位\n\n- 只读输入框，点击弹出**变量选择弹窗**（支持按测点名称/编码搜索，单选确认）。\n- 选定后回显测点名称及自定义编码。"
+  },
+  "assetMap": {},
+  "directory": {
+    "nodes": [
+      {
+        "type": "folder",
+        "id": "dir-pages",
+        "title": "页面说明",
+        "defaultExpanded": true,
+        "children": [
+          {
+            "type": "route",
+            "id": "route-start-stop-config",
+            "title": "开停机配置",
+            "route": "start-stop-config"
+          },
+          {
+            "type": "route",
+            "id": "route-reason-maintenance",
+            "title": "停机原因维护",
+            "route": "reason-maintenance"
+          },
+          {
+            "type": "route",
+            "id": "route-cause-entry",
+            "title": "停机记录",
+            "route": "cause-entry"
+          },
+          {
+            "type": "route",
+            "id": "route-downtime-analysis",
+            "title": "停机分析",
+            "route": "downtime-analysis"
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "dir-docs",
+        "title": "外部文件",
+        "defaultExpanded": true,
+        "children": [
+          {
+            "type": "link",
+            "id": "file-stop-reason-codes",
+            "title": "设备详细停机原因代号.xlsx",
+            "href": "./docs/设备详细停机原因代号.xlsx",
+            "target": "blank"
+          },
+          {
+            "type": "link",
+            "id": "file-temporary-stop-stats",
+            "title": "主机设备临停统计表2026.xlsx",
+            "href": "./docs/主机设备临停统计表2026.xlsx",
+            "target": "blank"
+          }
+        ]
+      },
+      {
+        "type": "folder",
+        "id": "dir-design",
+        "title": "设计说明",
+        "defaultExpanded": true,
+        "children": [
+          {
+            "type": "markdown",
+            "id": "doc-overview",
+            "title": "停机管理业务流程",
+            "markdown": "# 停机管理业务流程\n\n## 模块定位\n停机管理围绕\"**设备停机数据的采集、补录、统计与改进**\"展开，共四个页面：\n\n1. **开停机配置**：定义每台设备的开机条件、停机条件与停机原因点位，并配置消息推送策略。\n2. **停机原因维护**：维护 DCS 下发的表面原因（停机原因代号），并将其映射到标准停机类型（机械故障/工艺故障/电气故障/计划停机/其他/不计入）。\n3. **停机记录**：按设备树查看停机记录，人工补充停机类型、根本原因、佐证附件与填报人。\n4. **停机分析**：按设备树与时间范围进行停机统计、表面原因汇总、可靠性报告与帕累托分析。\n\n## 核心流程\n\n```\nDCS 采集停机（表面原因自动带出）\n        ↓\n开停机配置的消息推送策略 → 推送停机消息至接收人\n        ↓\n停机记录页人工补录（停机类型映射 + 根本原因 + 附件 + 填报人）\n        ↓\n停机分析页统计与帕累托分析 → 输出可靠性报告与改进依据\n```\n\n## 数据链路\n- **表面原因（DCS）**：来自《设备详细停机原因代号》定义，编码规则见外部文件。\n- **停机类型**：经停机原因维护页映射，供统计汇总使用。\n- **根本原因 / 附件 / 填报人**：人工在停机记录页补录。"
+          },
+          {
+            "type": "markdown",
+            "id": "doc-stop-reason-codes",
+            "title": "设备详细停机原因代号编码规范",
+            "markdown": "# 设备详细停机原因代号编码规范\n\n> 完整明细见外部文件《设备详细停机原因代号.xlsx》，此处为编码规则摘要。\n\n## 停机原因分类与代号区间\n\n| 停机原因分类 | 子类 | 代号区间 | 示例 |\n|------|------|------|------|\n| 正常停机(00) | - | 001~002 | 001 正常停机、002 设备运行中 |\n| 工艺联锁停机(01) | - | 001~002 | 001 下游设备停机造成的工艺联锁停机、002 其他设备停机造成的工艺联锁停机 |\n| 安全联锁停机(02) | 工艺参数 | 001~099 | 出口/进口温度高跳停、CO高跳停、出口压力高/低跳停 |\n| 安全联锁停机(02) | 电气故障 | 101~199 | 备妥丢失、运行丢失、变频器故障、高压柜各类保护、PLC故障、过流跳停、急停 |\n| 安全联锁停机(02) | 机械故障 | 201~299 | 拉绳/撕裂/速度/料位/温度/堵料开关、各油站重故障、各类温度振动高跳停 |\n| 设备通讯 | - | 901~999 | 停机原因传至 DCS 按各厂实际定义；未传至 DCS 归类为设备综合故障(011/201)或 PLC故障(009/109) |\n\n## 关键规则\n- 代号由 DCS 侧统一下发，本系统**只读接收**，在停机原因维护页与停机类型做映射。\n- 通讯类停机（901~999）如停机原因未传至 DCS，统一归类到**设备综合故障**或 **PLC 故障**。\n- 同一停机现象在不同子类下有不同代号（如\"备妥丢失\"为电气 101），映射停机类型时应以代号前缀判断。"
+          }
+        ]
+      }
+    ]
+  }
+}

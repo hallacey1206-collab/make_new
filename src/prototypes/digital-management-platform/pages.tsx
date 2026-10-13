@@ -78,6 +78,7 @@ import {
     companyOptions,
     currentPlanYear,
     initialPlanRecords,
+    initialBudgetRecords,
     menuGroups,
     orgTreeData,
     pageMeta,
@@ -136,7 +137,8 @@ const menuIconMap: Record<string, React.ReactNode> = {
 const statusMeta: Record<PlanStatus, { label: string; color: string }> = {
     draft: { label: '草稿', color: 'default' },
     'pending-review': { label: '待审核', color: 'processing' },
-    approved: { label: '通过', color: 'success' },
+    approved: { label: '已审核', color: 'success' },
+    completed: { label: '已完结', color: 'success' },
     returned: { label: '退回', color: 'error' },
 };
 
@@ -1226,6 +1228,62 @@ function PlanFillPage() {
     );
 }
 
+function resolveOptionLabel(value: string | undefined, options: Array<{ value: string; label: string }>) {
+    if (!value) return '-';
+    const found = options.find((item) => item.value === value);
+    return found ? found.label : value;
+}
+
+function PlanDetailDescriptions({ record }: { record: PlatformPlanRecord }) {
+    const labelStyle: React.CSSProperties = { fontWeight: 600, color: '#333' };
+    return (
+        <div style={{ paddingTop: 4 }}>
+            <Descriptions bordered size="small" column={2} labelStyle={labelStyle}>
+                <Descriptions.Item label="计划编码" span={2}>{record.code}</Descriptions.Item>
+                <Descriptions.Item label="计划名称" span={2}>{record.name}</Descriptions.Item>
+                <Descriptions.Item label="计划年度">{record.planYear}年</Descriptions.Item>
+                <Descriptions.Item label="项目类别">{record.category}</Descriptions.Item>
+                <Descriptions.Item label="集团/股份二级企业简称" span={2}>{record.companyLevelTwo}</Descriptions.Item>
+                <Descriptions.Item label="集团/股份三级企业简称">{record.companyLevelThree}</Descriptions.Item>
+                <Descriptions.Item label="单位名称">{record.unitName}</Descriptions.Item>
+                <Descriptions.Item label="业务域分类">{resolveOptionLabel(record.domain, businessDomainOptions)}</Descriptions.Item>
+                <Descriptions.Item label="政策指导方向">{resolveOptionLabel(record.policyDirection, policyDirectionOptions)}</Descriptions.Item>
+                <Descriptions.Item label="政策名称" span={2}>{record.policyName || '-'}</Descriptions.Item>
+                <Descriptions.Item label="建设模式">{resolveOptionLabel(record.buildMode, buildModeOptions)}</Descriptions.Item>
+                <Descriptions.Item label="建设类型">{resolveOptionLabel(record.buildType, buildTypeOptions)}</Descriptions.Item>
+                <Descriptions.Item label="项目简述" span={2}>{record.brief || '-'}</Descriptions.Item>
+                <Descriptions.Item label="目标内容" span={2}>{record.goal || '-'}</Descriptions.Item>
+                <Descriptions.Item label="是否规划内项目">{resolveOptionLabel(record.inPlan, yesNoOptions)}</Descriptions.Item>
+                <Descriptions.Item label="规划文件名称">{record.planningFileName || '-'}</Descriptions.Item>
+                <Descriptions.Item label="项目是否涉及人工智能">{resolveOptionLabel(record.aiEnabled, yesNoOptions)}</Descriptions.Item>
+                <Descriptions.Item label="项目是否涉及大数据分析">{resolveOptionLabel(record.bigDataEnabled, yesNoOptions)}</Descriptions.Item>
+                <Descriptions.Item label="项目是否涉及智能制造">{resolveOptionLabel(record.smartManufacturingEnabled, yesNoOptions)}</Descriptions.Item>
+                <Descriptions.Item label="是否包含在其他非数字化投资项目中">{resolveOptionLabel(record.includedInOtherInvestment, yesNoOptions)}</Descriptions.Item>
+                <Descriptions.Item label="其它投资项目名称" span={2}>{record.otherInvestmentName || '-'}</Descriptions.Item>
+            </Descriptions>
+
+            <Divider />
+
+            <Descriptions bordered size="small" column={2} labelStyle={labelStyle}>
+                <Descriptions.Item label="启动时间">{record.startDate}</Descriptions.Item>
+                <Descriptions.Item label="预计完成时间">{record.endDate}</Descriptions.Item>
+                <Descriptions.Item label="会计核算科目" span={2}>{resolveOptionLabel(record.accountingSubject, accountingOptions)}</Descriptions.Item>
+            </Descriptions>
+
+            <Divider />
+
+            <Descriptions bordered size="small" column={3} labelStyle={labelStyle} title="2026年计划投资额">
+                <Descriptions.Item label="自有资金">¥ {formatMoney(record.selfFunding)}</Descriptions.Item>
+                <Descriptions.Item label="外部资金">¥ {formatMoney(record.externalFunding)}</Descriptions.Item>
+                <Descriptions.Item label="其他">¥ {formatMoney(record.otherFunding)}</Descriptions.Item>
+                <Descriptions.Item label="软件">¥ {formatMoney(record.softwareFunding)}</Descriptions.Item>
+                <Descriptions.Item label="硬件">¥ {formatMoney(record.hardwareFunding)}</Descriptions.Item>
+                <Descriptions.Item label="其他（技术）">¥ {formatMoney(record.otherTechFunding)}</Descriptions.Item>
+            </Descriptions>
+        </div>
+    );
+}
+
 function ReviewDrawer({
     record,
     open,
@@ -1338,7 +1396,9 @@ function ReviewDrawer({
                         {
                             key: 'detail',
                             label: '计划详情',
-                            children: (
+                            children: readonly ? (
+                                <PlanDetailDescriptions record={record} />
+                            ) : (
                                 <Form form={readonlyForm} layout="vertical" disabled>
                                     <BasicFormSection form={readonlyForm} readonly={readonly} />
                                     <Divider />
@@ -1376,7 +1436,7 @@ function ReviewDrawer({
                     ]}
                 />
             ) : null}
-            {record ? (
+            {record && record.status !== 'completed' ? (
                 <div style={{ borderTop: '1px solid #f0f0f0', paddingTop: 16, flexShrink: 0, background: '#fff' }}>
                     <Text strong style={{ marginBottom: 8, display: 'block' }}>发表意见或建议</Text>
                     <Input.TextArea
@@ -1425,13 +1485,18 @@ function ReviewDrawer({
     </>);
 }
 
+// 在途计划：审批节点不在当前用户的计划（模拟：以下 id 的计划处于其他审批节点，可属于任意单位）
+const transitPlanIds = ['plan-009', 'plan-013', 'plan-018', 'plan-019', 'plan-020'];
+
+function isTransitRecord(record: PlatformPlanRecord) {
+    return transitPlanIds.includes(record.id);
+}
+
 function PlanReviewPage() {
     const { records, approvePlan, returnPlan } = usePlatformStore();
     const pendingRecords = records.filter((record) => record.status === 'pending-review');
     const [selectedOrgKey, setSelectedOrgKey] = useState('15');
-    // 在途计划：审批节点不是当前用户的计划（模拟：orgKey为'07'的计划对当前用户来说是其他审批节点的在途计划）
-    const transitOrgKeys = ['07'];
-    const [listTab, setListTab] = useState<'review' | 'transit'>('review');
+    const [listTab, setListTab] = useState<'review' | 'approved' | 'completed' | 'transit'>('review');
     const [currentRecord, setCurrentRecord] = useState<PlatformPlanRecord | null>(pendingRecords[0] || null);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [drawerReadonly, setDrawerReadonly] = useState(false);
@@ -1439,6 +1504,7 @@ function PlanReviewPage() {
     const [includeChildren, setIncludeChildren] = useState(true);
     const [treeSearch, setTreeSearch] = useState('');
     const [treeExpandedKeys, setTreeExpandedKeys] = useState<string[]>(['group']);
+    const [treeCollapsed, setTreeCollapsed] = useState(false);
     const [returnModalVisible, setReturnModalVisible] = useState(false);
     const [returnBatchRemark, setReturnBatchRemark] = useState('');
     const [treeColWidth, setTreeColWidth] = useState<number | null>(null);
@@ -1461,25 +1527,28 @@ function PlanReviewPage() {
     }, [treeColWidth]);
 
     useEffect(() => {
-        if (!currentRecord || !pendingRecords.some((item) => item.id === currentRecord.id)) {
+        if (!currentRecord || !records.some((item) => item.id === currentRecord.id)) {
             setCurrentRecord(pendingRecords[0] || null);
         }
-    }, [currentRecord, pendingRecords]);
+    }, [currentRecord, pendingRecords, records]);
 
     const filteredRecords = useMemo(() => {
         const keyword = String(filters.keyword || '').trim().toLowerCase();
         const year = String(filters.year || '').trim();
 
-        let records = pendingRecords;
+        // 审核页展示待审核、已审核、已完结、在途四类计划（不含草稿与退回）
+        let list = records.filter((record) =>
+            record.status === 'pending-review' || record.status === 'approved' || record.status === 'completed'
+        );
         if (selectedOrgKey !== 'group') {
             if (includeChildren) {
-                records = records.filter((record) => record.orgKey === selectedOrgKey || record.orgKey.startsWith(selectedOrgKey + '-'));
+                list = list.filter((record) => record.orgKey === selectedOrgKey || record.orgKey.startsWith(selectedOrgKey + '-'));
             } else {
-                records = records.filter((record) => record.orgKey === selectedOrgKey);
+                list = list.filter((record) => record.orgKey === selectedOrgKey);
             }
         }
         if (keyword) {
-            records = records.filter((record) => {
+            list = list.filter((record) => {
                 const combined = [record.name, record.code, record.unitName, record.companyLevelTwo]
                     .join(' ')
                     .toLowerCase();
@@ -1487,18 +1556,16 @@ function PlanReviewPage() {
             });
         }
         if (year) {
-            records = records.filter((record) => record.code.includes(year));
+            list = list.filter((record) => record.code.includes(year));
         }
-        return records;
-    }, [pendingRecords, selectedOrgKey, includeChildren, filters]);
+        return list;
+    }, [records, selectedOrgKey, includeChildren, filters]);
 
-    // 将筛选后的记录分为待审核（当前用户可审批）和在途（审批节点不是当前用户）
-    const reviewRecords = useMemo(() => filteredRecords.filter((r) => !transitOrgKeys.includes(r.orgKey)), [filteredRecords, transitOrgKeys]);
-    const transitRecords = useMemo(() => filteredRecords.filter((r) => transitOrgKeys.includes(r.orgKey)), [filteredRecords, transitOrgKeys]);
-
-    const hasBothTabs = reviewRecords.length > 0 && transitRecords.length > 0;
-    const isInTransitMode = listTab === 'transit' || (!hasBothTabs && transitRecords.length > 0);
-    const displayRecords = isInTransitMode ? transitRecords : reviewRecords;
+    // 将筛选后的记录按状态分为四类：待审核（当前用户可审批）、在途（审批节点不是当前用户）、已审核、已完结
+    const reviewRecords = useMemo(() => filteredRecords.filter((r) => r.status === 'pending-review' && !isTransitRecord(r)), [filteredRecords]);
+    const transitRecords = useMemo(() => filteredRecords.filter((r) => r.status === 'pending-review' && isTransitRecord(r)), [filteredRecords]);
+    const approvedRecords = useMemo(() => filteredRecords.filter((r) => r.status === 'approved'), [filteredRecords]);
+    const completedRecords = useMemo(() => filteredRecords.filter((r) => r.status === 'completed'), [filteredRecords]);
 
     const filterTreeData = (nodes: TreeDataNode[], keyword: string): TreeDataNode[] => {
         const kw = keyword.trim().toLowerCase();
@@ -1626,21 +1693,62 @@ function PlanReviewPage() {
         {
             title: '状态',
             width: 100,
-            render: (_, record) => transitOrgKeys.includes(record.orgKey) ? <Tag color="cyan">在途</Tag> : <Tag color="processing">待审核</Tag>,
+            render: (_, record) => {
+                if (record.status === 'completed') return <Tag color="success">已完结</Tag>;
+                if (record.status === 'approved') return <Tag color="processing">待审批</Tag>;
+                return isTransitRecord(record) ? <Tag color="cyan">在途</Tag> : <Tag color="processing">待审核</Tag>;
+            },
         },
         {
             title: '操作',
             width: 100,
             fixed: 'right',
-            render: (_, record) => (
-                <Button type="link" size="small" onClick={() => openDrawer(record, transitOrgKeys.includes(record.orgKey))}>详情</Button>
-            ),
+            render: (_, record) => {
+                const readonly = record.status !== 'pending-review' || isTransitRecord(record);
+                return (
+                    <Button type="link" size="small" onClick={() => openDrawer(record, readonly)}>详情</Button>
+                );
+            },
         },
     ];
 
     return (
         <div className="dmp-page-stack">
             <div style={{ display: 'flex', gap: 16, width: '100%', minWidth: 0, overflow: 'hidden' }}>
+                {treeCollapsed ? (
+                    <div
+                        style={{
+                            flex: '0 0 auto',
+                            width: 32,
+                            position: 'relative',
+                            alignSelf: 'stretch',
+                        }}
+                    >
+                        <Button
+                            type="text"
+                            icon={<MenuUnfoldOutlined />}
+                            title="展开组织树"
+                            onClick={() => setTreeCollapsed(false)}
+                            style={{
+                                position: 'absolute',
+                                left: 0,
+                                top: 12,
+                                width: 32,
+                                height: 48,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                border: '1px solid #d9d9d9',
+                                borderLeft: 'none',
+                                borderTopRightRadius: 6,
+                                borderBottomRightRadius: 6,
+                                background: '#fff',
+                                boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                                zIndex: 10,
+                            }}
+                        />
+                    </div>
+                ) : (
                 <div ref={colRef} style={{ width: treeColWidth ?? '25%', flex: '0 0 auto', minWidth: 200, maxWidth: 600, position: 'relative' }}>
                     <Card
                         data-annotation-id="plan-review-tree"
@@ -1654,6 +1762,13 @@ function PlanReviewPage() {
                                 >
                                     包含下级
                                 </Checkbox>
+                                <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<MenuFoldOutlined />}
+                                    title="收起组织树"
+                                    onClick={() => setTreeCollapsed(true)}
+                                />
                             </Space>
                         }
                     >
@@ -1707,6 +1822,7 @@ function PlanReviewPage() {
                         }}
                     />
                 </div>
+                )}
                 <div style={{ flex: '1 1 0%', minWidth: 0, overflow: 'hidden' }}>
                     <Card data-annotation-id="plan-review-query" className="dmp-query-card" bordered={false}>
                         <Form
@@ -1741,72 +1857,84 @@ function PlanReviewPage() {
 
                     <Card
                         data-annotation-id="plan-review-table"
-                        title={hasBothTabs ? null : (isInTransitMode ? `在途计划（${displayRecords.length} 条）` : `待审核计划（${displayRecords.length} 条）`)}
+                        title="计划审核"
                         style={{ marginTop: 12 }}
-                        extra={displayRecords.length > 0 ? (
+                        extra={listTab === 'review' && reviewRecords.length > 0 ? (
                             <Space>
                                 <Button icon={<CloudDownloadOutlined />} onClick={exportReviewRows}>导出</Button>
-                                {!isInTransitMode && (
-                                    <>
-                                        <Button
-                                            style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: '#fff' }}
-                                            onClick={handleBatchApprove}
-                                        >
-                                            通过
-                                        </Button>
-                                        <Button
-                                            danger
-                                            onClick={() => setReturnModalVisible(true)}
-                                        >
-                                            退回
-                                        </Button>
-                                    </>
-                                )}
+                                <Button
+                                    style={{ backgroundColor: '#1677ff', borderColor: '#1677ff', color: '#fff' }}
+                                    onClick={handleBatchApprove}
+                                >
+                                    通过
+                                </Button>
+                                <Button
+                                    danger
+                                    onClick={() => setReturnModalVisible(true)}
+                                >
+                                    退回
+                                </Button>
                             </Space>
                         ) : null}
                     >
-                        {hasBothTabs ? (
-                            <Tabs
-                                activeKey={listTab}
-                                onChange={(key) => setListTab(key as 'review' | 'transit')}
-                                items={[
-                                    {
-                                        key: 'review',
-                                        label: `待审核（${reviewRecords.length}）`,
-                                        children: (
-                                            <Table
-                                                rowKey="id"
-                                                columns={columns}
-                                                dataSource={reviewRecords}
-                                                pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
-                                                scroll={{ x: 1200 }}
-                                            />
-                                        ),
-                                    },
-                                    {
-                                        key: 'transit',
-                                        label: `在途（${transitRecords.length}）`,
-                                        children: (
-                                            <Table
-                                                rowKey="id"
-                                                columns={columns}
-                                                dataSource={transitRecords}
-                                                pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
-                                                scroll={{ x: 1200 }}
-                                            />
-                                        ),
-                                    },
-                                ]}
-                            />
-                        ) : (
-                            <Table
-                                rowKey="id"
-                                columns={columns}
-                                dataSource={displayRecords}
-                                pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
-                                scroll={{ x: 1200 }}
-                            />
-                        )}
+                        <Tabs
+                            activeKey={listTab}
+                            onChange={(key) => setListTab(key as 'review' | 'approved' | 'completed' | 'transit')}
+                            items={[
+                                {
+                                    key: 'review',
+                                    label: `待我审核（${reviewRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            columns={columns}
+                                            dataSource={reviewRecords}
+                                            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                            scroll={{ x: 1200 }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: 'approved',
+                                    label: `我已审核（${approvedRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            columns={columns}
+                                            dataSource={approvedRecords}
+                                            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                            scroll={{ x: 1200 }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: 'completed',
+                                    label: `已完结（${completedRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            columns={columns}
+                                            dataSource={completedRecords}
+                                            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                            scroll={{ x: 1200 }}
+                                        />
+                                    ),
+                                },
+                                {
+                                    key: 'transit',
+                                    label: `在途（${transitRecords.length}）`,
+                                    children: (
+                                        <Table
+                                            rowKey="id"
+                                            columns={columns}
+                                            dataSource={transitRecords}
+                                            pagination={{ pageSize: 10, showSizeChanger: true, showTotal: (total) => `共 ${total} 条` }}
+                                            scroll={{ x: 1200 }}
+                                        />
+                                    ),
+                                },
+                            ]}
+                        />
                     </Card>
                 </div>
             </div>
@@ -1878,12 +2006,14 @@ function PlanViewPage() {
     const [includeChildren, setIncludeChildren] = useState(true);
     const [treeSearch, setTreeSearch] = useState('');
     const [treeExpandedKeys, setTreeExpandedKeys] = useState<string[]>(['group']);
+    const [treeCollapsed, setTreeCollapsed] = useState(false);
 
     const planQuery = String(filters.planQuery || '').trim().toLowerCase();
     const year = filters.year || '';
 
     const filteredRecords = useMemo(() => records.filter((record) => {
-        if (record.status !== 'approved') {
+        // 查看页展示已提交过的所有状态的计划（待审核、已审核、已完结），不含草稿与退回
+        if (record.status === 'draft' || record.status === 'returned') {
             return false;
         }
         if (selectedOrgKey !== 'group') {
@@ -1958,6 +2088,15 @@ function PlanViewPage() {
             title: '投资总额(万元)',
             width: 130,
             render: (_, record) => `¥ ${formatMoney(getPlanTotal(record))}`,
+        },
+        {
+            title: '状态',
+            width: 100,
+            render: (_, record) => {
+                if (record.status === 'approved') return <Tag color="success">已审核</Tag>;
+                if (record.status === 'completed') return <Tag color="success">已完结</Tag>;
+                return <Tag color="processing">待审核</Tag>;
+            },
         },
         {
             title: '操作',
@@ -2047,16 +2186,54 @@ function PlanViewPage() {
             <PageHero pageId="plan-view" />
 
             <Row gutter={16}>
+                {treeCollapsed ? (
+                    <Col flex="32px">
+                        <div style={{ position: 'relative', height: '100%' }}>
+                            <Button
+                                type="text"
+                                icon={<MenuUnfoldOutlined />}
+                                title="展开组织树"
+                                onClick={() => setTreeCollapsed(false)}
+                                style={{
+                                    position: 'absolute',
+                                    left: 0,
+                                    top: 12,
+                                    width: 32,
+                                    height: 48,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    border: '1px solid #d9d9d9',
+                                    borderLeft: 'none',
+                                    borderTopRightRadius: 6,
+                                    borderBottomRightRadius: 6,
+                                    background: '#fff',
+                                    boxShadow: '0 2px 6px rgba(0,0,0,0.08)',
+                                    zIndex: 10,
+                                }}
+                            />
+                        </div>
+                    </Col>
+                ) : (
                 <Col xs={24} lg={6}>
                     <Card data-annotation-id="plan-view-tree" className="dmp-card-fill">
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
                             <span style={{ fontWeight: 600, fontSize: 14, lineHeight: '22px' }}>组织树</span>
-                            <Checkbox
-                                checked={includeChildren}
-                                onChange={(e) => setIncludeChildren(e.target.checked)}
-                            >
-                                包含下级
-                            </Checkbox>
+                            <Space size={4}>
+                                <Checkbox
+                                    checked={includeChildren}
+                                    onChange={(e) => setIncludeChildren(e.target.checked)}
+                                >
+                                    包含下级
+                                </Checkbox>
+                                <Button
+                                    type="text"
+                                    size="small"
+                                    icon={<MenuFoldOutlined />}
+                                    title="收起组织树"
+                                    onClick={() => setTreeCollapsed(true)}
+                                />
+                            </Space>
                         </div>
                         <Input
                             allowClear
@@ -2074,6 +2251,7 @@ function PlanViewPage() {
                         />
                     </Card>
                 </Col>
+                )}
                 <Col xs={24} lg={18}>
                     <Card
                         data-annotation-id="plan-view-table"
@@ -2118,7 +2296,7 @@ function PlanViewPage() {
                                 defaultPageSize: 10,
                                 pageSizeOptions: ['10', '20', '50'],
                             }}
-                            scroll={{ x: 1000 }}
+                            scroll={{ x: 1100 }}
                         />
                     </Card>
                 </Col>
@@ -2181,21 +2359,155 @@ function PlaceholderPage({ pageId }: { pageId: MenuPageId }) {
     );
 }
 
-function HomePage() {
+function HomePage({ onNavigate }: { onNavigate: (page: MenuPageId) => void }) {
+    const { records: planRecords } = useContext(PlatformStoreContext)!;
+
+    // ===== 待办与统计（基于真实计划/预算数据） =====
+    const workbench = useMemo(() => {
+        // 投资计划统计
+        const planTotal = planRecords.length;
+        const planDraft = planRecords.filter((r) => r.status === 'draft').length;
+        const planPending = planRecords.filter((r) => r.status === 'pending-review').length;
+        const planApproved = planRecords.filter((r) => r.status === 'approved').length;
+        const planReturned = planRecords.filter((r) => r.status === 'returned').length;
+        const planAmount = planRecords.reduce((sum, r) => sum + getPlanTotal(r), 0);
+
+        // 预算统计（基于 initialBudgetRecords）
+        const budgetRecords = initialBudgetRecords;
+        const budgetTotal = budgetRecords.length;
+        const budgetDraft = budgetRecords.filter((r) => r.status === 'draft').length;
+        const budgetPending = budgetRecords.filter((r) => r.status === 'pending-review').length;
+        const budgetApproved = budgetRecords.filter((r) => r.status === 'approved').length;
+        const budgetReturned = budgetRecords.filter((r) => r.status === 'returned').length;
+        const budgetAmount = budgetRecords.reduce((sum, r) => sum + (r.totalInvestment || 0), 0);
+
+        // 备案统计（平台备案业务维度）
+        const filing = {
+            total: 26,
+            pending: 8,
+            approved: 15,
+            returned: 3,
+            inProgress: 6,
+        };
+
+        // 待办事项（分业务）
+        const todos: Array<{ biz: string; page: MenuPageId; title: string; count: number; desc: string }> = [
+            { biz: '投资计划', page: 'plan-review', title: '待审核投资计划', count: planPending, desc: '下级单位已提交、待您审核的投资计划' },
+            { biz: '投资计划', page: 'plan-fill', title: '被退回的投资计划', count: planReturned, desc: '审核退回、需补充修改后重新提交的计划' },
+            { biz: '投资计划', page: 'plan-fill', title: '计划草稿', count: planDraft, desc: '尚未提交的草稿计划' },
+            { biz: '预算管理', page: 'budget-review', title: '待审核预算', count: budgetPending, desc: '下级单位已提交、待您审核的预算' },
+            { biz: '预算管理', page: 'budget-fill', title: '被退回的预算', count: budgetReturned, desc: '审核退回、需补充修改后重新提交的预算' },
+            { biz: '预算管理', page: 'budget-fill', title: '预算草稿', count: budgetDraft, desc: '尚未提交的草稿预算' },
+            { biz: '项目管理', page: 'project-filing', title: '待审核备案', count: filing.pending, desc: '下级单位已提交、待您审核的项目备案' },
+            { biz: '项目管理', page: 'filing-management', title: '被退回的备案', count: filing.returned, desc: '审核退回、需补充修改后重新提交的备案' },
+        ];
+
+        return {
+            planTotal, planDraft, planPending, planApproved, planReturned, planAmount,
+            budgetTotal, budgetDraft, budgetPending, budgetApproved, budgetReturned, budgetAmount,
+            filing, todos,
+        };
+    }, [planRecords]);
+
+    const bizGroupMap = useMemo(() => {
+        const map = new Map<string, typeof workbench.todos>();
+        workbench.todos.forEach((t) => {
+            const list = map.get(t.biz) || [];
+            list.push(t);
+            map.set(t.biz, list);
+        });
+        return map;
+    }, [workbench.todos]);
+
+    const handleGoTodo = (page: MenuPageId) => {
+        onNavigate(page);
+    };
+
     return (
-        <div className="dmp-home">
-            <div className="dmp-home-bg">
-                <div className="dmp-home-cloud cloud-1" />
-                <div className="dmp-home-cloud cloud-2" />
-                <div className="dmp-home-cloud cloud-3" />
-                <div className="dmp-home-cloud cloud-4" />
-                <div className="dmp-home-cloud cloud-5" />
-                <div className="dmp-home-cloud cloud-6" />
+        <div className="dmp-workbench">
+            <div className="dmp-workbench-header">
+                <div>
+                    <h1 className="dmp-workbench-title">工作台</h1>
+                    <p className="dmp-workbench-subtitle">中国建材集团数字化管理平台 · 欢迎回来，张明远</p>
+                </div>
+                <div className="dmp-workbench-date">{nowString()}</div>
             </div>
-            <div className="dmp-home-content">
-                <h1 className="dmp-home-title">智云瞰</h1>
-                <p className="dmp-home-subtitle">中国建材集团数字化管理平台</p>
-            </div>
+
+            {/* 各业务统计卡片 */}
+            <Row gutter={[16, 16]} className="dmp-workbench-stats">
+                <Col xs={24} md={8}>
+                    <Card className="dmp-stat-card" bordered={false}>
+                        <div className="dmp-stat-card-head">
+                            <span className="dmp-stat-card-icon" style={{ background: '#fff1f0', color: '#cf1322' }}><ScheduleOutlined /></span>
+                            <span className="dmp-stat-card-title">投资计划</span>
+                        </div>
+                        <div className="dmp-stat-card-total">{workbench.planTotal}<span className="dmp-stat-card-unit">个</span></div>
+                        <div className="dmp-stat-card-items">
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#d9d9d9' }} />草稿 <b>{workbench.planDraft}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#1677ff' }} />待审核 <b>{workbench.planPending}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#52c41a' }} />已通过 <b>{workbench.planApproved}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#ff4d4f' }} />已退回 <b>{workbench.planReturned}</b></div>
+                        </div>
+                        <div className="dmp-stat-card-foot">计划总额 <b>¥{formatMoney(workbench.planAmount)}</b> 万元</div>
+                    </Card>
+                </Col>
+                <Col xs={24} md={8}>
+                    <Card className="dmp-stat-card" bordered={false}>
+                        <div className="dmp-stat-card-head">
+                            <span className="dmp-stat-card-icon" style={{ background: '#f6ffed', color: '#389e0d' }}><AccountBookOutlined /></span>
+                            <span className="dmp-stat-card-title">预算管理</span>
+                        </div>
+                        <div className="dmp-stat-card-total">{workbench.budgetTotal}<span className="dmp-stat-card-unit">个</span></div>
+                        <div className="dmp-stat-card-items">
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#d9d9d9' }} />草稿 <b>{workbench.budgetDraft}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#1677ff' }} />待审核 <b>{workbench.budgetPending}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#52c41a' }} />已通过 <b>{workbench.budgetApproved}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#ff4d4f' }} />已退回 <b>{workbench.budgetReturned}</b></div>
+                        </div>
+                        <div className="dmp-stat-card-foot">预算总额 <b>¥{formatMoney(workbench.budgetAmount)}</b> 万元</div>
+                    </Card>
+                </Col>
+                <Col xs={24} md={8}>
+                    <Card className="dmp-stat-card" bordered={false}>
+                        <div className="dmp-stat-card-head">
+                            <span className="dmp-stat-card-icon" style={{ background: '#e6f4ff', color: '#0958d9' }}><ProjectOutlined /></span>
+                            <span className="dmp-stat-card-title">项目备案</span>
+                        </div>
+                        <div className="dmp-stat-card-total">{workbench.filing.total}<span className="dmp-stat-card-unit">个</span></div>
+                        <div className="dmp-stat-card-items">
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#1677ff' }} />待审核 <b>{workbench.filing.pending}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#52c41a' }} />已通过 <b>{workbench.filing.approved}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#ff4d4f' }} />已退回 <b>{workbench.filing.returned}</b></div>
+                            <div className="dmp-stat-item"><span className="dmp-stat-dot" style={{ background: '#faad14' }} />执行中 <b>{workbench.filing.inProgress}</b></div>
+                        </div>
+                        <div className="dmp-stat-card-foot">覆盖二级单位 <b>12</b> 家</div>
+                    </Card>
+                </Col>
+            </Row>
+
+            {/* 待办事项 */}
+            <Card className="dmp-todo-card" bordered={false}
+                title={<span className="dmp-todo-title"><BellOutlined style={{ marginRight: 8 }} />我的待办</span>}
+                extra={<span className="dmp-todo-total">共 {workbench.todos.reduce((s, t) => s + t.count, 0)} 项</span>}>
+                {Array.from(bizGroupMap.entries()).map(([biz, list]) => (
+                    <div className="dmp-todo-group" key={biz}>
+                        <div className="dmp-todo-group-label">{biz}</div>
+                        <Row gutter={[12, 12]}>
+                            {list.map((t) => (
+                                <Col xs={24} sm={12} lg={6} key={t.title}>
+                                    <div className="dmp-todo-item" onClick={() => handleGoTodo(t.page)}>
+                                        <div className="dmp-todo-item-top">
+                                            <span className="dmp-todo-item-title">{t.title}</span>
+                                            <Badge count={t.count} color={t.count > 0 ? '#cf1322' : '#d9d9d9'} />
+                                        </div>
+                                        <div className="dmp-todo-item-desc">{t.desc}</div>
+                                    </div>
+                                </Col>
+                            ))}
+                        </Row>
+                    </div>
+                ))}
+            </Card>
         </div>
     );
 }
@@ -2331,7 +2643,7 @@ function AppContent() {
     const renderPage = () => {
         switch (page as MenuPageId) {
             case 'home':
-                return <HomePage />;
+                return <HomePage onNavigate={setPage} />;
             case 'plan-fill':
                 return <PlanFillPage />;
             case 'plan-review':

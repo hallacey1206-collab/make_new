@@ -11,7 +11,7 @@
 ## 实现边界
 
 - 规格门槛和双向同步以 `rules/requirements-alignment-guide.md` 的“原型主规格”为准。
-- 主规格缺失或尚未确认时，返回需求与设计对齐阶段；需求与设计完成第一轮对齐后，再使用 `src/resources/templates/规格文档 <格式> 模板.<后缀>` 创建或更新草案。
+- 主规格缺失或尚未确认时，返回需求与设计对齐阶段；需求与设计完成第一轮对齐后，再使用 `templates/prototype-spec.html` 或 `templates/prototype-spec.md` 创建或更新草案。
 - 一个原型目录就是主要隔离边界，页面组件、样式和素材优先留在对应原型目录内。
 - 不为单个原型随意修改 `src/common/`、全局主题或共享工具。
 - 多步骤或高风险修改先拆成短任务，逐项处理并维护当前状态。
@@ -105,9 +105,9 @@ node scripts/check-app-ready.mjs /prototypes/[原型目录]
 - `targetUrl`: Vite 运行时直达地址，仅用于排查运行时问题。
 - `errors`: 构建、运行时或页面加载错误列表。
 
-向用户请求验收或反馈时优先使用 `serverUrl`；管理服务尚未就绪时才使用 `targetUrl`。`/prototypes/<原型目录>` 只作为脚本参数或运行时路径。
+页面就绪后立即向用户提供 `serverUrl`，再继续验收；管理服务尚未就绪时才使用 `targetUrl`。`/prototypes/<原型目录>` 只作为脚本参数或运行时路径。
 
-验收移动端或平板端原型时，在 `serverUrl` 上使用对应的设备参数：移动端 `device=393x852`，平板端 `device=820x1180`。
+响应式验收只检查两个代表尺寸：桌面端 `device=1440x900`，移动端 `device=393x852`；用户明确要求其他终端或尺寸时再增加。
 
 错误处理：
 

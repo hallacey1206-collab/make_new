@@ -23,16 +23,12 @@ import {
     message,
     Row,
     Col,
-    TreeSelect,
 } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import type { ColumnsType } from 'antd/es/table';
 import {
     baseOrgData,
     orgToTreeSelectData,
-    productionLineTreeData,
-    findProductionLinePath,
-    resolveDepartmentProductionLines,
     type OrgType,
     type OrgNode,
 } from './org-data';
@@ -248,26 +244,6 @@ const orgTypeColors: Record<OrgType, string> = {
                                     <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginBottom: 4 }}>是否启用</div>
                                     <div style={{ fontSize: 14, fontWeight: 500 }}>{selectedNode.active ? '是' : '否'}</div>
                                 </Col>
-                                {(selectedNode.type === 'department' || selectedNode.type === 'subDepartment') && (
-                                    <Col span={8}>
-                                        <div style={{ fontSize: 12, color: 'rgba(0,0,0,0.45)', marginBottom: 4 }}>管理产线</div>
-                                        <div style={{ fontSize: 14, fontWeight: 500 }}>
-                                            {(() => {
-                                                const lines = selectedNode.type === 'department'
-                                                    ? resolveDepartmentProductionLines(selectedNode)
-                                                    : (selectedNode.productionLines || []);
-                                                return lines.length > 0 ? (
-                                                    <Space size={4} wrap>
-                                                        {lines.map((line) => {
-                                                            const path = findProductionLinePath(line);
-                                                            return <Tag key={line}>{path || line}</Tag>;
-                                                        })}
-                                                    </Space>
-                                                ) : '-';
-                                            })()}
-                                        </div>
-                                    </Col>
-                                )}
                             </Row>
 
                             {selectedNode.remark && (
@@ -357,25 +333,6 @@ const orgTypeColors: Record<OrgType, string> = {
                             </Form.Item>
                         </Col>
                     </Row>
-                    {(form.type === 'department' || form.type === 'subDepartment') && (
-                        <Row gutter={16}>
-                            <Col span={24}>
-                                <Form.Item label="管理产线">
-                                    <TreeSelect
-                                        treeData={productionLineTreeData}
-                                        value={form.productionLines || []}
-                                        onChange={(v) => setForm({ ...form, productionLines: v as string[] })}
-                                        treeCheckable
-                                        showCheckedStrategy={TreeSelect.SHOW_PARENT}
-                                        placeholder="请选择产线/工段"
-                                        style={{ width: '100%' }}
-                                        allowClear
-                                        multiple
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    )}
                     <Form.Item label="是否启用">
                         <Switch checked={!!form.active} onChange={(v) => setForm({ ...form, active: v })} />
                     </Form.Item>

@@ -36,7 +36,7 @@ type TemplateStatus = 'enabled' | 'disabled';
 const TYPE_OPTIONS = [
     { value: 'notification', label: '通知类' },
     { value: 'approval', label: '审批类' },
-    { value: 'alarm', label: '报警类' },
+    { value: 'alarm', label: '待办类' },
     { value: 'system', label: '系统类' },
 ];
 
@@ -93,7 +93,7 @@ const MOCK_TEMPLATES: Array<{
 const TYPE_LABEL: Record<MessageType, { label: string; color: string }> = {
     notification: { label: '通知类', color: 'blue' },
     approval: { label: '审批类', color: 'orange' },
-    alarm: { label: '报警类', color: 'red' },
+    alarm: { label: '待办类', color: 'red' },
     system: { label: '系统类', color: 'default' },
 };
 
@@ -436,7 +436,7 @@ function TemplateEditPage({ record, onBack, onSave }: { record: any; onBack: () 
                                 <Radio value="no">否</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        {/* 消息类型下拉：依照批注改为通知类、审批类、报警类、系统类 */}
+                        {/* 消息类型下拉：依照批注改为通知类、审批类、待办类、系统类 */}
                         <Form.Item label="消息类型" name="type" rules={[{ required: true, message: '请选择消息类型' }]}>
                             <Select placeholder="请选择" allowClear options={TYPE_OPTIONS} />
                         </Form.Item>

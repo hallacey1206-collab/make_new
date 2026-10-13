@@ -1,6 +1,6 @@
 {
   "name": "@axhub/make-client",
-  "version": "0.1.18",
+  "version": "0.1.21",
   "private": true,
   "description": "Official Axhub Make client runtime",
   "type": "module",
@@ -21,11 +21,13 @@
     "@tailwindcss/vite": "^4.1.18",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@types/react-test-renderer": "18.3.1",
     "@vitejs/plugin-react": "^5.0.0",
     "extract-zip": "^2.0.1",
     "iconv-lite": "^0.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-test-renderer": "18.2.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.9.3",
     "vite": "5.4.21",
@@ -33,10 +35,14 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
+    "@axhub/annotation": "^1.0.20",
     "@axhub/commentary-react": "^1.0.0",
     "antd": "^5.24.0",
+    "echarts": "^5.6.0",
+    "echarts-for-react": "^3.0.2",
+    "lucide-react": "0.562.0",
     "sortablejs": "^1.15.6",
-    "@axhub/annotation": "^1.0.18",
-    "lucide-react": "0.562.0"
+    "tar-stream": "3.1.7",
+    "tslib": "^2.8.1"
   }
 }

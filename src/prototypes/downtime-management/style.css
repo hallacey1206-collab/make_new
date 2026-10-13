@@ -1,0 +1,364 @@
+/* ===== 停机管理原型样式 ===== */
+
+.dtm-shell {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top right, rgba(22, 119, 255, 0.06), transparent 30%),
+        linear-gradient(180deg, #f7f9fc 0%, #f5f7fb 100%);
+}
+
+/* 侧边栏 */
+.dtm-sider {
+    border-right: 1px solid #e8edf5;
+    box-shadow: 12px 0 24px rgba(15, 23, 42, 0.03);
+    z-index: 2;
+}
+
+.dtm-sider .ant-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dtm-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 14px;
+    border-bottom: 1px solid #eef2f8;
+}
+
+.dtm-brand-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1677ff, #0958d9);
+    color: #fff;
+    font-size: 18px;
+    flex: none;
+}
+
+.dtm-brand h4.ant-typography {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.dtm-brand .ant-typography-secondary {
+    display: block;
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+/* 菜单 */
+.dtm-menu {
+    flex: 1;
+    padding: 12px 10px 18px;
+    background: transparent;
+    border-inline-end: none !important;
+}
+
+.dtm-menu .ant-menu-item,
+.dtm-menu .ant-menu-submenu-title {
+    border-radius: 10px;
+    margin: 4px 0;
+}
+
+.dtm-menu .ant-menu-item-selected {
+    background: linear-gradient(90deg, rgba(22, 119, 255, 0.12), rgba(22, 119, 255, 0.04));
+    color: #1677ff;
+    font-weight: 500;
+}
+
+/* 主区域 */
+.dtm-main {
+    min-width: 0;
+    background: transparent;
+}
+
+/* Header */
+.dtm-header {
+    height: auto;
+    padding: 0;
+    background: #ffffff;
+    border-top: 2px solid #1677ff;
+    border-bottom: 1px solid #edf1f7;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03);
+}
+
+.dtm-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 16px;
+}
+
+.dtm-header-left,
+.dtm-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.dtm-header-left {
+    flex: 1 1 auto;
+}
+
+.dtm-header-right {
+    flex: 0 0 auto;
+}
+
+.dtm-greeting {
+    color: #0f172a;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* 内容区 */
+.dtm-content {
+    padding: 12px 18px 18px;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.dtm-page-stack {
+    display: grid;
+    gap: 12px;
+    min-width: 0;
+    width: 100%;
+}
+
+.dtm-page-stack .ant-card {
+    border-radius: 12px;
+    min-width: 0;
+}
+
+.dtm-page-stack .ant-card-head {
+    border-bottom: 1px solid #eef2f8;
+}
+
+.dtm-page-stack .ant-card-head-title {
+    font-weight: 600;
+}
+
+/* 查询区 */
+.dtm-query-card {
+    border: 1px solid #edf1f7;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.03);
+}
+
+.dtm-query-card .ant-card-body {
+    padding-top: 12px;
+}
+
+.dtm-query-form {
+    row-gap: 8px;
+}
+
+.dtm-query-form .ant-form-item {
+    margin-bottom: 0;
+}
+
+/* 左树右表布局 */
+.dtm-tree-table-layout {
+    display: flex;
+    gap: 12px;
+    min-width: 0;
+}
+
+.dtm-tree-panel {
+    width: 260px;
+    flex: none;
+}
+
+.dtm-tree-panel .ant-card-body {
+    padding: 8px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+}
+
+.dtm-tree-panel .ant-tree {
+    font-size: 13px;
+}
+
+.dtm-tree-panel .ant-tree-node-content-wrapper {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.dtm-table-panel {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 表格 */
+.dtm-table-panel .ant-table-wrapper {
+    max-width: 100%;
+}
+
+.dtm-page-stack .ant-table {
+    border-radius: 10px;
+}
+
+/* 停机分析汇总表：停机类型列可点击，整列悬浮/选中高亮 */
+.dtm-stop-type-col {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.dtm-stop-type-col-hover,
+th.dtm-stop-type-col-hover {
+    background-color: #f5f5f5 !important;
+}
+
+.dtm-stop-type-col-selected,
+th.dtm-stop-type-col-selected,
+.dtm-stop-type-col-selected:hover,
+th.dtm-stop-type-col-selected:hover {
+    background-color: #e6f4ff !important;
+}
+
+/* 粉色虚线提示框 */
+.dtm-hint-box {
+    border: 1px dashed #ffccc7;
+    background: #fff2f0;
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: #cf1322;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* 可靠性指标卡片 */
+.dtm-reliability-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.dtm-reliability-card {
+    border: 1px solid #edf1f7;
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: #fff;
+}
+
+.dtm-reliability-card .dtm-rel-name {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.55);
+    margin-bottom: 4px;
+}
+
+.dtm-reliability-card .dtm-rel-value {
+    font-size: 28px;
+    font-weight: 600;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.dtm-reliability-card .dtm-rel-formula {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.45);
+    margin-top: 6px;
+    line-height: 1.4;
+}
+
+/* 帕累托图容器 */
+.dtm-pareto-chart {
+    position: relative;
+    width: 100%;
+    min-height: 320px;
+}
+
+/* 标签 */
+.dtm-status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.dtm-status-tag.running {
+    color: #52c41a;
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+}
+
+.dtm-status-tag.stopped {
+    color: #ff4d4f;
+    background: #fff2f0;
+    border: 1px solid #ffccc7;
+}
+
+.dtm-status-tag.warning {
+    color: #faad14;
+    background: #fffbe6;
+    border: 1px solid #ffe58f;
+}
+
+.dtm-status-tag.other {
+    color: #8c8c8c;
+    background: #f5f5f5;
+    border: 1px solid #d9d9d9;
+}
+
+@media (max-width: 992px) {
+    .dtm-content {
+        padding: 8px 14px 16px;
+    }
+
+    .dtm-tree-table-layout {
+        flex-direction: column;
+    }
+
+    .dtm-tree-panel {
+        width: 100%;
+    }
+}
+
+/* 开停机配置 - 工序设备树 */
+.dtm-config-tree .ant-tree-node-content-wrapper {
+    flex: 1;
+    width: auto;
+    max-width: none;
+}
+
+.dtm-config-tree .ant-tree-title {
+    width: 100%;
+    overflow: hidden;
+}
+
+.dtm-config-tree .ant-tree {
+    font-size: 13px;
+}
+
+.dtm-config-tree .ant-card-body {
+    padding: 8px;
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+}
+
+/* 树节点删除按钮默认隐藏，悬浮时显示 */
+.dtm-config-tree .dtm-node-actions {
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.dtm-config-tree .ant-tree-node-content-wrapper:hover .dtm-node-actions {
+    opacity: 1;
+}
+
+/* 行内编辑行高亮 */
+.dtm-inline-editing-row > td {
+    background-color: #f0f5ff !important;
+}

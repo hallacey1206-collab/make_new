@@ -375,6 +375,17 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
         setModalOpen(true);
     };
 
+    /** 复制用户：打开新增用户弹窗，并预填充所选用户的信息 */
+    const openCopy = (id: string) => {
+        const u = users.find((x) => x.id === id);
+        if (!u) return;
+        setModalMode('add');
+        // 去掉 id，保存时会生成新 id
+        const { id: _omit, ...rest } = u;
+        setForm({ ...rest });
+        setModalOpen(true);
+    };
+
     const handleSave = () => {
         if (modalMode === 'add') {
             const newUser: UserItem = { ...(form as UserItem), id: `u${Date.now()}` };
@@ -519,6 +530,7 @@ function findOrgPathByName(nodes: typeof baseOrgData, name: string, parents: str
             render: (_, u) => (
                 <Space size="small">
                     <Button type="link" size="small" onClick={(e) => { e.stopPropagation(); openEdit(u.id); }}>编辑</Button>
+                    <Button type="link" size="small" onClick={(e) => { e.stopPropagation(); openCopy(u.id); }}>复制</Button>
                     <Button type="link" size="small" onClick={(e) => { e.stopPropagation(); handleFreeze(u.id); }}>
                         {u.status === 'frozen' ? '解冻' : '冻结'}
                     </Button>
